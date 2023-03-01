@@ -7,7 +7,7 @@
 
 import numpy as np
 import pandas as pd
-from sklearn.datasets import load_breast_cancer, load_diabetes
+from sklearn.datasets import load_breast_cancer, load_diabetes, fetch_california_housing
 from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
@@ -16,14 +16,13 @@ from sklearn.model_selection import train_test_split
 # for문으로 pca 10~1개까지 
 
 #1. 데이터 
-datasets = load_diabetes()
+datasets = fetch_california_housing()
 print(datasets.feature_names) #sklearn컬럼명 확인 /###pd : .columns
-# ['age', 'sex', 'bmi', 'bp', 's1', 's2', 's3', 's4', 's5', 's6']
 x = datasets['data']
 y = datasets.target
-print(x.shape, y.shape)    #(442, 10) (442,)
+print(x.shape, y.shape)    #(20640, 8) (20640,)
 
-for i in range(10, 0, -1):
+for i in range(8, 0, -1):
     pca=PCA(n_components=i)
     x = pca.fit_transform(x)
     x_train, x_test, y_train, y_test = train_test_split(
