@@ -73,13 +73,13 @@ test_csv = scaler.transform(test_csv)
 
 #2. 모델구성 
 input1 = Input(shape=(12,))
-dense1 = Dense(258,activation='relu')(input1)
+dense1 = Dense(256,activation='relu')(input1)
 drop1 = Dropout(0.5)(dense1)
-dense2 = Dense(126, activation='relu')(drop1)
+dense2 = Dense(128, activation='relu')(drop1)
 drop2 = Dropout(0.4)(dense2)
-dense3 = Dense(258, activation='relu')(drop2)
+dense3 = Dense(256, activation='relu')(drop2)
 drop3 = Dropout(0.5)(dense3)
-dense4 = Dense(126, activation='relu')(drop3)
+dense4 = Dense(128, activation='relu')(drop3)
 drop4 = Dropout(0.4)(dense4)
 output1 = Dense(7, activation='softmax')(drop4)
 model = Model(inputs=input1, outputs=output1)
@@ -97,7 +97,7 @@ model = Model(inputs=input1, outputs=output1)
 #3. 컴파일, 훈련 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
-'''
+
 #시간저장
 import datetime 
 date = datetime.datetime.now()  #현재시간 데이터에 넣어줌
@@ -106,13 +106,13 @@ date = date.strftime("%m%d_%H%M")  #'%'특수한 경우에 반환하라 -> month
 #시간을 문자데이터로 바꿈 : 문자로 바꿔야 파일명에 넣을 수 있음 
 print(date) #0314_1115
 
-#경로명 
-filepath = './_save/MCP/keras27_4/'
-filename = '{epoch:04d}-{val_loss:.4f}.hdf5' #04 : 4번째자리, .4: 소수점자리 - hist에서 가져옴 
-'''
+# #경로명 
+# filepath = './_save/MCP/keras27_4/'
+# filename = '{epoch:04d}-{val_loss:.4f}.hdf5' #04 : 4번째자리, .4: 소수점자리 - hist에서 가져옴 
+
 
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
-es = EarlyStopping(monitor='acc', patience=1000, mode='max', 
+es = EarlyStopping(monitor='acc', patience=2000, mode='max', 
                    verbose=1, 
                    restore_best_weights=True
                    )
@@ -150,7 +150,7 @@ y_submit += 3
 
 submission['quality'] = y_submit
 # print(submission)
-submission.to_csv(path_save + 'submit_0315_1110_acc_pat.csv') # 파일생성
+submission.to_csv(path_save + 'submit_wine_' + date + '.csv') # 파일생성
 
 '''
 1.
@@ -178,6 +178,7 @@ accuracy_score: 0.59
 8. label, dropout, MM, acc(max)
 results: [1.1464446783065796, 0.6172727346420288]
 accuracy_score: 0.6172727272727273
-9. label, dropout, MM, acc(max), patience=1000
-
+9.[1110_pati] label, dropout, MM, acc(max), patience=1000
+results: [1.1646728515625, 0.6472727060317993]
+accuracy_score: 0.6472727272727272
 '''

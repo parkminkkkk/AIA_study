@@ -10,6 +10,8 @@ from tensorflow.python.keras.layers import Dense, Input, Dropout
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 from sklearn.metrics import r2_score, mean_squared_error, accuracy_score
+import xgboost as xgb
+from xgboost import XGBClassifier
 
 #1. 데이터 
 path = './_data/dacon_wine/'
@@ -54,14 +56,6 @@ print('y의 라벨값 :', np.unique(y))  #[3 4 5 6 7 8 9]
 # test_csv = test_csv.drop(['type'], axis=1)
 
 
-#판다스 행삭제, 특정값 
-print('y의 라벨값 :', np.unique(y))  #[3 4 5 6 7 8 9]
-print(np.unique(y, return_counts=True)) # array([  26,  186, 1788, 2416,  924,  152, 5]
-y = y.drop(6, axis=0, inplace=True)
-print('y의 라벨값 :', np.unique(y)) 
-print(np.unique(y, return_counts=True)) 
-
-
 #1-2 one-hot-encoding
 print('y의 라벨값 :', np.unique(y))  #[3 4 5 6 7 8 9]
 print(np.unique(y, return_counts=True)) # array([  26,  186, 1788, 2416,  924,  152, 5]
@@ -86,30 +80,25 @@ x_test = scaler.transform(x_test)
 test_csv = scaler.transform(test_csv) 
 # print(np.min(x_test), np.max(x_test)) 
 
-#2. 모델구성 
-input1 = Input(shape=(12,))
-dense1 = Dense(32,activation='relu')(input1)
-drop1 = Dropout(0.2)(dense1)
-dense2 = Dense(64, activation='relu')(drop1)
-drop2 = Dropout(0.4)(dense2)
-dense3 = Dense(32, activation='relu')(drop2)
-drop3 = Dropout(0.2)(dense3)
-dense4 = Dense(4, activation='relu')(drop3)
-output1 = Dense(7, activation='softmax')(dense4)
-model = Model(inputs=input1, outputs=output1)
 
-# model = Sequential()
-# model.add(Dense(8, activation='relu', input_shape=(11,)))
-# model.add(Dropout(0.2))
-# model.add(Dense(4, activation='relu'))
-# model.add(Dropout(0.1))
-# model.add(Dense(8, activation='relu'))
-# model.add(Dropout(0.1))
-# model.add(Dense(4, activation='relu'))
-# model.add(Dense(10, activation='softmax'))
+#2. 모델구성 
+# input1 = Input(shape=(12,))
+# dense1 = Dense(32,activation='relu')(input1)
+# drop1 = Dropout(0.2)(dense1)
+# dense2 = Dense(64, activation='relu')(drop1)
+# drop2 = Dropout(0.4)(dense2)
+# dense3 = Dense(32, activation='relu')(drop2)
+# drop3 = Dropout(0.2)(dense3)
+# dense4 = Dense(4, activation='relu')(drop3)
+# output1 = Dense(7, activation='softmax')(dense4)
+# model = Model(inputs=input1, outputs=output1)
+
+xgb = XGBClassifier()
+y_pred = xgb.predict(x_test)
+xgb.score(x_train, y_train)
 
 #3. 컴파일, 훈련 
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+xgb.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
 
 #시간저장
@@ -126,7 +115,7 @@ filename = '{epoch:04d}-{val_loss:.4f}.hdf5' #04 : 4번째자리, .4: 소수점�
 
 
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
-es = EarlyStopping(monitor='acc', patience=200, mode='max', 
+es = EarlyStopping(monitor='acc', patience=100, mode='max', 
                    verbose=1, 
                    restore_best_weights=True
                    )
@@ -135,15 +124,20 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='auto',
                       filepath="".join([filepath, 'k27_', date, '_', filename])
                       ) 
  
-model.fit(x_train, y_train, epochs=10000, batch_size=64, validation_split=0.1, verbose=1, 
+xgb.fit(x_train, y_train, epochs=10000, batch_size=64, validation_split=0.1, verbose=1, 
           callbacks=[es, mcp])
   
 #4. 평가예측 
-results = model.evaluate(x_test, y_test)
+
+
+
+results = xgb.evaluate(x_test, y_test)
 print('results:', results)  
-y_pred = model.predict(x_test)
+y_pred = xgb.predict(x_test)
 y_pred = np.argmax(y_pred, axis=1)
 y_test = np.argmax(y_test, axis=1)
+
+xgb.score(x_train, y_train)
 
 # print(y_pred.shape)
 # print(y_test)
@@ -154,7 +148,7 @@ print('accuracy_score:', acc)
 
 
 #submission.csv 만들기 
-y_submit = model.predict(test_csv)
+y_submit = xgb.predict(test_csv)
 # print(y_submit)
 
 y_submit = np.argmax(y_submit, axis=1)
@@ -164,7 +158,7 @@ y_submit += 3
 submission = pd.read_csv(path + 'sample_submission.csv', index_col=0)
 submission['quality'] = y_submit
 # print(submission)
-submission.to_csv(path_save + 'submit_0315_1030_MM.csv') # 파일생성
+submission.to_csv(path_save + 'submit_0315_1230_xgb.csv') # 파일생성
 
 '''
 *MM

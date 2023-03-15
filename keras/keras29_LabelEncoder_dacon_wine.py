@@ -111,9 +111,9 @@ date = date.strftime("%m%d_%H%M")  #'%'특수한 경우에 반환하라 -> month
 #시간을 문자데이터로 바꿈 : 문자로 바꿔야 파일명에 넣을 수 있음 
 print(date) #0314_1115
 
-#경로명 
-filepath = './_save/MCP/keras28_12/'
-filename = '{epoch:04d}-{val_loss:.4f}.hdf5' #04 : 4번째자리, .4: 소수점자리 - hist에서 가져옴 
+# #경로명 
+# filepath = './_save/MCP/keras28_12/'
+# filename = '{epoch:04d}-{val_loss:.4f}.hdf5' #04 : 4번째자리, .4: 소수점자리 - hist에서 가져옴 
 
 
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -121,13 +121,13 @@ es = EarlyStopping(monitor='acc', patience=100, mode='max',
                    verbose=1, 
                    restore_best_weights=True
                    )
-mcp = ModelCheckpoint(monitor='val_loss', mode='auto', 
-                      verbose=1, save_best_only=True,  
-                      filepath="".join([filepath, 'k27_', date, '_', filename])
-                      ) 
+# mcp = ModelCheckpoint(monitor='val_loss', mode='auto', 
+#                       verbose=1, save_best_only=True,  
+#                       filepath="".join([filepath, 'k27_', date, '_', filename])
+#                       ) 
  
 model.fit(x_train, y_train, epochs=10000, batch_size=32, validation_split=0.1, verbose=1, 
-          callbacks=[es, mcp])
+          callbacks=[es]) #, mcp])
   
 #4. 평가예측 
 results = model.evaluate(x_test, y_test)
@@ -155,7 +155,16 @@ y_submit += 3
 submission = pd.read_csv(path + 'sample_submission.csv', index_col=0)
 submission['quality'] = y_submit
 # print(submission)
-submission.to_csv(path_save + 'submit_0315_1015_MM.csv') # 파일생성
+
+submission.to_csv(path_save + 'submit_wine_' + date + '.csv') 
+# 파일생성 # 날짜 
+'''
+#시간저장
+import datetime 
+date = datetime.datetime.now()  
+date = date.strftime("%m%d_%H%M")  #'%'특수한 경우에 반환하라 -> month,day_Hour,Minute
+#시간을 문자데이터로 바꿈 : 문자로 바꿔야 파일명에 넣을 수 있음 
+'''
 
 '''
 *MM
@@ -171,6 +180,8 @@ accuracy_score: 0.5727272727272728
 results: [0.9915247559547424, 0.5754545331001282]
 accuracy_score: 0.5754545454545454
 *MM- Dense,dropout 추가/ acc(Max)
-
+9.[1110_pati] label, dropout, MM, acc(max), patience=1000
+results: [1.1646728515625, 0.6472727060317993]
+accuracy_score: 0.6472727272727272
 
 '''

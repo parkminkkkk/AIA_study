@@ -123,7 +123,7 @@ filename = '{epoch:04d}-{val_loss:.4f}.hdf5' #04 : 4번째자리, .4: 소수점�
 
 
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
-es = EarlyStopping(monitor='val_loss', patience=100, mode='min', 
+es = EarlyStopping(monitor='val_loss', patience=1000, mode='min', 
                    verbose=1, 
                    restore_best_weights=True
                    )
