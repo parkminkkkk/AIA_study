@@ -1,0 +1,14 @@
+kingkeras@naver.com
+#파라미터값 모를때 : keras.io / tensoflow.org 사이트내 검색가능
+
+0310
+1. one-hot encoding 차이점 정리 (깃허브)
+2. (금토일) : Dacon, kaggle 파일올리고 스크린샷 찍어서 메일
+3. (~일) scaler 4가지 내용 정리해서 메일보내기 
+
+0314
+1. Dacon, kaggle 파일 올리기 
+2. 파일 11개 생성 
+3. save파일관련
+-파라미터값도 저장되는건지
+-자동화(삭제)
