@@ -9,5 +9,13 @@ import numpy as np
 
 #1. 데이터 
 (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
-print(x_train.shape, y_train.shape) 
-# print(x_test.shape, y_test.shape)
+print(x_train.shape, y_train.shape) #(60000, 28, 28) (60000,)
+print(x_test.shape, y_test.shape)   #(10000, 28, 28) (10000,)
+
+print(np.unique(y_train,return_counts=True)) 
+#(array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], dtype=uint8), array([6000, 6000, 6000, 6000, 6000, 6000, 6000, 6000, 6000, 6000], dtype=int64))
+
+#one-hot-coding
+y_train = to_categorical(y_train)
+y_test = to_categorical(y_test)
+print(y_train.shape)
