@@ -9,6 +9,7 @@ from sklearn.metrics import r2_score, accuracy_score, f1_score
 
 
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import GridSearchCV
 
 #1. 데이터 
 
@@ -55,16 +56,28 @@ test_csv = scaler.transform(test_csv)
 #2. 모델구성 
 model = DecisionTreeClassifier(random_state=42)
 
-# class_weight = {0:2048, 1:209715}
+# 탐색할 파라미터 범위 지정
+param_grid = {'max_depth': [3,4,5,10],
+    'min_samples_split': [2,4,8],
+    'min_samples_leaf': [1],
+    'max_features': [None]}
+
+# 그리드 서치 객체 생성
+grid_search = GridSearchCV(model, param_grid=param_grid, cv=5, scoring='f1')
+
+class_weight = {0:2048, 1:209715}
 
 #3. 컴파일, 훈련 
 # model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['val_acc'])
 
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
-es = EarlyStopping(monitor='val_acc', patience=10000, mode='max', 
+es = EarlyStopping(monitor='f1_score', patience=1000, mode='max', 
                    verbose=1, 
                    restore_best_weights=True
                    )
+
+# 그리드 서치 수행
+grid_search.fit(x_train, y_train)
 model.fit(x_train, y_train)
         #   , epochs=1000, batch_size=32, validation_split=0.1, verbose=1, 
         #   class_weight=class_weight,
@@ -80,6 +93,10 @@ y_test = np.argmax(y_test, axis=1)
 acc = accuracy_score(y_test, y_pred)
 print('acc :', acc)
 
+# 최적의 파라미터 출력
+print('Best Parameters:', grid_search.best_params_)
+print("Best accuracy found: ", grid_search.best_score_)
+
 f1_score = f1_score(y_test, y_pred, average='macro')
 print('f1', f1_score)
 
@@ -88,8 +105,8 @@ print('f1', f1_score)
 y_submit = model.predict(test_csv)
 y_submit = np.argmax(y_submit, axis=1)
 
-submit_csv = pd.read_csv(path + 'sample_submission.csv', index_col=0)
-submit_csv['전화해지여부'] = y_submit
+# submit_csv = pd.read_csv(path + 'sample_submission.csv', index_col=0)
+# submit_csv['전화해지여부'] = y_submit
 # print(y_submit)
 
 

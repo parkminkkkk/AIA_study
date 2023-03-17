@@ -41,24 +41,24 @@ print(y_train.shape) #(60000, 10)
 # x_test = x_test.reshape(10000,784)/255.0
 
 
-#2) 이미지 스케일링 방법
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.preprocessing import MaxAbsScaler, RobustScaler
+# #2) 이미지 스케일링 방법
+# from sklearn.preprocessing import MinMaxScaler, StandardScaler
+# from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 
-x_train = x_train.reshape(60000,28*28)
-x_test = x_test.reshape(10000,784)
+# x_train = x_train.reshape(60000,28*28)
+# x_test = x_test.reshape(10000,784)
 
-scaler = MinMaxScaler() 
-scaler.fit(x_train) 
-x_train = scaler.transform(x_train) 
-x_test = scaler.transform(x_test)
+# scaler = MinMaxScaler() 
+# scaler.fit(x_train) 
+# x_train = scaler.transform(x_train) 
+# x_test = scaler.transform(x_test)
 
 x_train = x_train.reshape(60000,28,28,1)
 x_test = x_test.reshape(10000,28,28,1)
 
 #2. 모델구성 
 model = Sequential()
-model.add(Conv2D(32, (2,2), padding='same', input_shape=(28,28,1))) 
+model.add(Conv2D(64, (2,2), padding='same', input_shape=(28,28,1))) 
 model.add(MaxPooling2D()) #(2,2)중 가장 큰 값 뽑아서 반의 크기(14x14)로 재구성함 / Maxpooling안에 디폴트가 (2,2)로 중첩되지 않도록 설정되어있음 
 model.add(Conv2D(filters=32, kernel_size=(2,2), padding='valid', activation='relu')) 
 model.add(Conv2D(32, 2))  #kernel_size=(2,2)/ (2,2)/ (2) 동일함 
@@ -78,12 +78,14 @@ es = EarlyStopping(monitor='val_acc', patience=30, mode='max',
                    restore_best_weights=True
                    )
 
-model.fit(x_train, y_train, epochs=300, batch_size=516, validation_split=0.2, 
+model.fit(x_train, y_train, epochs=30, batch_size=128, validation_split=0.2, 
           callbacks=(es))
 
 #4. 평가, 예측 
 results = model.evaluate(x_test, y_test)
-print('results:', results)
+print('loss:', results[0]) #loss, metrics(acc)
+print('acc:', results[1]) #loss, metrics(acc)
+
 
 y_pred = model.predict(x_test)
 y_pred = np.argmax(y_pred, axis=1) #print(y_pred.shape)

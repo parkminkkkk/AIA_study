@@ -3,7 +3,7 @@
 
 from sklearn.datasets import fetch_california_housing
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense
+from tensorflow.keras.layers import Dense
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
 #1. 데이터 
