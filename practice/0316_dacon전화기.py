@@ -62,8 +62,9 @@ output1 = Dense(2, activation='softmax')(dense4)
 model = Model(inputs=input1, outputs=output1)
 
 class_weight = {0:1024, 1:2048}
+
 #3. 컴파일, 훈련 
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['val_acc'])
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 es = EarlyStopping(monitor='val_acc', patience=100, mode='max', 
