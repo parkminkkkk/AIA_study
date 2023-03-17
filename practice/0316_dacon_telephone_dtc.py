@@ -5,7 +5,7 @@ from tensorflow.python.keras.models import Sequential, Model, load_model
 from tensorflow.python.keras.layers import Dense, Input, Dropout
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler
-from sklearn.metrics import r2_score, accuracy_score, f1_score
+from sklearn.metrics import r2_score, accuracy_score, f1_score, precision_score
 
 
 from sklearn.tree import DecisionTreeClassifier

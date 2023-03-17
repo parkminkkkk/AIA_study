@@ -41,17 +41,17 @@ print(y_train.shape) #(60000, 10)
 # x_test = x_test.reshape(10000,784)/255.0
 
 
-# #2) 이미지 스케일링 방법
-# from sklearn.preprocessing import MinMaxScaler, StandardScaler
-# from sklearn.preprocessing import MaxAbsScaler, RobustScaler
+#2) 이미지 스케일링 방법
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 
-# x_train = x_train.reshape(60000,28*28)
-# x_test = x_test.reshape(10000,784)
+x_train = x_train.reshape(60000,28*28)
+x_test = x_test.reshape(10000,784)
 
-# scaler = MinMaxScaler() 
-# scaler.fit(x_train) 
-# x_train = scaler.transform(x_train) 
-# x_test = scaler.transform(x_test)
+scaler = MinMaxScaler() 
+scaler.fit(x_train) 
+x_train = scaler.transform(x_train) 
+x_test = scaler.transform(x_test)
 
 x_train = x_train.reshape(60000,28,28,1)
 x_test = x_test.reshape(10000,28,28,1)

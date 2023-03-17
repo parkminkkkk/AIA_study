@@ -5,7 +5,7 @@ from tensorflow.python.keras.models import Sequential, Model, load_model
 from tensorflow.python.keras.layers import Dense, Input, Dropout
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler
-from sklearn.metrics import r2_score, accuracy_score, f1_score
+from sklearn.metrics import r2_score, accuracy_score, f1_score, precision_score
 
 #1. 데이터 
 
@@ -35,7 +35,7 @@ y = np.array(y)
 print(y.shape)     #(30200, 2)
 
 
-#1-4 데이터 분리 
+# #1-4 데이터 분리 
 x_train, x_test, y_train, y_test = train_test_split(
     x,y, train_size=0.8, random_state=640)
 
@@ -67,11 +67,11 @@ class_weight = {0:1024, 1:2048}
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
-es = EarlyStopping(monitor='val_acc', patience=100, mode='max', 
+es = EarlyStopping(monitor='val_acc', patience=10, mode='max', 
                    verbose=1, 
                    restore_best_weights=True
                    )
-model.fit(x_train, y_train, epochs=1000, batch_size=32, validation_split=0.1, verbose=1, 
+model.fit(x_train, y_train, epochs=10, batch_size=32, validation_split=0.1, verbose=1, 
           class_weight=class_weight,
           callbacks=(es))
 
@@ -88,13 +88,17 @@ print('acc :', acc)
 f1_score = f1_score(y_test, y_pred, average='macro')
 print('f1', f1_score)
 
-#5. 파일 생성 
+precision = precision_score(y_test, y_pred, average='macro')
+print('precision:', precision)
 
-y_submit = model.predict(test_csv)
-y_submit = np.argmax(y_submit, axis=1)
 
-submit_csv = pd.read_csv(path + 'sample_submission.csv', index_col=0)
-submit_csv['전화해지여부'] = y_submit
+# #5. 파일 생성 
+
+# y_submit = model.predict(test_csv)
+# y_submit = np.argmax(y_submit, axis=1)
+
+# submit_csv = pd.read_csv(path + 'sample_submission.csv', index_col=0)
+# submit_csv['전화해지여부'] = y_submit
 # print(y_submit)
 
 
