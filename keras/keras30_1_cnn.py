@@ -19,7 +19,7 @@ model.add(Conv2D(10, (2,2)))
 model.add(Flatten()) #출력 : (N, 4*4*10) = (N, 160)
 model.add(Dense(32, activation='relu'))
 model.add(Dense(10, activation='relu'))
-model.add(Dense(3, activation='softmax'))  #다중분류 함수
+model.add(Dense(3, activation='softmax'))  #다중분류 함수/ #outputlayer=unique개수
 #(N, 160) 2차원 데이터 됐으니까 이제 Dense 해줄 수 있음
 
 

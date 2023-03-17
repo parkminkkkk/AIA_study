@@ -64,7 +64,8 @@ model.add(Dense(256, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.3))
-model.add(Dense(10, activation='softmax')) #np.unique #array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]-> output_dim에 '10'
+model.add(Dense(10, activation='softmax')) #outputlayer=unique개수
+#np.unique #array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]-> output_dim에 '10'
 
 
 #3. 컴파일, 훈련 
