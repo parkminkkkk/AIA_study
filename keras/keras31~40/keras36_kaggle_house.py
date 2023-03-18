@@ -33,10 +33,11 @@ df = pd.read_csv(path + 'train.csv')
 # df = df.fillna(0)
 
 # 특정 열의 결측치를 특정 값으로 대체
-df['column_name'] = df['column_name'].fillna(value)
+df['column_name'] = df['column_name'].fillna(0)
 
 print(train_csv.isnull().sum())
 print(train_csv)
+
 #1-2데이터분리(train_set)
 x = train_csv.drop(['SalePrice'], axis=1)
 print(x)
