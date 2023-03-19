@@ -108,7 +108,7 @@ y_submit = y_submit.fillna(y_submit.mode())
 y_submit = np.array(y_submit)
 submission = pd.read_csv(path + 'sample_submission.csv', index_col=0)
 submission['SalePrice'] = y_submit
-submission.to_csv(path_save + 'kaggle_house_mode_0319_' + date + '.csv')
+submission.to_csv(path_save + 'kaggle_house_mode_' + date + '.csv')
 
 #mean 평균값 
 '''
