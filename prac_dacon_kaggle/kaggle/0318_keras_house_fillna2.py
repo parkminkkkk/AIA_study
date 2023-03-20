@@ -46,16 +46,16 @@ print(x.shape)
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.8, random_state=640874, shuffle=True)
 
-# 1.7 Scaler
-scaler = StandardScaler()
-x_train = scaler.fit_transform(x_train)
-x_test = scaler.transform(x_test)
-test_csv = scaler.transform(test_csv)
+# # 1.7 Scaler
+# scaler = StandardScaler()
+# x_train = scaler.fit_transform(x_train)
+# x_test = scaler.transform(x_test)
+# test_csv = scaler.transform(test_csv)
 
-scaler = MinMaxScaler()
-x_train = scaler.fit_transform(x_train)
-x_test = scaler.transform(x_test)
-test_csv = scaler.transform(test_csv)
+# scaler = MinMaxScaler()
+# x_train = scaler.fit_transform(x_train)
+# x_test = scaler.transform(x_test)
+# test_csv = scaler.transform(test_csv)
 
 # 2. 모델구성
 # model = Sequential()
@@ -67,11 +67,11 @@ test_csv = scaler.transform(test_csv)
 # model.add(Dense(1))
 
 input1 = Input(shape=(78,))
-dense1 = Dense(64, activation='relu')(input1) 
-drop1 = Dropout(0.3)(dense1)
-dense2 = Dense(32, activation='relu')(drop1)  
-drop2 = Dropout(0.2)(dense2)                                                          
-dense3 = Dense(64,activation='relu')(drop2)     
+dense1 = Dense(128, activation='relu')(input1) 
+drop1 = Dropout(0.4)(dense1)
+dense2 = Dense(256, activation='relu')(drop1)  
+drop2 = Dropout(0.5)(dense2)                                                          
+dense3 = Dense(128,activation='relu')(drop2)     
 drop3 = Dropout(0.3)(dense3)                                                          
 output1 = Dense(1)(drop3)
 model = Model(inputs=input1, outputs=output1) 
@@ -101,7 +101,7 @@ print("RMSE : ", rmse)
 # 4.1 내보내기
 import datetime
 date = datetime.datetime.now()
-date = date.strftime('%H%M')
+date = date.strftime("%m%d_%H%M")
 
 y_submit = model.predict(test_csv)
 import numpy as np
@@ -111,40 +111,14 @@ y_submit = y_submit.fillna(y_submit.mode()[0])
 y_submit = np.array(y_submit)
 submission = pd.read_csv(path + 'sample_submission.csv', index_col=0)
 submission['SalePrice'] = y_submit
-submission.to_csv(path_save + 'kaggle_house_mode_' + date + '.csv')
+submission.to_csv(path_save + 'kaggle_house_' + date + '.csv')
 
-#mean 평균값 
-'''
-loss :  [1697318144.0, 0.0]
-r2 :  0.7513690209989305
-RMSE :  41198.51855655464
 
-Epoch 01355: early stopping
-loss :  [1696221184.0, 0.0]
-r2 :  0.7515296925692997
-RMSE :  41185.20464761186
 '''
-#median 중앙값 
-'''
-loss :  [1739785856.0, 0.0]
-r2 :  0.7451481099863801
-RMSE :  41710.74136126126
-
-Epoch 01538: early stopping
-loss :  [1726132736.0, 0.0]
-r2 :  0.747148057019558
-RMSE :  41546.75674910334
-'''
-#mode 최빈값
-'''
-loss :  [1712166784.0, 0.0]
-r2 :  0.7491938988510953
-RMSE :  41378.33660111021
-
-Epoch 01595: early stopping
-loss :  [1740372224.0, 0.0]
-r2 :  0.7450622079351303
-RMSE :  41717.77041716147
+*test_csv median
+loss :  [1644365824.0, 0.0]
+r2 :  0.7591257125073961
+RMSE :  40550.7789556213
 '''
 
 

@@ -43,16 +43,16 @@ print(x.shape)
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.8, random_state=640874, shuffle=True)
 
-# 1.7 Scaler
-scaler = StandardScaler()
-x_train = scaler.fit_transform(x_train)
-x_test = scaler.transform(x_test)
-test_csv = scaler.transform(test_csv)
+# # 1.7 Scaler
+# scaler = StandardScaler()
+# x_train = scaler.fit_transform(x_train)
+# x_test = scaler.transform(x_test)
+# test_csv = scaler.transform(test_csv)
 
-scaler = MinMaxScaler()
-x_train = scaler.fit_transform(x_train)
-x_test = scaler.transform(x_test)
-test_csv = scaler.transform(test_csv)
+# scaler = MinMaxScaler()
+# x_train = scaler.fit_transform(x_train)
+# x_test = scaler.transform(x_test)
+# test_csv = scaler.transform(test_csv)
 
 # 2. 모델구성
 # model = Sequential()
@@ -98,7 +98,7 @@ print("RMSE : ", rmse)
 # 4.1 내보내기
 import datetime
 date = datetime.datetime.now()
-date = date.strftime('%H%M')
+date = date.strftime("%m%d_%H%M")
 
 y_submit = model.predict(test_csv)
 import numpy as np
