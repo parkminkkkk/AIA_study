@@ -58,6 +58,11 @@ scaler.fit(x_train)
 x_train = scaler.transform(x_train) 
 x_test = scaler.transform(x_test)
 
+#reshape
+print(x_train.shape, x_test.shape) #(142, 13) (36, 13)
+x_train= x_train.reshape(-1,13,1,1)
+x_test= x_test.reshape(-1,13,1,1)
+
 
 #2. 모델구성
 # model = Sequential()
@@ -71,10 +76,10 @@ model = Sequential()
 model.add(Conv2D(8,(2,1),
                  padding='same',
                  input_shape=(13,1,1))) 
-model.add(Conv2D(filters=5, kernel_size=(2,2), 
+model.add(Conv2D(filters=5, kernel_size=(2,1), 
                  padding='valid',
                  activation='relu')) 
-model.add(Conv2D(16, (2,2))) 
+model.add(Conv2D(16, (2,1))) 
 model.add(Flatten())
 model.add(Dense(16, activation='relu'))
 model.add(Dropout(0.5))
@@ -87,10 +92,10 @@ model.compile(loss='categorical_crossentropy', optimizer='adam',
               metrics=['acc'])
 
 #EarlyStopping추가
-es = EarlyStopping(monitor='val_loss', patience=100, mode='min',
+es = EarlyStopping(monitor='val_loss', patience=10, mode='min',
                    verbose=1, restore_best_weights=True)
 
-model.fit(x_train, y_train, epochs=1000, batch_size=16,
+model.fit(x_train, y_train, epochs=100, batch_size=16,
           validation_split=0.2,
           verbose=1,
           callbacks=[es]
@@ -126,5 +131,9 @@ results: [0.09489498287439346, 0.9444444179534912]
 acc:  0.9444444444444444
 3. 함수형모델
 results: [0.012789257802069187, 1.0]
+acc:  1.0
+
+*cnn
+results: [0.06468743830919266, 1.0]
 acc:  1.0
 '''

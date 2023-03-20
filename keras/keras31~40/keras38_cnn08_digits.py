@@ -50,6 +50,11 @@ scaler.fit(x_train)
 x_train = scaler.transform(x_train) 
 x_test = scaler.transform(x_test)
 
+#reshape
+print(x_train.shape, x_test.shape) #(1437, 64) (360, 64)
+x_train= x_train.reshape(-1,8,8,1)
+x_test= x_test.reshape(-1,8,8,1)
+
 
 #2. 모델구성
 # model = Sequential()
@@ -62,11 +67,11 @@ x_test = scaler.transform(x_test)
 model = Sequential()
 model.add(Conv2D(8,(2,1),
                  padding='same',
-                 input_shape=(64,1,1))) 
-model.add(Conv2D(filters=5, kernel_size=(2,2), 
+                 input_shape=(8,8,1))) 
+model.add(Conv2D(filters=5, kernel_size=(2,1), 
                  padding='valid',
                  activation='relu')) 
-model.add(Conv2D(16, (2,2))) 
+model.add(Conv2D(16, (2,1))) 
 model.add(Flatten())
 model.add(Dense(16, activation='relu'))
 model.add(Dropout(0.5))
@@ -82,7 +87,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam',
 es = EarlyStopping(monitor='val_loss', patience=100, mode='min',
                    verbose=1, restore_best_weights=True)
 
-model.fit(x_train, y_train, epochs=3000, batch_size=16,
+model.fit(x_train, y_train, epochs=30, batch_size=16,
           validation_split=0.2,
           verbose=1,
           callbacks=[es]
@@ -114,4 +119,8 @@ Epoch 00153: early stopping/ results: [0.5333125591278076, 0.875]/ accuracy_scor
 
 6.함수형모델
 Epoch 00208: early stopping/ results: [0.5807938575744629, 0.8361111283302307]/ accuracy_score: 0.8361111111111111
+
+*cnn
+results: [0.573637843132019, 0.8972222208976746]
+accuracy_score: 0.8972222222222223
 '''

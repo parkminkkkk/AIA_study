@@ -39,6 +39,14 @@ x_test = scaler.transform(x_test)
 test_csv = scaler.transform(test_csv) 
 print(np.min(x_test), np.max(x_test)) 
 
+#reshape
+print(x_train.shape, x_test.shape) #
+print(test_csv.shape) #
+x_train= x_train.reshape(-1,8,1,1)
+x_test= x_test.reshape(-1,8,1,1)
+test_csv = test_csv.reshape(-1,8,1,1)
+
+
 #2. 모델구성 (함수형모델) 
 '''
 input1 = Input(shape=(8, ))
@@ -55,10 +63,10 @@ model = Sequential()
 model.add(Conv2D(8,(2,1),
                  padding='same',
                  input_shape=(8,1,1))) 
-model.add(Conv2D(filters=5, kernel_size=(2,2), 
+model.add(Conv2D(filters=5, kernel_size=(2,1), 
                  padding='valid',
                  activation='relu')) 
-model.add(Conv2D(16, (2,2))) 
+model.add(Conv2D(16, (2,1))) 
 model.add(Flatten())
 model.add(Dense(16, activation='relu'))
 model.add(Dropout(0.5))
@@ -93,9 +101,8 @@ mcp = ModelCheckpoint(monitor='val_loss', mode='auto',
                       filepath="".join([filepath, 'k27_', date, '_', filename])
                       ) 
  
-model.fit(x_train, y_train, epochs=10000, validation_split=0.1, batch_size=32, verbose=1,
+model.fit(x_train, y_train, epochs=100, validation_split=0.1, batch_size=32, verbose=1,
           callbacks=(es)) #[mcp])
-
 
 
 #4. 평가, 예측 
@@ -117,7 +124,11 @@ submission = pd.read_csv(path + 'sample_submission.csv', index_col=0)
 submission['Outcome'] = y_submit
 # print(submission)
 
-submission.to_csv(path_save + 'submit_0314_1530_dropout.csv') # 파일생성
+#시간저장
+import datetime 
+date = datetime.datetime.now()  
+date = date.strftime("%m%d_%H%M") 
+submission.to_csv(path_save + 'submit_cnn_'+date+'.csv') # 파일생성
 
 '''
 10.* RobustScaler
@@ -129,4 +140,7 @@ acc:  0.7633587786259542
 Epoch 00657: early stopping
 results: [0.5547052025794983, 0.7251908183097839, 0.18755170702934265]
 acc:  0.7251908396946565
+
+results: [0.7526734471321106, 0.7022900581359863, 0.20354564487934113]
+acc:  0.7022900763358778
 '''

@@ -64,6 +64,10 @@ scaler.fit(x_train)
 x_train = scaler.transform(x_train) 
 x_test = scaler.transform(x_test) 
 
+#reshape
+print(x_train.shape, x_test.shape) #(120, 4) (30, 4)
+x_train= x_train.reshape(-1,4,1,1)
+x_test= x_test.reshape(-1,4,1,1)
 
 #2. 모델구성
 # model = Sequential()
@@ -76,17 +80,17 @@ x_test = scaler.transform(x_test)
 model = Sequential()
 model.add(Conv2D(8,(2,1),
                  padding='same',
-                 input_shape=(16,1,1))) 
-model.add(Conv2D(filters=5, kernel_size=(2,2), 
+                 input_shape=(4,1,1))) 
+model.add(Conv2D(filters=5, kernel_size=(2,1), 
                  padding='valid',
                  activation='relu')) 
-model.add(Conv2D(16, (2,2))) 
+model.add(Conv2D(16, (2,1))) 
 model.add(Flatten())
 model.add(Dense(16, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(8, activation='relu'))
 model.add(Dropout(0.3))
-model.add(Dense(1))
+model.add(Dense(3, activation='softmax'))
 
 
 #3. 컴파일, 훈련
@@ -97,7 +101,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam',
 es = EarlyStopping(monitor='val_loss', patience=100, mode='min',
                    verbose=1, restore_best_weights=True)
 
-model.fit(x_train, y_train, epochs=1000, batch_size=16,
+model.fit(x_train, y_train, epochs=10, batch_size=16,
           validation_split=0.2,
           verbose=1,
           callbacks=[es]
@@ -146,5 +150,9 @@ accuracy_score: 0.8333333333333334
 Epoch 00998: early stopping
 [0.11794759333133698, 0.9333333373069763]
 accuracy_score: 0.9333333333333333
+
+*cnn
+[0.9275529384613037, 0.6666666865348816]
+accuracy_score: 0.6666666666666666
 '''
 

@@ -53,6 +53,14 @@ test_csv = scaler.transform(test_csv)
 #test_csv파일또한 scaler해줘야함! 아니면 제출했을때 점수이상하게 나옴 (train파일을  scale한만큼, test파일도 scale해줘야함)
 #train_csv파일에서 x_train,x_test값 가져온것이기 때문에, test_csv파일 scale해줘야함 
 
+#reshape
+print(x_train.shape, x_test.shape) #(8708, 8) (2178, 8)
+print(test_csv.shape) #(6493, 8)
+x_train= x_train.reshape(-1,8,1,1)
+x_test= x_test.reshape(-1,8,1,1)
+test_csv = test_csv.reshape(-1,8,1,1)   ###reshape : test_csv 모델에서 돌려서 평가해주니까 reshape해줘야함!!###
+
+
 #2. 모델구성
 # model = Sequential()
 # model.add(Dense(8, activation='relu', input_dim=8))
@@ -64,11 +72,11 @@ test_csv = scaler.transform(test_csv)
 model = Sequential()
 model.add(Conv2D(8,(2,1),
                  padding='same',
-                 input_shape=(16,1,1))) 
-model.add(Conv2D(filters=5, kernel_size=(2,2), 
+                 input_shape=(8,1,1))) 
+model.add(Conv2D(filters=5, kernel_size=(2,1), 
                  padding='valid',
                  activation='relu')) 
-model.add(Conv2D(16, (2,2))) 
+model.add(Conv2D(16, (2,1))) 
 model.add(Flatten())
 model.add(Dense(16, activation='relu'))
 model.add(Dropout(0.5))
@@ -85,7 +93,7 @@ es = EarlyStopping(monitor='val_loss', patience=100, mode='min',
               restore_best_weights=True)
 
 hist = model.fit(x_train, y_train,
-          epochs=5000, batch_size=100,
+          epochs=20, batch_size=16,
           validation_split=0.2,
           verbose=1,
           callbacks=[es]
@@ -114,12 +122,20 @@ submission = pd.read_csv(path + 'sampleSubmission.csv', index_col=0)
 submission['count'] = y_submit
 # print(submission)
 
-submission.to_csv(path_save + 'submit_0320_cnn.csv') # 파일생성
+#시간저장
+import datetime 
+date = datetime.datetime.now()  
+date = date.strftime("%m%d_%H%M") 
+
+submission.to_csv(path_save + 'submit_cnn_'+ date + '.csv') # 파일생성
 
 
 '''
 3. [1130_mmscaler] *MinMaxScaler(): test_csv파일까지 scale 점  : 1.30점
 Epoch 01782: early stopping/ loss :  23474.890625/ r2스코어 : 0.2877970510689205/ RMSE :  153.21517175723991
 
-
+*cnn
+loss :  29060.431640625
+r2스코어 : 0.11833784590666052
+RMSE :  170.4711881074119
 '''

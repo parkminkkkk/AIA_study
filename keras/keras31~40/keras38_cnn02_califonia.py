@@ -24,9 +24,9 @@ scaler.fit(x_train)
 x_train = scaler.transform(x_train) 
 x_test = scaler.transform(x_test)
 
+#reshape
 print(x_train.shape) #(16512, 8)
 print(x_test.shape)  #(4128, 8)
-
 x_train= x_train.reshape(16512,8,1,1)
 x_test= x_test.reshape(4128,8,1,1)
 

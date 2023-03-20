@@ -54,6 +54,14 @@ x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
 test_csv = scaler.transform(test_csv)
 
+#reshape
+print(x_train.shape, x_test.shape) #(896, 78) (225, 78)
+print(test_csv.shape)  #(1459, 78)
+x_train= x_train.reshape(-1,78,1,1)
+x_test= x_test.reshape(-1,78,1,1)
+test_csv = test_csv.reshape(-1,78,1,1)
+
+
 # 2. 모델구성
 # model = Sequential()
 # model.add(Dense(32, input_dim=8))
@@ -64,13 +72,13 @@ test_csv = scaler.transform(test_csv)
 # model.add(Dense(1))
 
 model = Sequential()
-model.add(Conv2D(8,(2,1),
-                 padding='same',
-                 input_shape=(8,1,1))) 
-model.add(Conv2D(filters=5, kernel_size=(2,2), 
+model.add(Conv2D(8,(8,1),
+                 padding='valid',
+                 input_shape=(78,1,1))) 
+model.add(Conv2D(filters=5, kernel_size=(2,1), 
                  padding='valid',
                  activation='relu')) 
-model.add(Conv2D(16, (2,2))) 
+model.add(Conv2D(16, (2,1))) 
 model.add(Flatten())
 model.add(Dense(16, activation='relu'))
 model.add(Dropout(0.5))
@@ -80,8 +88,8 @@ model.add(Dense(1, activation='sigmoid'))
 
 # 3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam', metrics=['acc'])
-es = EarlyStopping(monitor='val_loss', patience=100, verbose=1, mode='min', restore_best_weights=True)
-hist = model.fit(x_train, y_train, epochs=1000, batch_size=32, verbose=1, validation_split=0.1, callbacks=[es])
+es = EarlyStopping(monitor='val_loss', patience=10, verbose=1, mode='min', restore_best_weights=True)
+hist = model.fit(x_train, y_train, epochs=100, batch_size=32, verbose=1, validation_split=0.1, callbacks=[es])
 
 # 4. 평가, 예측
 loss = model.evaluate(x_test, y_test)
@@ -113,7 +121,7 @@ y_submit = y_submit.fillna(y_submit.mode()[0])
 y_submit = np.array(y_submit)
 submission = pd.read_csv(path + 'sample_submission.csv', index_col=0)
 submission['SalePrice'] = y_submit
-submission.to_csv(path_save + 'kaggle_house_mode_' + date + '.csv')
+submission.to_csv(path_save + 'kaggle_house_cnn_' + date + '.csv')
 
 #mean 평균값 
 '''

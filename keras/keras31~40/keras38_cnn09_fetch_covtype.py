@@ -41,6 +41,11 @@ scaler.fit(x_train)
 x_train = scaler.transform(x_train) 
 x_test = scaler.transform(x_test)
 
+#reshape
+print(x_train.shape, x_test.shape) #(464809, 54) (116203, 54)
+x_train= x_train.reshape(-1,9,6,1)
+x_test= x_test.reshape(-1,9,6,1)
+
 #2. 모델구성 
 # model = Sequential()
 # model.add(Dense(256, activation='relu', input_dim=54))
@@ -52,11 +57,11 @@ x_test = scaler.transform(x_test)
 model = Sequential()
 model.add(Conv2D(8,(2,1),
                  padding='same',
-                 input_shape=(54,1,1))) 
-model.add(Conv2D(filters=5, kernel_size=(2,2), 
+                 input_shape=(9,6,1))) 
+model.add(Conv2D(filters=5, kernel_size=(2,1),
                  padding='valid',
                  activation='relu')) 
-model.add(Conv2D(16, (2,2))) 
+model.add(Conv2D(16, (2,1))) 
 model.add(Flatten())
 model.add(Dense(16, activation='relu'))
 model.add(Dropout(0.5))
@@ -70,7 +75,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc']
 #ES추가 
 es = EarlyStopping(monitor='val_loss', patience=100, mode='min', restore_best_weights=True, verbose=1)
 
-hist = model.fit(x_train, y_train, epochs=30000, batch_size=1024, validation_split=0.2, verbose=1, callbacks=[es])
+hist = model.fit(x_train, y_train, epochs=30, batch_size=128, validation_split=0.2, verbose=1, callbacks=[es])
 
 #4. 평가, 예측 
 
@@ -108,5 +113,7 @@ Epoch 00186: early stopping
 results: [0.1247873455286026, 0.9554572701454163]
 acc: 0.9554572601395833
 
-
+*cnn
+results: [0.6166614294052124, 0.7317194938659668]
+acc: 0.7317194908909409
 '''

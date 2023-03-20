@@ -35,8 +35,6 @@ print(y)
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=640874, test_size=0.2
 )
-print(x_train.shape, x_test.shape) # (929, 9) (399, 9) * train_size=0.7, random_state=777일 때 /count제외
-print(y_train.shape, y_test.shape) # (929,) (399,)     * train_size=0.7, random_state=777일 때 //count제외
 
 #data scaling(스케일링)
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
@@ -45,14 +43,17 @@ scaler = MinMaxScaler()
 # scaler = StandardScaler() 
 # scaler = MaxAbsScaler() 
 # scaler = RobustScaler() 
-scaler.fit(x_train) #x_train범위만큼 잡아라
-x_train = scaler.transform(x_train) #변환
-#x_train의 변환 범위에 맞춰서 하라는 뜻이므로 scaler.fit할 필요x 
-x_test = scaler.transform(x_test) #x_train의 범위만큼 잡아서 변환하라 
-
+scaler.fit(x_train) 
+x_train = scaler.transform(x_train) 
+x_test = scaler.transform(x_test)
 test_csv = scaler.transform(test_csv) 
-#test_csv파일또한 scaler해줘야함! 아니면 제출했을때 점수이상하게 나옴 (train파일을  scale한만큼, test파일도 scale해줘야함)
-#train_csv파일에서 x_train,x_test값 가져온것이기 때문에, test_csv파일 scale해줘야함 
+
+#reshape
+print(x_train.shape, x_test.shape) #(1062, 9) (266, 9)
+print(test_csv.shape) #(715, 9)
+x_train= x_train.reshape(1062,9,1,1)
+x_test= x_test.reshape(266,9,1,1)
+test_csv = test_csv.reshape(715,9,1,1)   ###reshape : test_csv 모델에서 돌려서 평가해주니까 reshape해줘야함!!###
 
 #2. 모델구성
 # model = Sequential()
@@ -62,13 +63,11 @@ test_csv = scaler.transform(test_csv)
 # model.add(Dense(1))
 
 model = Sequential()
-model.add(Conv2D(10,(3,1),
-                 padding='same',
-                 input_shape=(16,1,1))) 
-model.add(Conv2D(filters=5, kernel_size=(2,1), 
+model.add(Conv2D(32,(3,1), padding='same',input_shape=(9,1,1))) 
+model.add(Conv2D(filters=5, kernel_size=(3,1), 
                  padding='valid',
                  activation='relu')) 
-model.add(Conv2D(16, (2,1))) 
+model.add(Conv2D(16, (3,1))) 
 model.add(Flatten())
 model.add(Dense(16, activation='relu'))
 model.add(Dropout(0.5))
@@ -81,16 +80,12 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer = 'adam')
 
 from tensorflow.python.keras.callbacks import EarlyStopping
-es = EarlyStopping(monitor='val_loss', patience=300, mode='min',
+es = EarlyStopping(monitor='val_loss', patience=10, mode='min',
               verbose=1, 
               restore_best_weights=True)
 
-hist = model.fit(x_train, y_train,
-          epochs=50000, batch_size=10,
-          validation_split=0.2,
-          verbose=1,
-          callbacks=[es]
-          )
+hist = model.fit(x_train, y_train, epochs=50, batch_size=10, validation_split=0.2, verbose=1,
+          callbacks=[es])
 #print(hist.history['val_loss'])
 
 #4. 평가, 예측 
@@ -116,7 +111,12 @@ submission = pd.read_csv(path + 'submission.csv', index_col=0)
 submission['count'] = y_submit
 # print(submission)
 
-submission.to_csv(path_save + 'submit_0313_1500_Model.csv') # 파일생성
+#시간저장
+import datetime 
+date = datetime.datetime.now()  
+date = date.strftime("%m%d_%H%M")  
+
+submission.to_csv(path_save + 'submit_cnn_' +date+ '.csv') # 파일생성
 
 
 
@@ -127,5 +127,8 @@ loss :  1989.625732421875
 r2스코어 : 0.7303451862110664
 RMSE :  44.605220624545105
 
-
+*dnn->cnn
+loss :  4083.2978515625
+r2스코어 : 0.4465889161208677
+RMSE :  63.900687329386685
 '''

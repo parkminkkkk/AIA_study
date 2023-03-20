@@ -17,7 +17,6 @@ y = datasets['target']
 print(x.shape) #(506, 13)
 print(y.shape) #(506,)
 
-
 #reshape
 x= x.reshape(506,13,1,1)
 
@@ -25,12 +24,12 @@ x_train, x_test, y_train, y_test = train_test_split(
     x,y, train_size=0.8, random_state=333)
 
 
-
 #data scaling(스케일링)
 # scaler = MinMaxScaler() 
 # x_train = scaler.fit_transform(x_train) 
 # x_test = scaler.transform(x_test) 
 # print(np.min(x_test), np.max(x_test)) 
+
 
 #2. 모델구성 (함수형모델) 
 model = Sequential()
@@ -47,7 +46,6 @@ model.add(Dropout(0.5))
 model.add(Dense(8, activation='relu'))
 model.add(Dropout(0.3))
 model.add(Dense(1))
-
 
 
 #3. 컴파일, 훈련 
