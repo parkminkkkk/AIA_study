@@ -123,38 +123,27 @@ submission = pd.read_csv(path + 'sample_submission.csv', index_col=0)
 submission['SalePrice'] = y_submit
 submission.to_csv(path_save + 'kaggle_house_cnn_' + date + '.csv')
 
-#mean 평균값 
+
 '''
+#mean 평균값 
 loss :  [1697318144.0, 0.0]
 r2 :  0.7513690209989305
 RMSE :  41198.51855655464
 
-Epoch 01355: early stopping
-loss :  [1696221184.0, 0.0]
-r2 :  0.7515296925692997
-RMSE :  41185.20464761186
-'''
 #median 중앙값 
-'''
 loss :  [1739785856.0, 0.0]
 r2 :  0.7451481099863801
 RMSE :  41710.74136126126
 
-Epoch 01538: early stopping
-loss :  [1726132736.0, 0.0]
-r2 :  0.747148057019558
-RMSE :  41546.75674910334
-'''
 #mode 최빈값
-'''
 loss :  [1712166784.0, 0.0]
 r2 :  0.7491938988510953
 RMSE :  41378.33660111021
 
-Epoch 01595: early stopping
-loss :  [1740372224.0, 0.0]
-r2 :  0.7450622079351303
-RMSE :  41717.77041716147
+*cnn
+loss :  [41003442176.0, 0.0]
+r2 :  -5.006373559331667
+RMSE :  202493.06274622673
 '''
 
 
