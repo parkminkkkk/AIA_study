@@ -59,7 +59,8 @@ x_test = x_test.reshape(10000,28,28,1)
 #2. 모델구성 
 model = Sequential()
 model.add(Conv2D(64, (2,2), padding='same', input_shape=(28,28,1))) 
-model.add(MaxPooling2D()) #(2,2)중 가장 큰 값 뽑아서 반의 크기(14x14)로 재구성함 / Maxpooling안에 디폴트가 (2,2)로 중첩되지 않도록 설정되어있음 
+model.add(MaxPooling2D()) #(2,2)중 가장 큰 값 뽑아서 반의 크기(14x14)로 재구성함 
+#Maxpooling안에 디폴트가 (2,2)로 중첩되지 않도록 설정되어있음 #특성 어느정도 잡아주고 쓰는 것이 좋다
 model.add(Conv2D(filters=32, kernel_size=(2,2), padding='valid', activation='relu')) 
 model.add(Conv2D(32, 2))  #kernel_size=(2,2)/ (2,2)/ (2) 동일함 
 model.add(Flatten())

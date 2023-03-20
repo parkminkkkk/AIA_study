@@ -9,7 +9,6 @@ from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.metrics import r2_score, mean_squared_error, accuracy_score
 
 
-
 #1. 데이터 
 path = './_data/kaggle_house/'
 path_save = './_save/kaggle_house/'
@@ -24,7 +23,6 @@ print(test_csv) #[1459 rows x 79 columns] #SalePrice 제외
 #1-1결측치제거
 print(train_csv.isnull().sum())
 
-df = pd.read_csv(path + 'train.csv')
 # # LotFrontage 열의 결측치를 중앙값으로 대체
 # median = df['LotFrontage'].median()
 # df['LotFrontage'] = df['LotFrontage'].fillna(median)
@@ -33,7 +31,7 @@ df = pd.read_csv(path + 'train.csv')
 # df = df.fillna(0)
 
 # 특정 열의 결측치를 특정 값으로 대체
-df['column_name'] = df['column_name'].fillna(0)
+# train_csv['column_name'] = train_csv['column_name'].fillna(0)
 
 print(train_csv.isnull().sum())
 print(train_csv)

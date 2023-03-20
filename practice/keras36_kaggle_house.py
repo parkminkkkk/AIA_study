@@ -37,6 +37,8 @@ df['column_name'] = df['column_name'].fillna(0)
 
 print(train_csv.isnull().sum())
 print(train_csv)
+
+
 #1-2데이터분리(train_set)
 x = train_csv.drop(['SalePrice'], axis=1)
 print(x)
@@ -118,7 +120,7 @@ y_submit = model.predict(test_csv)
 # print(y_submit)
 
 submission = pd.read_csv(path + 'submission.csv', index_col=0)
-submission['count'] = y_submit
+submission['SalePrice'] = y_submit
 # print(submission)
 
 

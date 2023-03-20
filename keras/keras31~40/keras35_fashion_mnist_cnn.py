@@ -1,8 +1,8 @@
 from tensorflow.keras.datasets import fashion_mnist
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
+from tensorflow.python.keras.models import Sequential, Model
+from tensorflow.python.keras.layers import Dense, Input, Conv2D, Flatten, Dropout, MaxPooling2D
 from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.metrics import accuracy_score 
 import numpy as np

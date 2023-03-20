@@ -18,28 +18,25 @@ print(x_test.shape, y_test.shape) #(10000, 32, 32, 3) (10000, 1)
 print(np.unique(y_train,return_counts=True)) 
 #(array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], dtype=uint8), array([5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000],
 
+from tensorflow.keras.utils import to_categorical
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
 
 x_train = x_train / 255.
 x_test = x_test / 255.
 
+#reshape
+x_train = x_train.reshape(50000,32*32*3)
+x_test = x_test.reshape(10000,32*32*3)
+
 #2. 모델구성 
 model = Sequential()
-model.add(Conv2D(32, (3,3), padding='same', input_shape=(32,32,3))) 
-model.add(MaxPooling2D()) #(2,2)중 가장 큰 값 뽑아서 반의 크기(14x14)로 재구성함 / Maxpooling안에 디폴트가 (2,2)로 중첩되지 않도록 설정되어있음 
-model.add(Conv2D(filters=64, kernel_size=(3,3), padding='same', activation='relu')) 
-model.add(Conv2D(12, 3))  #kernel_size=(2,2)/ (2,2)/ (2) 동일함 
-model.add(MaxPooling2D())
-model.add(Conv2D(filters=25, kernel_size=(3,3), padding='valid', activation='relu')) 
-model.add(MaxPooling2D())
-model.add(Flatten())
-model.add(Dense(25, activation='relu'))
+# model.add(Dense(64, input_shape=(784,)))
+model.add(Dense(64, input_shape=(32*32*3,)))
 model.add(Dropout(0.5))
-model.add(Dense(18, activation='relu'))
-model.add(Dropout(0.3))
-model.add(Dense(10, activation='softmax')) 
-
+model.add(Dense(16, activation='relu'))
+model.add(Dense(16, activation='relu'))
+model.add(Dense(100, activation='softmax'))
 # model.summary()
 
 
@@ -51,7 +48,7 @@ es = EarlyStopping(monitor='val_acc', patience=10, mode='max',
                    restore_best_weights=True
                    )
 
-model.fit(x_train, y_train, epochs=3, batch_size=64, validation_split=0.2, 
+model.fit(x_train, y_train, epochs=100, batch_size=256, validation_split=0.2, 
           callbacks=(es))
 
 #4. 평가, 예측 
@@ -70,4 +67,9 @@ results: [1.0572093725204468, 0.679099977016449]
 acc: 0.6791
 results: [1.057596206665039, 0.7275999784469604]
 acc: 0.7276
+
+*dnn
+results: [1.552060604095459, 0.4401000142097473]
+acc: 0.4401
+
 '''

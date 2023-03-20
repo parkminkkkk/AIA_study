@@ -20,7 +20,7 @@ print(train_csv) #[1460 rows x 80 columns]
 test_csv = pd.read_csv(path + 'test.csv', index_col=0)
 print(test_csv) #[1459 rows x 79 columns] #SalePrice 제외
 
-
+'''
 #1-1 데이터 합쳐주기 (concat)
 df_train = train_csv.drop(['SalePrice'], axis=1)
 df = pd.concat((df_train,test_csv))
@@ -29,114 +29,23 @@ train_csv['SalePrice'] = np.log1p(train_csv["SalePrice"])  #로그 변환을 통
 price = train_csv['SalePrice']
 
 #결측치(null) 확인 및 처리
+1.
 null = (df.isna().sum() / len(df) * 100) #백분율로 계산 확인
 null = null.drop(null[null == 0].index).sort_values(ascending=False)
 print(null)
+2. 
+# check null 
+check_null = boston_df.isna().sum() / len(boston_df)
 
-# PoolQC : 수영장 품질, nan = 존재X (99%)
-df['PoolQC'] = df['PoolQC'].fillna('None')
- 
-# MiscFeature : 기타기능, nan = 존재X (96%)
-df['MiscFeature'] = df['MiscFeature'].fillna('None')
- 
-# Alley : 골목 접근 유형, nan = 골목 접근 금지
-df['Alley'] = df['Alley'].fillna('None')
- 
-# Fence : 울타리 여부, nan = 울타리 없음
-df['Fence'] = df['Fence'].fillna('None')
- 
-# FireplaceQu : 벽난로 품질, nan = 벽난로 없음
-df['FireplaceQu'] = df['FireplaceQu'].fillna('None')
- 
-# LotFrontage : 부동산과 연결된 거리의 직선 피트, nan = 연결된 거리 없음
-df['LotFrontage'] = df['LotFrontage'].fillna(0)
- 
-# GarageFinish : 차고 마감재 품질, nan = 차고 없음
-df['GarageFinish'] = df['GarageFinish'].fillna('None')
- 
-# GarageYrBlt : 차고 제작연도, nan = 차고 없음
-df['GarageYrBlt'] = df['GarageYrBlt'].fillna(0)
- 
-# GarageQual : 차고 품질, nan = 차고 없음
-df['GarageQual'] = df['GarageQual'].fillna('None')
- 
-# GarageCond : 차고 상태, nan = 차고 없음
-df['GarageCond'] = df['GarageCond'].fillna('None')
- 
-# GarageType : 차고 유형, nan = 차고 없음
-df['GarageType'] = df['GarageType'].fillna('None')
- 
-# 지하실 관련 카테고리형 데이터, nan = 지하실 없음
-# BsmtExposure, BsmtCond, BsmtQual, BsmtFinType1, BsmtFinType2
-for data in ['BsmtExposure', 'BsmtCond', 'BsmtQual', 'BsmtFinType1', 'BsmtFinType2']:
-    df[data] = df[data].fillna('None')
-    
-# 지하실 관련 수치형 데이터, nan = 지하실 없음
-# BsmtFullBath, BsmtHalfBath, BsmtFinSF1, BsmtFinSF2, BsmtUnfSF, TotalBsmtSF
-for data in ['BsmtFullBath', 'BsmtHalfBath', 'BsmtFinSF1', 'BsmtFinSF2', 'BsmtUnfSF', 'TotalBsmtSF']:
-    df[data] = df[data].fillna(0)
-    
-# MasVnrType : 석조베니어 형태, nan = 베니어 없음
-df['MasVnrType'] = df['MasVnrType'].fillna('None')
- 
-# MasVnrArea : 석조베니어 공간, nan = 베니어 없음
-df['MasVnrArea'] = df['MasVnrArea'].fillna(0)
- 
-# MSZoning : RL이 제일 흔한 값이므로 결측치 RL로 변경
-df['MSZoning'] = df['MSZoning'].fillna('RL')
- 
-# Utilities : AllPub이 가장 흔한 값이므로 결측치 AllPub으로 변경
-df['Utilities'] = df['Utilities'].fillna('AllPub')
- 
-# Functional : 홈 기능, 가장 일반적인 Typ로 변경
-df["Functional"] = df["Functional"].fillna("Typ")
- 
-# Exterior2nd :집 외부 덮개 (소재가 2개 이상인 경우), nan = 소재 1개만 사용
-df['Exterior2nd'] = df['Exterior2nd'].fillna('None')
-df['Exterior1st'] = df['Exterior1st'].fillna('VinylSd')
- 
-# Electrical : 전기시스템, 'SBrkr'이 제일 흔한 값이므로 변경
-df['Electrical'] = df['Electrical'].fillna('SBrkr')
- 
-# KitchenQual : 주방 품질, 'TA'가 가장 흔한 값이므로 변경
-df['KitchenQual'] = df['KitchenQual'].fillna('TA')
- 
-# GarageCars, GarageArea : 차고의 차 개수와 차고넓이, nan = 차고없음
-df['GarageCars'] = df['GarageCars'].fillna(0)
-df['GarageArea'] = df['GarageArea'].fillna(0)
- 
-# SaleType : 판매 유형, 가장 흔한 값인 'WD'로 변경
-df['SaleType'] = df['SaleType'].fillna('WD')
+columns of null ratio >= 0.5
+check_null[check_null >= 0.5]
+remove columns of null ratio >= 0.5
+remove_cols = check_null[check_null >= 0.5].keys()
+boston_df = boston_df.drop(remove_cols, axis=1)
 
-# astype()을 통해 형 변환 시켜준다.
-# 판매월과 판매연도가 수치형으로 되어있어 카테고리형(str)로 타입 변경
-df['YrSold'] = df['YrSold'].astype(str)
-df['MoSold'] = df['MoSold'].astype(str)
- 
-# 주거유형이 수치형으로 되어있어 카테고리형으로 타입변경
-df['MSSubClass'] = df['MSSubClass'].astype(str)
-# 수치형데이터와 범주형데이터 분리
-obj_df = df.select_dtypes(include='object')
-num_df = df.select_dtypes(exclude='object')
+boston_df.head()
+'''
 
-# 등급이 나누어지거나, 순서가 없는 경우 모델에 잘못 반영될 수 있기 때문에 등급, 여부 칼럼만 포함
- 
-label_obj_list = ['Street', 'Alley','ExterQual', 'ExterCond','BsmtCond','HeatingQC', 'CentralAir',
-       'KitchenQual', 'FireplaceQu','GarageFinish', 'GarageQual', 'GarageCond', 'PavedDrive', 'PoolQC',
-       'Fence', 'MoSold', 'YrSold','SaleCondition']
-       
-# 카테고리형 칼럼을 라벨인코딩 (수치화, 문자를 0부터 시작하는 정수형 숫자로 바꾸어줌)
-from sklearn.preprocessing import LabelEncoder
- 
-# encoder = LabelEncoder()
- 
-for obj in label_obj_list:
-    encoder = LabelEncoder()
-    encoder.fit(list(df[obj].values))
-    df[obj] = encoder.transform(list(df[obj].values))
-    
-df = pd.get_dummies(df)
-print(df.shape) #(2919, 264)
 
 #1-2데이터분리(train_set)
 x = train_csv.drop(['SalePrice'], axis=1)
@@ -219,7 +128,7 @@ y_submit = model.predict(test_csv)
 # print(y_submit)
 
 submission = pd.read_csv(path + 'submission.csv', index_col=0)
-submission['count'] = y_submit
+submission['SalePrice'] = y_submit
 # print(submission)
 
 
