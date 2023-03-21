@@ -19,4 +19,8 @@ from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 from sklearn.metrics import r2_score, mean_squared_error, accuracy_score
 
 
+#시간저장
+import datetime 
+date = datetime.datetime.now()  
+date = date.strftime("%m%d_%H%M") 
 

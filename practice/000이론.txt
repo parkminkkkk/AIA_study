@@ -18,3 +18,6 @@ ctrl+space : 단축어확인
 
 shift+Tab : 드래그한 줄 앞으로 전체 땡기기
 Tab : 뒤로 밀기 
+
+<cmd창>
+cls : clean 새창
