@@ -30,15 +30,15 @@ for i in train_csv.columns:
 print(len(train_csv.columns))
 print(train_csv.info())
 train_csv=train_csv.dropna()
-print(train_csv.shape)
+print(train_csv.shape) #(1121, 80)
 
 train_csv = train_csv.fillna(train_csv.median())
 test_csv = test_csv.fillna(test_csv.median())
 
 # 1.5 x, y 분리
-x = train_csv.drop(['SalePrice','LotFrontage'], axis=1)
+x = train_csv.drop(['SalePrice'], axis=1)
 y = train_csv['SalePrice']
-test_csv = test_csv.drop(['LotFrontage'], axis=1)
+# test_csv = test_csv.drop(['LotFrontage'], axis=1)
 
 print(x.shape)
 
@@ -46,27 +46,20 @@ print(x.shape)
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.8, random_state=640874, shuffle=True)
 
-# # 1.7 Scaler
-# scaler = StandardScaler()
-# x_train = scaler.fit_transform(x_train)
-# x_test = scaler.transform(x_test)
-# test_csv = scaler.transform(test_csv)
+# 1.7 Scaler
+scaler = StandardScaler()
+x_train = scaler.fit_transform(x_train)
+x_test = scaler.transform(x_test)
+test_csv = scaler.transform(test_csv)
 
-# scaler = MinMaxScaler()
-# x_train = scaler.fit_transform(x_train)
-# x_test = scaler.transform(x_test)
-# test_csv = scaler.transform(test_csv)
+scaler = MinMaxScaler()
+x_train = scaler.fit_transform(x_train)
+x_test = scaler.transform(x_test)
+test_csv = scaler.transform(test_csv)
 
 # 2. 모델구성
-# model = Sequential()
-# model.add(Dense(32, input_dim=8))
-# model.add(Dense(64))
-# model.add(Dense(64))
-# model.add(Dense(32))
-# model.add(Dense(8))
-# model.add(Dense(1))
 
-input1 = Input(shape=(78,))
+input1 = Input(shape=(79,))
 dense1 = Dense(128, activation='relu')(input1) 
 drop1 = Dropout(0.4)(dense1)
 dense2 = Dense(256, activation='relu')(drop1)  
@@ -119,6 +112,12 @@ submission.to_csv(path_save + 'kaggle_house_' + date + '.csv')
 loss :  [1644365824.0, 0.0]
 r2 :  0.7591257125073961
 RMSE :  40550.7789556213
+
+loss :  [1469541504.0, 0.0]
+r2 :  0.7847347402527826
+RMSE :  38334.60153736239
+
+
 '''
 
 

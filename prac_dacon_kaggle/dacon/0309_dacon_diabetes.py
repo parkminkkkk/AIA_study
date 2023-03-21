@@ -105,6 +105,7 @@ plt.ylabel('loss, val_loss')
 plt.legend(('로스', '발_로스'))
 plt.grid()
 plt.show()
+
 '''
 1. 0.65점
 acc:0.70/seed: 640784 
