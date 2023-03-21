@@ -16,24 +16,29 @@ print(x.shape) #(5, 5, 1)
 
 
 #2. 모델구성 
-model = Sequential()
-model.add(SimpleRNN(10, input_shape=(5,1)))
+model = Sequential()                           
+model.add(SimpleRNN(10, input_shape=(5,1)))  #[batch, / timesteps, feature]    
 model.add(Dense(7, activation='relu'))
 model.add(Dense(1)) 
+
+#rnn : 3차원 데이터 입력해서 2차원으로 출력함 
+#따라서, rnn은 layer를 쌓지 못함 3차원 받아서 2차원 출력하므로.. => 다른 방법
 
 model.summary()
 
 '''
 Total params = recurrent_weights + input_weights + biases
+ #  params   = units * (featuer+bias+units) 
 
-= (num_units*num_units)+(num_features*num_units) + (1*num_units)
-
+= (num_units*num_units)+(num_features*num_units) + (bias(1)*num_units)
+      10*10            +     10*1                +     10
 = (num_features + num_units)* num_units + num_units
 
 =>즉, ( unit 개수 * unit 개수 ) + ( input_dim(feature) 수 * unit 개수 ) + ( 1 * unit 개수)
-----------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
 RNN 레이어의 파라미터 수: (input_dim * hidden_dim) + (hidden_dim * hidden_dim) + hidden_dim
-----------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
+
 Model: "sequential"
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #
