@@ -1,15 +1,8 @@
-# Rnn의 단점 -> LSTM사용(성능 더 좋음)
-# 깊어진만큼 Gradient Vanishing(기울기소실) 문제/  Exploding(폭발) 문제가 발생 가능
-# 길어진 데이터를 처리하면서 Input data의 초기 타임 스텝을 점점 잊어버림 
-
-#LSTM
-#연산량 4배 많음-> 속도 느림 
-#히든부분만 다르고, input/output부분 똑같음 
-#'timesteps를 어떻게 자를 것 인가' 가장 중요
+#RNN,LSTM, GRU 사용법은 동일 
 
 import numpy as np
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, SimpleRNN, LSTM, Dropout
+from tensorflow.keras.layers import Dense, SimpleRNN, LSTM, GRU, Dropout
 
 #1. 데이터 
 datasets = np.array([1,2,3,4,5,6,7,8,9,10]) #시계열데이터 : y없음 -> 만들어야 함 
@@ -28,7 +21,7 @@ print(x.shape) #(7, 3, 1)
 
 #2. 모델구성 
 model = Sequential()
-model.add(LSTM(16, input_shape=(3,1))) #[batch, / timesteps, feature]   
+model.add(GRU(16, input_shape=(3,1))) #[batch, / timesteps, feature]   
 model.add(Dense(16, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(16))
@@ -62,5 +55,9 @@ loss: 0.015219539403915405
 loss: 0.00018726162670645863
 [8,9,10]의 결과: [[10.818505]]
 #성능은 통상적으로 LSTM이 더 좋음 
+
+*GRU
+loss: 0.00046220290823839605
+[8,9,10]의 결과: [[10.520404]]
 '''
 

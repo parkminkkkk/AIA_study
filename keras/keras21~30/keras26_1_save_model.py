@@ -45,7 +45,7 @@ input_1 (InputLayer)   [(None, 13)]  0 #함수형 모델에는 inputlayer있음
 '''
 
 #모델 저장
-model.save('./_save/MCP/keras26_1_save_model.h5')
+model.save('./_save/MCP/keras26_1_save_model.h5') #모델 구성 다음에 save
 
 
 

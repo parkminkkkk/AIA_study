@@ -84,7 +84,7 @@ x_test = x_test.reshape(161, 75,1)
 
 #2. 모델구성
 model = Sequential()
-model.add(LSTM(350, input_shape=(12,1)))      # [batch, timesteps(몇개씩 자르는지), feature=1(input_dim)]
+model.add(LSTM(350, input_shape=(75,1)))      # [batch, timesteps(몇개씩 자르는지), feature=1(input_dim)]
 model.add(Dense(128, activation='swish'))
 model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='swish'))
@@ -147,3 +147,8 @@ from sklearn.metrics import r2_score
 r2 = r2_score(y_test, y_predict)
 print('r2스코어 :', r2)
 print('걸린시간 :', end_time)
+
+'''
+loss : 176075.34375
+r2스코어 : -5.14350858617939
+'''

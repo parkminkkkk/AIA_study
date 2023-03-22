@@ -21,6 +21,8 @@ params = 4 * ((size_of_input + 1) * size_of_output + size_of_output^2)
 Param = 4*((input_shape_size +1) * ouput_node + output_node^2)
       = 4*[units(units+features) + 1(bias/units)]  
       = 4*[(10*10) + (10*1) + (10)]
+      
+#1개의 cellstate, 3개의 gate(forget,input,output)
 -----------------------------------------------------------------
 Model: "sequential"
 _________________________________________________________________
