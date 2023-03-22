@@ -54,8 +54,8 @@ model.fit(x, y, epochs=1000, callbacks=(es))
 
 #4. 평가, 예측 
 loss = model.evaluate(x, y)
-x_predict = np.array(x_predict).reshape(7,4,1) #[[[8],[9],[10]]] #스칼라3개, 벡터1개 =1차원 -> 3차원으로 바꿔줘야함(데이터 1개, input_shape맞춰줌(3,1))
-print(x_predict.shape) #(1, 4, 1)
+x_predict = np.array(x_predict)
+print(x_predict.shape) 
 
 result = model.predict(x_predict)
 print('loss:', loss)
