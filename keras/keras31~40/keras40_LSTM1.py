@@ -1,7 +1,9 @@
-# Rnn의 단점 -> LSTM사용
+# Rnn의 단점 -> LSTM사용(성능 더 좋음)
 # 깊어진만큼 Gradient Vanishing(기울기소실) 문제/  Exploding(폭발) 문제가 발생 가능
 # 길어진 데이터를 처리하면서 Input data의 초기 타임 스텝을 점점 잊어버림 
 
+#LSTM
+#연산량 4배 많음-> 속도 느림 
 #히든부분만 다르고, input/output부분 똑같음 
 #'timesteps를 어떻게 자를 것 인가' 가장 중요
 
