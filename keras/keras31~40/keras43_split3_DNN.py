@@ -32,15 +32,11 @@ print(y)
 print(x_predict)
 print(x.shape, y.shape, x_predict.shape) #(96, 4) (96, 1) (7, 4)
 
-# x= x.reshape(96,4,1)
-# x_predict= x_predict.reshape(7,4,1) 
-# print(x.shape, x_predict.shape)   #(96, 4, 1) (7, 4, 1)
-
 
 #[실습]reshape하지 않고 dnn모델 구성
 #2. 모델구성 
 model = Sequential()
-model.add(LSTM(16, input_shape=(4,1), activation='linear')) #[batch, / timesteps, feature]   
+model.add(Dense(16, input_shape=(4,), activation='linear'))
 model.add(Dense(16, activation='relu'))
 model.add(Dense(8))
 model.add(Dense(8, activation='relu'))
@@ -49,7 +45,7 @@ model.add(Dense(1))
 #3. 컴파일, 훈련 
 model.compile(loss='mse', optimizer='adam')
 
-es = EarlyStopping(monitor='acc', patience=10, mode='max', 
+es = EarlyStopping(monitor='loss', patience=10, mode='auto', 
                    verbose=1, 
                    restore_best_weights=True
                    )
@@ -66,6 +62,7 @@ print('loss:', loss)
 print('[100:107]의 결과:', result)
 
 '''
+1.LSTM
 loss: 0.00018594646826386452
 [100:107]의 결과: [[100.045456]
  [101.05736 ]
@@ -74,5 +71,15 @@ loss: 0.00018594646826386452
  [104.099785]
  [105.116295]
  [106.13402 ]]
+
+2.DNN
+ loss: 0.00012747147411573678
+[100:107]의 결과: [[100.0126  ]
+ [101.01677 ]
+ [102.02153 ]
+ [103.026955]
+ [104.03302 ]
+ [105.03976 ]
+ [106.04723 ]]
 
 '''
