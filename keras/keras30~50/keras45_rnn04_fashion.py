@@ -2,7 +2,7 @@ from tensorflow.keras.datasets import fashion_mnist
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 from tensorflow.python.keras.models import Sequential, Model
-from tensorflow.python.keras.layers import Dense, Input, Conv2D, Flatten, Dropout, MaxPooling2D
+from tensorflow.python.keras.layers import Dense, Input, LSTM, Conv2D, Flatten, Dropout, MaxPooling2D
 from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.metrics import accuracy_score 
 import numpy as np
@@ -33,20 +33,18 @@ scaler.fit(x_train)
 x_train = scaler.transform(x_train) 
 x_test = scaler.transform(x_test)
 
-x_train = x_train.reshape(60000,28,28,1)
-x_test = x_test.reshape(10000,28,28,1)
+x_train = x_train.reshape(60000,28,28)
+x_test = x_test.reshape(10000,28,28)
+
 
 #2. 모델구성 
-input1 = Input(shape=(28,28,1))
-conv1 = Conv2D(8, (2,2), padding='same')(input1)
-mp1 = MaxPooling2D()(conv1)
-conv2 = Conv2D(6, (2,2), padding='valid')(mp1)
-flat1 = Flatten()(conv2)
-dense1 = Dense(2, activation='relu')(flat1)
-dense2 = Dense(2)(dense1)
-output1 = Dense(10, activation='softmax')(dense2)
-model = Model(inputs=input1, outputs=output1)
-model.summary()
+model = Sequential()
+model.add(LSTM(16, input_shape=(28,28), activation='linear')) #[batch, / timesteps, feature]   
+model.add(Dense(16, activation='relu'))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(16))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(10, activation='softmax')) 
 
 
 #3. 컴파일, 훈련 
@@ -72,3 +70,8 @@ y_test = np.argmax(y_test, axis=1)
 
 acc = accuracy_score(y_test, y_pred)
 print('acc:', acc)
+
+'''
+loss: 0.41247764229774475
+acc: 0.8489000201225281
+'''

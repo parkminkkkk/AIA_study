@@ -11,21 +11,6 @@ import numpy as np
 print(x_train.shape, y_train.shape) #(60000, 28, 28) (60000,) 
 # print(x_test.shape, y_test.shape) # (10000, 28, 28) (10000,)
 
-
-#####[실습]#####
-'''
-x_train = x_train.reshape(60000,28,28,1)
-x_test = x_test.reshape(10000,28,28,1)
-print(x_train.shape, y_train.shape) #(60000, 28, 28, 1) (60000,) 
-# print(x_test.shape, y_test.shape) # (10000, 28, 28) (10000,)
-#reshape의 주의점 
-#중요**데이터의 구조만 바꾸는 것이지, 안의 데이터의 값이나 순서는 바뀌지 않는다**
-#(60000,28,14,2)로도 가능 / 이또한, 데이터의 값과 순서는 바꾸지 않음 
-#(60000,28*28) (60000,784) 2차원으로 바꿔줌(Dense이용할때) / 데이터와 순서 바꾸지 않음 
-#구조(공간,shpae)의 크기는 같기만 하면 됨!! => 28,28,1을 건들일 수 있음(곱하기,나누기했을때 전체값과 동일해야한다)
-#cf)transform : 행과 열을 바꿔줌 -> 전혀 다른 값 나옴 
-'''
-
 print(np.unique(y_train,return_counts=True)) 
 #np.unique #array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
@@ -47,8 +32,8 @@ scaler.fit(x_train)
 x_train = scaler.transform(x_train) 
 x_test = scaler.transform(x_test)
 
-x_train = x_train.reshape(60000,28,28,1)
-x_test = x_test.reshape(10000,28,28,1)
+x_train = x_train.reshape(60000,28,28)
+x_test = x_test.reshape(10000,28,28)
 
 #2. 모델구성 
 model = Sequential()
@@ -57,15 +42,15 @@ model.add(Dense(16, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(16))
 model.add(Dense(8, activation='relu'))
-model.add(Dense(1)) 
+model.add(Dense(10, activation='softmax')) 
 
 # 함수형
-# input1 = Input(shape=(13,1))
+# input1 = Input(shape=(28,28))
 # dense1 = LSTM(32, activation='linear')(input1)
 # dense2 = Dense(16, activation='relu')(dense1)
 # dense3 = Dense(8, activation='relu')(dense2)
 # dense4 = Dense(2)(dense3)
-# output1 = Dense(1)(dense4)
+# output1 = Dense(10, activation='softmax')(dense4)
 # model = Model(inputs=input1, outputs=output1)
 
 
@@ -91,3 +76,9 @@ y_test = np.argmax(y_test, axis=1)
 
 acc = accuracy_score(y_test, y_pred)
 print('acc:', acc)
+
+'''
+*LSTM
+results: [0.10342352092266083, 0.9682999849319458]
+acc: 0.9683
+'''

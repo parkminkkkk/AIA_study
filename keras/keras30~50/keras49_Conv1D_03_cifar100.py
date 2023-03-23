@@ -2,7 +2,7 @@ from tensorflow.keras.datasets import cifar100
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
+from tensorflow.python.keras.layers import Dense, LSTM, Conv1D, Flatten, Dropout, MaxPooling2D
 from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.metrics import accuracy_score 
 import numpy as np
@@ -20,23 +20,20 @@ y_test = to_categorical(y_test)
 x_train = x_train / 255.0
 x_test = x_test / 255.0
 
+#reshape
+x_train = x_train.reshape(-1,32*3,32)
+x_test = x_test.reshape(-1,32*3,32)
+
 #2. 모델구성 
 model = Sequential()
-model.add(Conv2D(32, (3,3), padding='same', input_shape=(32,32,3))) 
-model.add(MaxPooling2D()) 
-model.add(Conv2D(filters=32, kernel_size=(3,3), padding='same', activation='relu')) 
-model.add(Conv2D(128, 3))  
-model.add(MaxPooling2D())
-model.add(Conv2D(filters=64, kernel_size=(3,3), padding='valid', activation='relu')) 
-model.add(MaxPooling2D())
+model.add(Conv1D(16, (2),padding='same', input_shape=(32*3,32))) 
+model.add(Conv1D(filters=5, kernel_size=(2), padding='valid', activation='relu')) 
 model.add(Flatten())
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(128, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(2**4, activation='relu'))
 model.add(Dropout(0.3))
-model.add(Dense(100, activation='softmax'))  #outputlayer=unique개수
-
-# model.summary()
+model.add(Dense(2**3, activation='relu'))
+model.add(Dense(100, activation='softmax'))
 
 
 #3. 컴파일, 훈련 
@@ -45,12 +42,12 @@ start_time = time.time()
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
-es = EarlyStopping(monitor='val_acc', patience=10, mode='max', 
+es = EarlyStopping(monitor='val_acc', patience=20, mode='max', 
                    verbose=1, 
                    restore_best_weights=True
                    )
 
-model.fit(x_train, y_train, epochs=10, batch_size=128, validation_split=0.2, 
+model.fit(x_train, y_train, epochs=300, batch_size=128, validation_split=0.2, 
           callbacks=[es])
 
 end_time = time.time()
@@ -75,6 +72,19 @@ print('time :', round(end_time-start_time, 2))
 # plt.show()
 
 '''
+results: [2.4174182415008545, 0.39879998564720154]
+acc: 0.3988
+
+*LSTM
+results: [4.594874382019043, 0.014000000432133675]
+acc: 0.014
+
+*Conv1D
+results: [3.664857864379883, 0.1412000060081482]
+acc: 0.1412
+time : 304.31
+
+*Conv2D
 results: [2.4174182415008545, 0.39879998564720154]
 acc: 0.3988
 '''
