@@ -21,3 +21,5 @@ Tab : 뒤로 밀기
 
 <cmd창>
 cls : clean 새창
+
+###BatchNormalization###

@@ -98,7 +98,10 @@ import datetime
 date = datetime.datetime.now()  
 date = date.strftime("%m%d_%H%M")  
 
-submit_csv.to_csv(path_save + 'submit_telephone_' + date + '.csv') 
+submit_csv.to_csv(path_save + 'submit_telephone_DTC_' + date + '.csv') 
 
 
 
+'''
+f1 : 0.7143412305
+'''
