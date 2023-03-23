@@ -62,7 +62,7 @@ x_test= x_test.reshape(-1,8,8,1)
 # model.add(Dense(4, activation='relu'))
 # model.add(Dense(8, activation='relu'))
 # model.add(Dense(4, activation='relu'))
-# model.add(Dense(10, activation='softmax')) #3개의 데이터를 뽑으니까 *label의 개수만큼 노드를 잡는다!! 
+# model.add(Dense(10, activation='softmax')) 
 
 model = Sequential()
 model.add(Conv2D(8,(2,1),

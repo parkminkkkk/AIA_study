@@ -4,7 +4,6 @@ from tensorflow.keras.layers import Dense, SimpleRNN, LSTM, Dropout
 from tensorflow.python.keras.callbacks import EarlyStopping
 
 
-
 dataset = np.array(range(1, 101))   # 1~100
 timesteps = 5                       # 5개씩 자르기 
 x_predict = np.array(range(96,106)) # 100~106 예상값 [100:107] / # slice해주기
@@ -31,9 +30,9 @@ print(y)
 print(x_predict)
 print(x.shape, y.shape, x_predict.shape) #(96, 4) (96, 1) (7, 4)
 
+#reshape
 x= x.reshape(96,4,1)
 x_predict= x_predict.reshape(7,4,1) 
-
 print(x.shape, x_predict.shape)   #(96, 4, 1) (7, 4, 1)
 
 '''
@@ -60,7 +59,7 @@ x_predict = split_x(x_predict,bb)
 
 #2. 모델구성 
 model = Sequential()
-model.add(LSTM(16, input_shape=(4,1), activation='linear')) #[batch, / timesteps, feature]   
+model.add(LSTM(16, input_shape=(4,1), activation='linear')) #[batch, / timesteps, feature]   #[batch, input_length, input_dim]
 model.add(Dense(16, activation='relu'))
 model.add(Dense(8))
 model.add(Dense(8, activation='relu'))

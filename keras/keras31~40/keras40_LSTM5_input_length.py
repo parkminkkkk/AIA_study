@@ -7,7 +7,7 @@ from tensorflow.keras.layers import Dense, SimpleRNN, Dropout, LSTM
 model = Sequential()                        
 # model.add(LSTM(10, input_shape=(5,1)))          #[batch, / timesteps, feature]
 model.add(LSTM(10, input_length=5, input_dim=1))  #[batch, input_length, input_dim]
-#embedding할 때 input_length/dim분리해야 하는 경우 생길 수 있다/ input_lenth만 명시하는 경우도 있음(feature영향없이 timesteps만 사용할 때) 
+#embedding할 때 input_length/dim분리해야 하는 경우 생길 수 있다/ 자연어처리할 때, input_lenth만 명시하는 경우도 있음(feature영향없이 timesteps만 사용할 때) 
 # model.add(LSTM(10), input_dim=1, input_length=5) #가능은 하나 가독성 떨어짐 
  
 model.add(Dense(7, activation='relu'))

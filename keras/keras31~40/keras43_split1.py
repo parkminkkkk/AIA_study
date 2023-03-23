@@ -1,3 +1,5 @@
+#슬라이싱 
+
 import numpy as np
 
 dataset = np.array(range(1, 11)) #1~10
@@ -24,7 +26,7 @@ print(bbb.shape)
 #(6, 5)
 
 
-##########데이터 x,y####################
+############데이터 x,y##################
 x = bbb[:, :4] # x = bbb[:, :-1]
 y = bbb[:, -1:]
 print(x) 

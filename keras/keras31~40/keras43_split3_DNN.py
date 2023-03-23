@@ -54,11 +54,9 @@ model.fit(x, y, epochs=1000, callbacks=(es))
 
 #4. 평가, 예측 
 loss = model.evaluate(x, y)
-x_predict = np.array(x_predict)
-print(x_predict.shape) 
+print('loss:', loss)
 
 result = model.predict(x_predict)
-print('loss:', loss)
 print('[100:107]의 결과:', result)
 
 '''

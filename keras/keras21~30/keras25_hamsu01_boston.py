@@ -32,26 +32,12 @@ print(np.min(x_test), np.max(x_test))
 
 
 #2. 모델구성
-'''
+
 #함수형과 시퀀스의 차이# 
-model = Sequential()
-model.add(Dense(30, input_shape=(13,)))  #스칼라13개, 벡터1개 : 열의 개수를 벡터 형식으로 표시 #열이 13개 있다는 뜻 
-model.add(Dense(20))
-model.add(Dense(10))
-model.add(Dense(1))
-'''
-'''
-#함수형모델 
-input1 = Input(shape=(13,)) 
-dense1 = Dense(30)(input1)      #dense1은 input1에 달라붙을거야 
-dense2 = Dense(20)(dense1)      #dense2는 dense1에 달라붙을거야                                                               
-dense3 = Dense(10)(dense2)      #전의 layer가 꽁다리에 달라붙음 
-output1 = Dense(1)(dense3)
-model = Model(inputs=input1, outputs=output1)  #시작과 끝을 명시해줘야 함 (시작, 끝) #함수명 끝에 명시 
-'''
+
 
 model = Sequential()
-model.add(Dense(30, input_shape=(13, ), name='S1'))
+model.add(Dense(30, input_shape=(13, ), name='S1'))       #스칼라13개, 벡터1개 : 열의 개수를 벡터 형식으로 표시 #열이 13개 있다는 뜻 
 model.add(Dense(20, name='S2'))
 model.add(Dense(10, name='S3'))
 model.add(Dense(1, name='S4'))
@@ -61,13 +47,14 @@ Model: "sequential"
 '''
 
 input1 = Input(shape=(13,), name='h1')                     #name='aaa' : 이름지어줄 수 있음
-dense1 = Dense(30, name='h2')(input1)                      
-dense2 = Dense(20, name='h3', activation='relu')(dense1)                                                         
-dense3 = Dense(10, name='h4',activation='relu')(dense2)     
+dense1 = Dense(30, name='h2')(input1)                      #dense1은 input1에 달라붙을거야    
+dense2 = Dense(20, name='h3', activation='relu')(dense1)   #dense2는 dense1에 달라붙을거야                                                       
+dense3 = Dense(10, name='h4',activation='relu')(dense2)    #전의 layer가 꽁다리에 달라붙음 
 output1 = Dense(1, name='h5',)(dense3)
-model = Model(inputs=input1, outputs=output1)              
+model = Model(inputs=input1, outputs=output1)              #시작과 끝을 명시해줘야 함 (시작, 끝) #함수명 끝에 명시 
 
 model.summary()
+
 '''
 Model: "model"
 input_1 (InputLayer)   [(None, 13)]  0 #함수형 모델에는 inputlayer있음 

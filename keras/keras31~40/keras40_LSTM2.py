@@ -38,10 +38,10 @@ result = model.predict(x_predict)
 print('loss:', loss)
 print('[7,8,9,10]의 결과:', result)
 
+
 '''
 #[[11]]만들기 
 loss: 8.702943887328729e-05
 [7,8,9,10]의 결과: [[10.541617]]
-
 '''
 
