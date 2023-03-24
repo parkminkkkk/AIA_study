@@ -114,7 +114,8 @@ loss = model.evaluate(x_test1, y_test)
 print('loss : ', loss)
 
 predict = model.predict(x_pred1)
-print('y_pred:', predict)
+print('predict:', predict)
+print(y_pred)
 
 #'mse'->rmse로 변경
 import numpy as np
