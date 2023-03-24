@@ -19,7 +19,7 @@ print(x.shape) #(7, 3, 1)
 
 #2. 모델구성 
 model = Sequential()
-# model.add(Bidirectional(SimpleRNN(10), input_shape=(3,1))) #랩핑모양 주의) 첫번째 파라미터에 모델/ 두번째 파라미터에 input_shape
+# model.add(Bidirectional(SimpleRNN(10), input_shape=(3,1)))  #(랩핑모양 주의) 첫번째 파라미터에 모델/ 두번째 파라미터에 input_shape
 model.add(Bidirectional(SimpleRNN(10, return_sequences=True), input_shape=(3,1))) 
 model.add(LSTM(10, return_sequences=True))
 model.add(Bidirectional(GRU(10)))
