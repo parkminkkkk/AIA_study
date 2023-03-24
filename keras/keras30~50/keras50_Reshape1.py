@@ -42,7 +42,6 @@ model.add(LSTM(784))                        #(None, 100)
 model.add(Reshape(target_shape=(28,28,1)))  #2차원-> 3차원 
 model.add(Conv2D(32, (3,3), padding='same'))
 model.add(Flatten())
-# model.add(Reshape(target_shape=(28*28)))    #Flatten과 동일한 Reshape의 사용** Flatten에서 1개는 사용 못함 
 model.add(Dense(10, activation='softmax'))
 
 model.summary()
