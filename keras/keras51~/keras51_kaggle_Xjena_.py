@@ -15,7 +15,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.models import Sequential, Model
 from tensorflow.python.keras.layers import Dense, Input,LSTM, Conv2D, Flatten, Dropout, MaxPooling2D
-from sklearn.metrics import mean_absolute_error, mean_squared_error
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from tensorflow.python.keras.callbacks import EarlyStopping
 
 
@@ -64,31 +64,19 @@ def split_X(dataset, timesteps):
         aaa.append(subset)                         
     return np.array(aaa)                          
 
-# def split_Y(dataset, timesteps):                   
-#     aaa = []                                      
-#     for i in range(len(dataset) - timesteps): 
-#         subset = dataset[i : (i + timesteps)]     
-#         aaa.append(subset)                         
-#     return np.array(aaa) 
+x_trains=split_X(x_train,timesteps)
+x_tests=split_X(x_test,timesteps)
+x_preds=split_X(x_pred,timesteps)
 
+print(x_trains.shape) #(294375, 10, 13)
+print(x_tests.shape)  #(84521, 10, 13)
+print(x_preds.shape)  #(41625, 10, 13)
 
-x_train1=split_X(x_train,timesteps)
-x_test1=split_X(x_test,timesteps)
-x_pred1=split_X(x_pred,timesteps)
+y_trains = y_train[timesteps:]
+y_tests = y_test[timesteps:]
+y_preds = y_pred[timesteps:]
 
-# y_train1=split_Y(y_train,timesteps)
-# y_test1=split_Y(y_test,timesteps)
-# y_pred1=split_Y(y_pred,timesteps)
-
-print(x_train1.shape) #(294375, 10, 13)
-print(x_test1.shape)  #(84521, 10, 13)
-print(x_pred1.shape)  #(41625, 10, 13)
-
-y_train = y_train[timesteps:]
-y_test = y_test[timesteps:]
-y_pred = y_pred[timesteps:]
-
-print(y_train.shape) #(294375,)
+print(y_trains.shape) #(294375,)
 
 #2. 모델구성 
 model = Sequential()
@@ -106,26 +94,33 @@ es = EarlyStopping(monitor='loss', patience=10, mode='auto',
                    restore_best_weights=True
                    )
 
-model.fit(x_train1, y_train, epochs=1, callbacks=(es))
+model.fit(x_trains, y_trains, epochs=100, callbacks=(es))
 
 #4. 평가, 예측 
 
-loss = model.evaluate(x_test1, y_test)
+loss = model.evaluate(x_tests, y_tests)
 print('loss : ', loss)
 
-predict = model.predict(x_pred1)
-print('predict:', predict)
-print(y_pred)
+y_predict = model.predict(x_preds)
+# print('predict:', predict)
+r2 = r2_score(y_preds, y_predict)
+print('r2 : ', r2)
+
 
 #'mse'->rmse로 변경
-import numpy as np
-def RMSE(predict, y_pred): 
-    return np.sqrt(mean_squared_error(predict, y_pred))
-rmse = RMSE(predict,y_pred)
-print("RMSE : ", rmse)
+def RMSE(x, y): 
+    return np.sqrt(mean_squared_error(x,y))
+
+rmse = RMSE(y_preds, y_predict)
+print("rmse : ", rmse)
 
 '''
 loss :  [2.0559871196746826, 1.0672963857650757]
-y_pred: [[ 4.2016144]
+#y_predict: [[ 4.2016144]... [-4.984675 ]]
 RMSE :  1.3203625337053624
+
+loss :  [2.422412395477295, 1.0773078203201294]
+#y_predict: [[ 3.7247777]...[-3.1754308]]
+RMSE :  1.400186049641971
 '''
+
