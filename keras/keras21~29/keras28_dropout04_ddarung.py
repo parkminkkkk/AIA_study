@@ -13,8 +13,8 @@ from sklearn.metrics import r2_score, mean_squared_error
 import pandas as pd
 
 #1. 데이터 
-path = './_data/ddarung/'
-path_save = './_save/ddarung/'
+path = './_data/dacon_ddarung/'
+path_save = './_save/dacon_ddarung/'
 
 train_csv = pd.read_csv(path + 'train.csv', index_col=0)
 print(train_csv) #(1459, 10)
