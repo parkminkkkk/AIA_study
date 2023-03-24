@@ -56,9 +56,9 @@ test_csv = scaler.transform(test_csv)
 model = DecisionTreeClassifier(random_state=42)
 
 # 탐색할 파라미터 범위 지정
-param_grid = {'max_depth': [1,10,15,50,100],
-    'min_samples_split': [2,320,40,50,100],
-    'min_samples_leaf': [1,5,10,100,1000,200,500],
+param_grid = {'max_depth': [1,2,3],
+    'min_samples_split': [2,4,6],
+    'min_samples_leaf': [1,2,3,4,5],
     'max_features': [None]}
 
 # 그리드 서치 객체 생성

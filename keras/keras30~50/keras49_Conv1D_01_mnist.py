@@ -37,8 +37,8 @@ x_test = x_test.reshape(10000,28,28)
 
 #2. 모델구성 
 model = Sequential()
-model.add(Conv1D(16, (2),padding='same', input_shape=(28,28))) 
-model.add(Conv1D(filters=5, kernel_size=(2), padding='valid', activation='relu')) 
+model.add(Conv1D(16, (2),padding='causal', input_shape=(28,28))) 
+model.add(Conv1D(filters=5, kernel_size=(2), padding='causal', activation='relu')) 
 model.add(Flatten())
 model.add(Dense(8, activation='relu'))
 model.add(Dense(2**4, activation='relu'))
