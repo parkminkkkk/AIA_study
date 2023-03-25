@@ -1,6 +1,6 @@
 '''
 #데이터 형식 바꾸는 방법 2가지(pd->np)
-print(dataset['T (datasetegC)'])             #데이터 형태 : pandas
+print(dataset['T (datasetegC)'])             #데이터 형태 : pandatasetas
 print(dataset['T (datasetegC)'].values)      #데이터 형태 : numpy
 print(dataset['T (datasetegC)'].to_numpy())  #데이터 형태 : numpy
 '''
@@ -17,7 +17,8 @@ from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Input,LSTM, Conv2D, Flatten, Dropout, MaxPooling2D
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from tensorflow.keras.callbacks import EarlyStopping
-
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 
 #1. 데이터 
 path = './_data/kaggle_jena/'
@@ -55,6 +56,12 @@ print(x_train.shape, y_train.shape) #(294385, 13) #(294385,)
 print(x_test.shape, y_test.shape)  #(84531, 13) (84531,)
 print(x_pred.shape, y_pred.shape)  #(41635, 13) (41635,)
 
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+scaler=StandardScaler()
+x_train=scaler.fit_transform(x_train)
+x_test=scaler.transform(x_test)
+x_pred=scaler.transform(x_pred)
+
 
 timesteps = 10          
 def split_X(dataset, timesteps):                   
@@ -80,9 +87,11 @@ print(y_trains.shape) #(294375,)
 
 #2. 모델구성 
 model = Sequential()
-model.add(LSTM(16, input_shape=(10,13))) 
-model.add(Dense(16, activation='relu'))
-model.add(Dense(8))
+model.add(LSTM(64, input_shape=(10,13))) 
+model.add(Dense(128, activation='relu'))
+model.add(Dropout(0.4))
+model.add(Dense(64, activation='swish'))
+model.add(Dense(32, activation='swish'))
 model.add(Dense(8, activation='relu'))
 model.add(Dense(1)) 
 

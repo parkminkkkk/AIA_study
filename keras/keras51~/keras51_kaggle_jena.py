@@ -1,6 +1,6 @@
 '''
 #데이터 형식 바꾸는 방법 2가지(pd->np)
-print(dataset['T (datasetegC)'])             #데이터 형태 : pandatasetas
+print(dataset['T (datasetegC)'])             #데이터 형태 : pandas
 print(dataset['T (datasetegC)'].values)      #데이터 형태 : numpy
 print(dataset['T (datasetegC)'].to_numpy())  #데이터 형태 : numpy
 '''
@@ -17,8 +17,7 @@ from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Input,LSTM, Conv2D, Flatten, Dropout, MaxPooling2D
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from tensorflow.keras.callbacks import EarlyStopping
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.preprocessing import MaxAbsScaler, RobustScaler
+
 
 #1. 데이터 
 path = './_data/kaggle_jena/'
@@ -48,7 +47,6 @@ print(x)
 y = dataset['T (degC)']
 print(y)
 
-
 x_train, x_test, y_train, y_test = train_test_split(x,y, shuffle=False, train_size=0.7)
 x_test, x_pred, y_test, y_pred = train_test_split(x_test, y_test, shuffle=False, train_size=0.67)
 
@@ -56,11 +54,11 @@ print(x_train.shape, y_train.shape) #(294385, 13) #(294385,)
 print(x_test.shape, y_test.shape)  #(84531, 13) (84531,)
 print(x_pred.shape, y_pred.shape)  #(41635, 13) (41635,)
 
-from sklearn.preprocessing import MinMaxScaler
-scaler=MinMaxScaler()
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+scaler=StandardScaler()
 x_train=scaler.fit_transform(x_train)
 x_test=scaler.transform(x_test)
-
+x_pred=scaler.transform(x_pred)
 
 timesteps = 10          
 def split_X(dataset, timesteps):                   
@@ -100,7 +98,7 @@ es = EarlyStopping(monitor='loss', patience=10, mode='auto',
                    restore_best_weights=True
                    )
 
-model.fit(x_trains, y_trains, epochs=100, callbacks=(es))
+model.fit(x_trains, y_trains, epochs=100, batch_size=128, callbacks=(es))
 
 #4. 평가, 예측 
 
