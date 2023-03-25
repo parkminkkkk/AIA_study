@@ -102,6 +102,7 @@ import pandas as pd
 y_submit = pd.DataFrame(y_submit)
 y_submit = y_submit.fillna(y_submit.mode()[0])
 y_submit = np.array(y_submit)
+
 submission = pd.read_csv(path + 'sample_submission.csv', index_col=0)
 submission['SalePrice'] = y_submit
 submission.to_csv(path_save + 'kaggle_house_' + date + '.csv')
