@@ -91,6 +91,7 @@ model.add(LSTM(64, input_shape=(10,13)))
 model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.4))
 model.add(Dense(64, activation='swish'))
+model.add(Dropout(0.4))
 model.add(Dense(32, activation='swish'))
 model.add(Dense(8, activation='relu'))
 model.add(Dense(1)) 
@@ -132,8 +133,13 @@ loss :  [2.422412395477295, 1.0773078203201294]
 #y_predict: [[ 3.7247777]...[-3.1754308]]
 RMSE :  1.400186049641971
 
+*Scaler
 loss :  [58.66366958618164, 6.303465366363525]
 r2 :  -0.12704651187321603
 rmse :  8.294033446423985
+
+loss :  [12.217707633972168, 3.237755298614502]
+r2 :  0.8229233198093561
+rmse :  3.28757408514831
 '''
 
