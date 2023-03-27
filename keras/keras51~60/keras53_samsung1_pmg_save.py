@@ -77,10 +77,10 @@ y1_ss = datasetS['종가']
 
 
 #X,Y
-x1_ss = np.array(x1_ss[:1200])
-x2_hd = np.array(x2_hd[:1200])
+x1_ss = np.array(x1_ss[:1000])
+x2_hd = np.array(x2_hd[:1000])
 
-y1_ss = np.array(y1_ss[:1200])
+y1_ss = np.array(y1_ss[:1000])
 # y2_hd = np.array(y2_hd[:1200])
 
 print(x1_ss.shape, x2_hd.shape) #(1200, 11) (1200, 11)
@@ -142,16 +142,14 @@ output1 = Dense(16, activation='relu', name='output1')(dense3)
 input2 = Input(shape=(10,11))
 dense11 = LSTM(16, activation='relu', name='hd1')(input2)
 dense12 = Dense(16, activation='relu', name='hd2')(dense11)
-dense13 = Dense(32, activation='swish', name='hd3')(dense12)
-dense14 = Dense(16, activation='swish', name='hd4')(dense13)
+dense14 = Dense(16, activation='swish', name='hd4')(dense12)
 output2 = Dense(16, name='output2')(dense14)
 
 #2-3. 모델 합침 
 merge1 = concatenate([output1, output2], name='mg1')  
 merge2 = Dense(32, activation='selu', name='mg2')(merge1)
-merge3 = Dense(32, activation='relu', name='mg3')(merge2)
-merge4 = Dense(32, activation='swish', name='mg2')(merge3)
-merge5 = Dense(28, activation='relu', name='mg2')(merge4)
+merge3 = Dense(32, activation='swish', name='mg3')(merge2)
+merge4 = Dense(28, activation='relu', name='mg4')(merge3)
 last_output = Dense(1, name='last')(merge3)
 
 # #2-4 분기1
@@ -177,8 +175,13 @@ es = EarlyStopping(monitor='loss', patience=30, mode='auto',
                    restore_best_weights=True
                    )
 
-model.fit([x1_trains, x2_trains], [y1_trains], epochs=500, batch_size=16, validation_split=0.2,
+model.fit([x1_trains, x2_trains], [y1_trains], epochs=300, batch_size=16, validation_split=0.2,
           callbacks=[es])
+
+
+#모델 저장
+model.save('./_save/samsung/keras53_samsung2_pmg.h5')  ##컴파일, 훈련 다음에 save
+
 
 #4. 평가, 예측 
 
