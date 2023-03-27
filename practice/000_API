@@ -12,6 +12,7 @@ from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 
 from tensorflow.python.keras.models import Sequential, Model, load_model
 from tensorflow.python.keras.layers import Dense, Input, Dropout
+from tensorflow.keras.layers import concatenate, Concatenate     #앙상블
 
 import datetime 
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
