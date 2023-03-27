@@ -43,12 +43,23 @@ output1 = Dense(16, activation='relu', name='output1')(dense03)
 #======concatenate============================================
 #2-4 모델 합침
 from tensorflow.keras.layers import concatenate, Concatenate  #소문자(함수) #대문자(클래스) 
-# merge1 = Concatenate([output1], name='mg1')  # 두 모델의 아웃풋을 합병한다(concatenate모델의 input은 1,2모델의 아웃풋을 합친 것). #2개 이상은 list형태로 받음
-
-merge = Concatenate()([output1])
-merge2 = Dense(24, activation='relu', name='mg2')(merge)
+# merge1 = concatenate([output1], name='mg1')  # 두 모델의 아웃풋을 합병한다(concatenate모델의 input은 1,2모델의 아웃풋을 합친 것). #2개 이상은 list형태로 받음
+merge1 = Concatenate()([output1])
+merge2 = Dense(24, activation='relu', name='mg2')(merge1)
 merge3 = Dense(32, activation='relu', name='mg3')(merge2)
 hidden_output = Dense(16, name='hidden1')(merge3)
+
+'''
+# def concatenate(inputs: Any, axis: int = -1) : 소문자(함수)
+-concatenate는 함수로, 여러 레이어의 출력을 연결하여 하나의 텐서로 만듭니다. 
+-함수의 입력으로는 연결하려는 레이어의 출력들을 리스트나 튜플 형태로 전달하며, axis 인자를 통해 연결할 축을 지정할 수 있습니다.
+-concatenate는 함수형 프로그래밍 방식을 사용하며, 입력값으로 레이어를 전달합니다.
+
+# class Concatenate(axis: int = -1) : 대문자(클래스)
+-Concatenate는 클래스로, concatenate 함수와 동일한 기능을 수행합니다. 
+-객체를 생성한 후 객체의 입력으로 연결할 레이어의 출력을 전달하고, axis 인자를 설정하여 연결할 축을 지정합니다.
+-Concatenate는 객체 지향 프로그래밍 방식을 사용하며, 인스턴스화를 통해 레이어를 연결합니다. 
+'''
 
 #======Y모델 구성(분기점)===============================================
 #2-5. 분기점 모델1
@@ -117,23 +128,14 @@ print("rmse:", rmse2)
 
 
 '''
-1. merge(x)
-loss합: 224.70693969726562
-last1_loss: 48.246517181396484
-last2_loss: 176.46041870117188
-r2_1: 0.9461585103962399
-r2_2: 0.8030773472439532
-r2스코어 0.8746179288200966
-rmse: 6.94599311970818
-rmse: 13.283840555658816
-
-2. merge(o)
-loss합: 2.270888328552246
-last1_loss: 0.7772614359855652
-last2_loss: 1.4936269521713257
-r2_1: 0.9991326179091354
-r2_2: 0.998333173061659
-r2스코어 0.9987328954853972
-rmse: 0.881619202265247
-rmse: 1.2221403156667057
+1. Concatenate(클래스)
+loss합: 96.75934600830078
+last1_loss: 18.118839263916016
+last2_loss: 78.6405029296875
+r2_1: 0.9797803930450983
+r2_2: 0.9122403993956891
+r2스코어 0.9460103962203937
+rmse: 4.256593426229218
+rmse: 8.867947930920486
 '''
+
