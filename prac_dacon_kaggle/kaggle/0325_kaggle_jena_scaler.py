@@ -116,7 +116,6 @@ y_predict = model.predict(x_preds)
 r2 = r2_score(y_preds, y_predict)
 print('r2 : ', r2)
 
-
 #'mse'->rmse로 변경
 def RMSE(x, y): 
     return np.sqrt(mean_squared_error(x,y))
