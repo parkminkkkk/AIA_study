@@ -27,3 +27,7 @@ Tab : 뒤로 밀기
 cls : clean 새창
 
 ###BatchNormalization###
+
+
+#\n : print(\n) : 다음 줄 
+# \ : 다음줄 띄우기 

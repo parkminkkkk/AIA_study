@@ -84,9 +84,9 @@ y1_ss = datasetS['종가']
 
 #X,Y
 # x1_ss = x1_ss[:900].values
-x1_ss = np.array(x1_ss[10:1000])
-x2_hd = np.array(x2_hd[10:1000])
-y1_ss = np.array(y1_ss[10:1000])
+x1_ss = np.array(x1_ss[:1000])
+x2_hd = np.array(x2_hd[:1000])
+y1_ss = np.array(y1_ss[:1000])
 
 x1_ss = x1_ss[::-1]
 x2_hd = x2_hd[::-1]
@@ -114,7 +114,7 @@ x2_train=scaler.fit_transform(x2_train)
 x2_test=scaler.transform(x2_test)
 
 
-timesteps = 20          
+timesteps = 5          
 def splitX(dataset, timesteps):                   
     aaa = []                                      
     for i in range(len(dataset) - timesteps): 
@@ -126,9 +126,13 @@ x1_trains = splitX(x1_train, timesteps)
 x1_tests = splitX(x1_test, timesteps)
 x2_trains = splitX(x2_train, timesteps)
 x2_tests = splitX(x2_test, timesteps)
+x1_pred = x1_test[-timesteps:].reshape(1,timesteps,9)
+x2_pred = x2_test[-timesteps:].reshape(1,timesteps,9)
 
-print(x1_trains.shape, x2_trains.shape)  #(690, 10, 11) (690, 10, 11)
-print(x1_tests.shape, x2_tests.shape)    #(290, 10, 11) (290, 10, 11)
+
+print(x1_trains.shape, x2_trains.shape)  #(690, 20, 11) (690, 20, 11)
+print(x1_tests.shape, x2_tests.shape)    #(290, 20, 11) (290, 20, 11)
+print(x1_pred.shape, x2_pred.shape)      #(1, 20, 9) (1, 20, 9)
 
 y1_trains = y1_train[timesteps:]
 y1_tests = y1_test[timesteps:]
@@ -138,18 +142,18 @@ print(y1_trains.shape, y1_tests.shape)  #(690,) (290,)
 
 #2. 모델구성 
 #2-1. 삼성모델 
-input1 = Input(shape=(20,9))
-dense1 = LSTM(16, activation='relu', name='ss1')(input1)
-dense2 = Dense(32, activation='swish', name='ss2')(dense1)
+input1 = Input(shape=(timesteps,9))
+dense1 = LSTM(16, activation='relu',return_sequences=True, name='ss1')(input1)
+dense2 = LSTM(32, activation='swish', name='ss2')(dense1)
 dense3 = Dense(32, activation='selu', name='ss3')(dense2)
 dense4 = Dense(16, activation='selu', name='ss4')(dense3)
 output1 = Dense(16, name='output1')(dense4)  
 
 
 #2-2. 현대모델 
-input2 = Input(shape=(20,9))
-dense11 = LSTM(16, activation='selu', name='hd1')(input2)
-dense12 = Dense(16, activation='relu', name='hd2')(dense11)
+input2 = Input(shape=(5,9))
+dense11 = LSTM(16, return_sequences=True, activation='selu', name='hd1')(input2)
+dense12 = LSTM(16, activation='relu', name='hd2')(dense11)
 dense13 = Dense(32, activation='swish', name='hd3')(dense12)
 dense14 = Dense(16, activation='swish', name='hd4')(dense13)
 output2 = Dense(16, name='output2')(dense14)
@@ -179,12 +183,12 @@ es = EarlyStopping(monitor='loss', patience=30, mode='auto',
                    restore_best_weights=True
                    )
 
-model.fit([x1_trains, x2_trains], [y1_trains], epochs=30, batch_size=16, validation_split=0.2,
+model.fit([x1_trains, x2_trains], [y1_trains], epochs=300, batch_size=16, validation_split=0.2,
           callbacks=[es])
 
 
 #모델 저장
-model.save('./_save/samsung/keras53_samsung2_pmg.h5')  ##컴파일, 훈련 다음에 save
+model.save('./_save/samsung/keras53_samsung12_pmg.h5')  ##컴파일, 훈련 다음에 save
 
 
 #4. 평가, 예측 
@@ -192,18 +196,21 @@ model.save('./_save/samsung/keras53_samsung2_pmg.h5')  ##컴파일, 훈련 다�
 loss = model.evaluate([x1_tests, x2_tests], y1_tests)
 print("loss:", loss)
 
-y_pred = model.predict([x1_tests, x2_tests])
+y_pred = model.predict([x1_pred, x2_pred])
 # print(y_pred.shape)
-print("23.03.28의 종가:", y_pred)
-print("23.03.28의 종가:", "%.2f"% y_pred[0]) 
+print("내일(0329)종가:", "%.2f"% y_pred[0]) 
 
 
 '''
+#삼성2/현대자동차(제철)
 #('./_save/samsung/keras53_samsung2_pmk.h5')
 23.03.28의 종가: [62967.12]
 
 #데이터 역순
 23.03.28의 종가: [63373.617]
-
-
+====================================================
+#삼성3/현대자동차2
+내일(0329)종가: 65004.86
+#('./_save/samsung/keras53_samsung11_pmg.h5')
+내일(0329)종가: 61446.80
 '''
