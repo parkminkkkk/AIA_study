@@ -105,7 +105,9 @@ y1_train, y1_test= train_test_split(
 
 print(x1_train.shape) #(700, 11)
 
+timesteps = 4 
 
+#Scaler
 scaler=StandardScaler()
 x1_train=scaler.fit_transform(x1_train)
 x1_test=scaler.transform(x1_test)
@@ -113,8 +115,10 @@ scaler=RobustScaler()
 x2_train=scaler.fit_transform(x2_train)
 x2_test=scaler.transform(x2_test)
 
+x1_pred = x1_test[-timesteps:].reshape(1,timesteps,9)
+x2_pred = x2_test[-timesteps:].reshape(1,timesteps,9)
 
-timesteps = 5          
+#split함수정의  
 def splitX(dataset, timesteps):                   
     aaa = []                                      
     for i in range(len(dataset) - timesteps): 
@@ -126,13 +130,11 @@ x1_trains = splitX(x1_train, timesteps)
 x1_tests = splitX(x1_test, timesteps)
 x2_trains = splitX(x2_train, timesteps)
 x2_tests = splitX(x2_test, timesteps)
-x1_pred = x1_test[-timesteps:].reshape(1,timesteps,9)
-x2_pred = x2_test[-timesteps:].reshape(1,timesteps,9)
 
 
-print(x1_trains.shape, x2_trains.shape)  #(690, 20, 11) (690, 20, 11)
-print(x1_tests.shape, x2_tests.shape)    #(290, 20, 11) (290, 20, 11)
-print(x1_pred.shape, x2_pred.shape)      #(1, 20, 9) (1, 20, 9)
+print(x1_trains.shape, x2_trains.shape)  #(695, 5, 9) (695, 5, 9)
+print(x1_tests.shape, x2_tests.shape)    #(295, 5, 9) (295, 5, 9)
+print(x1_pred.shape, x2_pred.shape)      #(1, 5, 9) (1, 5, 9)
 
 y1_trains = y1_train[timesteps:]
 y1_tests = y1_test[timesteps:]
@@ -151,7 +153,7 @@ output1 = Dense(16, name='output1')(dense4)
 
 
 #2-2. 현대모델 
-input2 = Input(shape=(5,9))
+input2 = Input(shape=(4,9))
 dense11 = LSTM(16, return_sequences=True, activation='selu', name='hd1')(input2)
 dense12 = LSTM(16, activation='relu', name='hd2')(dense11)
 dense13 = Dense(32, activation='swish', name='hd3')(dense12)
@@ -183,12 +185,12 @@ es = EarlyStopping(monitor='loss', patience=30, mode='auto',
                    restore_best_weights=True
                    )
 
-model.fit([x1_trains, x2_trains], [y1_trains], epochs=300, batch_size=16, validation_split=0.2,
+model.fit([x1_trains, x2_trains], [y1_trains], epochs=500, batch_size=128, validation_split=0.2,
           callbacks=[es])
 
 
 #모델 저장
-model.save('./_save/samsung/keras53_samsung12_pmg.h5')  ##컴파일, 훈련 다음에 save
+model.save('./_save/samsung/keras53_samsung20_pmg.h5')  ##컴파일, 훈련 다음에 save
 
 
 #4. 평가, 예측 
@@ -209,8 +211,27 @@ print("내일(0329)종가:", "%.2f"% y_pred[0])
 #데이터 역순
 23.03.28의 종가: [63373.617]
 ====================================================
-#삼성3/현대자동차2
-내일(0329)종가: 65004.86
+#삼성3/현대자동차2[62900원]
 #('./_save/samsung/keras53_samsung11_pmg.h5')
 내일(0329)종가: 61446.80
+----------------------------------------------------
+#('./_save/samsung/keras53_samsung12_pmg.h5')
+내일(0329)종가: 63181.04
+#('./_save/samsung/keras53_samsung13_pmg.h5')
+내일(0329)종가: 63101.36
+# ('./_save/samsung/keras53_samsung14_pmg.h5')
+내일(0329)종가: 62930.22
+#('./_save/samsung/keras53_samsung15_pmg.h5')
+내일(0329)종가: 63070.99
+#('./_save/samsung/keras53_samsung16_pmg.h5')
+내일(0329)종가: 63486.34
+#('./_save/samsung/keras53_samsung17_pmg.h5')
+내일(0329)종가: 61205.64
+# ('./_save/samsung/keras53_samsung18_pmg.h5')
+내일(0329)종가: 61598.17
+# ('./_save/samsung/keras53_samsung19_pmg.h5')
+내일(0329)종가: 63366.38
+================================================
+#('./_save/samsung/keras53_samsung16_pmg.h5')
+내일(0329)종가: 63486.34
 '''
