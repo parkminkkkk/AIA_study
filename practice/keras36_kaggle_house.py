@@ -9,7 +9,6 @@ from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.metrics import r2_score, mean_squared_error, accuracy_score
 
 
-
 #1. 데이터 
 path = './_data/kaggle_house/'
 path_save = './_save/kaggle_house/'

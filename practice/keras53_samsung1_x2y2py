@@ -46,7 +46,7 @@ print(x1_ss)
 x2_hd = datasetH.drop(['전일비','외인(수량)','외국계','프로그램','외인비'], axis=1)
 print(x2_hd)
 y1_ss = datasetS['종가']
-
+y2_hd = datasetH['종가']
 
 
 #X,Y
@@ -54,17 +54,18 @@ x1_ss = np.array(x1_ss[:1000])
 x2_hd = np.array(x2_hd[:1000])
 
 y1_ss = np.array(y1_ss[:1000])
-
+y2_hd = np.array(y2_hd[:1000])
 
 print(x1_ss.shape, x2_hd.shape) #(1000, 11) (1000, 11)
-print(y1_ss.shape) #(1000,)
+print(y1_ss.shape, y2_hd.shape) #(1000,) (1000,)
 
 x1_ss = np.char.replace(x1_ss.astype(str), ',', '').astype(np.float64)
 y1_ss = np.char.replace(y1_ss.astype(str), ',', '').astype(np.float64)
 x2_hd = np.char.replace(x2_hd.astype(str), ',', '').astype(np.float64)
+y2_hd = np.char.replace(y1_ss.astype(str), ',', '').astype(np.float64)
 
 
-timesteps = 10          
+timesteps = 20          
 def splitX(dataset, timesteps):                   
     aaa = []                                      
     for i in range(len(dataset) - timesteps): 
@@ -75,22 +76,27 @@ def splitX(dataset, timesteps):
 x1_ss = splitX(x1_ss, timesteps)
 x2_hd = splitX(x2_hd, timesteps)
 
-print(x1_ss.shape)  #(990, 10, 11)
+print(x1_ss.shape)  #(990, 20, 11)
 print(x2_hd.shape)    
 
 y1_ss = y1_ss[timesteps:]
+y2_hd = y2_hd[timesteps:]
 
-print(y1_ss.shape)   #(980,)
+
+print(y1_ss.shape, y2_hd.shape)   #(980,)
 
 #split
-x1_train, x1_test, x2_train, x2_test, \
-y1_train, y1_test= train_test_split(
-    x1_ss, x2_hd, y1_ss, shuffle=True, random_state=640, train_size=0.7)
+x1_train, x1_test, y1_train, y1_test= train_test_split(
+    x1_ss, y1_ss, shuffle=True, random_state=640, train_size=0.7)
 
-x1_train= x1_train.reshape(-1,10*11)
-x1_test= x1_test.reshape(-1,10*11)
-x2_train= x2_train.reshape(-1,10*11)
-x2_test= x2_test.reshape(-1,10*11)
+x2_train, x2_test, y2_train, y2_test= train_test_split(
+    x2_hd, y2_hd, shuffle=True, random_state=640, train_size=0.7)
+
+
+x1_train= x1_train.reshape(-1,20*11)
+x1_test= x1_test.reshape(-1,20*11)
+x2_train= x2_train.reshape(-1,20*11)
+x2_test= x2_test.reshape(-1,20*11)
 
 scaler=StandardScaler()
 x1_train=scaler.fit_transform(x1_train)
@@ -98,15 +104,15 @@ x1_test=scaler.transform(x1_test)
 x2_train=scaler.transform(x2_train)
 x2_test=scaler.transform(x2_test)
 
-x1_train= x1_train.reshape(-1,10,11)
-x1_test= x1_test.reshape(-1,10,11)
-x2_train= x2_train.reshape(-1,10,11)
-x2_test= x2_test.reshape(-1,10,11)
+x1_train= x1_train.reshape(-1,20,11)
+x1_test= x1_test.reshape(-1,20,11)
+x2_train= x2_train.reshape(-1,20,11)
+x2_test= x2_test.reshape(-1,20,11)
 
 
 #2. 모델구성 
 #2-1. 삼성모델 
-input1 = Input(shape=(10,11))
+input1 = Input(shape=(20,11))
 dense1 = LSTM(16, activation='relu', name='ss1')(input1)
 dense2 = Dense(32, activation='relu', name='ss2')(dense1)
 dense3 = Dense(32, activation='relu', name='ss3')(dense2)
@@ -114,7 +120,7 @@ output1 = Dense(16, activation='relu', name='output1')(dense3)
 
 
 #2-2. 현대모델 
-input2 = Input(shape=(10,11))
+input2 = Input(shape=(20,11))
 dense11 = LSTM(16, activation='relu', name='hd1')(input2)
 dense12 = Dense(16, activation='relu', name='hd2')(dense11)
 dense14 = Dense(16, activation='swish', name='hd4')(dense12)
@@ -144,7 +150,7 @@ es = EarlyStopping(monitor='loss', patience=30, mode='auto',
                    restore_best_weights=True
                    )
 
-model.fit([x1_train, x2_train], [y1_train], epochs=300, batch_size=16, validation_split=0.2,
+model.fit([x1_train, x2_train], y1_train, epochs=300, batch_size=16, validation_split=0.2,
           callbacks=[es])
 
 #시간저장
@@ -161,10 +167,10 @@ model.save('./_save/samsung/keras53_samsung2T_pmg.h5')  ##컴파일, 훈련 다�
 loss = model.evaluate([x1_test, x2_test], y1_test)
 print("loss:", loss)
 
-y_pred = model.predict([x1_test, x2_test])
+y1_pred = model.predict([x1_test, x2_test])
 # print(y_pred.shape)
-print("23.03.28의 종가:", y_pred)
-print("23.03.28의 종가:", y_pred[0])
+print("23.03.28의 종가:", y1_pred)
+print("23.03.28의 종가:", y1_pred[0])
 
 '''
 23.03.28의 종가: [62967.12]

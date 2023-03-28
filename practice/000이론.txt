@@ -13,8 +13,12 @@ kingkeras@naver.com
 #RMSE : mse에 루트 , 미분 불가능한 지점을 가짐
 
 <단축키>
-숫자 앞에 빨간점 -> F5 : 숫자 앞까지 모델 돌리겠다. 그 뒤로는 일시 중지 
-ctrl+space : 단축어확인 
+# 숫자 앞에 빨간점 -> F5 : 숫자 앞까지 모델 돌리겠다. 그 뒤로는 일시 중지 
+# ctrl +space : 단축어확인 
+# ctrl +F5 : 실행
+# ctrl +Z : 취소
+# ctrl +C,V : 한 라인 복붙
+# shift + Delete : 한 라인 삭제 
 
 shift+Tab : 드래그한 줄 앞으로 전체 땡기기
 Tab : 뒤로 밀기 

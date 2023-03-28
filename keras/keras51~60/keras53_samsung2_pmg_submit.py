@@ -133,7 +133,7 @@ print(y1_trains.shape, y1_tests.shape)  #(690,) (290,)
 
 #모델 로드
 model = load_model('./_save/samsung/keras53_samsung2_pmg.h5')  #가중치 저장
-model.summary()
+# model.summary()
 
 
 #3. 컴파일, 훈련 

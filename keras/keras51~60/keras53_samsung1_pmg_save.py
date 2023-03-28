@@ -31,7 +31,7 @@ _save/samsung/
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler,RobustScaler
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Input,LSTM, Conv1D, Reshape, Flatten, Dropout, MaxPooling2D
 from tensorflow.keras.layers import concatenate, Concatenate
@@ -42,10 +42,10 @@ from tensorflow.keras.callbacks import EarlyStopping
 path = './_data/시험/'
 path_save = './_save/samsung/'
 
-datasetS = pd.read_csv(path + '삼성전자 주가2.csv', encoding='cp949', index_col=0)
+datasetS = pd.read_csv(path + '삼성전자 주가3.csv', encoding='cp949', index_col=0)
 print(datasetS) #[3260 rows x 17 columns]
 
-datasetH = pd.read_csv(path + '현대자동차.csv', encoding='cp949', index_col=0)
+datasetH = pd.read_csv(path + '현대자동차2.csv', encoding='cp949', index_col=0)
 print(datasetH) #[3140 rows x 17 columns]
 
 # datasetS = datasetS[::-1]
@@ -83,9 +83,10 @@ y1_ss = datasetS['종가']
 
 
 #X,Y
-x1_ss = np.array(x1_ss[:600])
-x2_hd = np.array(x2_hd[:600])
-y1_ss = np.array(y1_ss[:600])
+# x1_ss = x1_ss[:900].values
+x1_ss = np.array(x1_ss[10:1000])
+x2_hd = np.array(x2_hd[10:1000])
+y1_ss = np.array(y1_ss[10:1000])
 
 x1_ss = x1_ss[::-1]
 x2_hd = x2_hd[::-1]
@@ -108,11 +109,12 @@ print(x1_train.shape) #(700, 11)
 scaler=StandardScaler()
 x1_train=scaler.fit_transform(x1_train)
 x1_test=scaler.transform(x1_test)
-x2_train=scaler.transform(x2_train)
+scaler=RobustScaler()
+x2_train=scaler.fit_transform(x2_train)
 x2_test=scaler.transform(x2_test)
 
 
-timesteps = 10          
+timesteps = 20          
 def splitX(dataset, timesteps):                   
     aaa = []                                      
     for i in range(len(dataset) - timesteps): 
@@ -136,26 +138,29 @@ print(y1_trains.shape, y1_tests.shape)  #(690,) (290,)
 
 #2. 모델구성 
 #2-1. 삼성모델 
-input1 = Input(shape=(10,9))
+input1 = Input(shape=(20,9))
 dense1 = LSTM(16, activation='relu', name='ss1')(input1)
-dense2 = Dense(32, activation='relu', name='ss2')(dense1)
-dense3 = Dense(32, activation='relu', name='ss3')(dense2)
-output1 = Dense(16, activation='relu', name='output1')(dense3)  
+dense2 = Dense(32, activation='swish', name='ss2')(dense1)
+dense3 = Dense(32, activation='selu', name='ss3')(dense2)
+dense4 = Dense(16, activation='selu', name='ss4')(dense3)
+output1 = Dense(16, name='output1')(dense4)  
 
 
 #2-2. 현대모델 
-input2 = Input(shape=(10,9))
-dense11 = LSTM(16, activation='relu', name='hd1')(input2)
+input2 = Input(shape=(20,9))
+dense11 = LSTM(16, activation='selu', name='hd1')(input2)
 dense12 = Dense(16, activation='relu', name='hd2')(dense11)
-dense14 = Dense(16, activation='swish', name='hd4')(dense12)
+dense13 = Dense(32, activation='swish', name='hd3')(dense12)
+dense14 = Dense(16, activation='swish', name='hd4')(dense13)
 output2 = Dense(16, name='output2')(dense14)
 
 #2-3. 모델 합침 
 merge1 = concatenate([output1, output2], name='mg1')  
 merge2 = Dense(32, activation='selu', name='mg2')(merge1)
-merge3 = Dense(32, activation='swish', name='mg3')(merge2)
-merge4 = Dense(16, activation='relu', name='mg4')(merge3)
-last_output = Dense(1, name='last')(merge3)
+merge3 = Dense(16, activation='swish', name='mg3')(merge2)
+merge4 = Dense(32, activation='swish', name='mg4')(merge3)
+merge5 = Dense(16, activation='relu', name='mg5')(merge4)
+last_output = Dense(1, name='last')(merge5)
 
 
 
@@ -174,12 +179,12 @@ es = EarlyStopping(monitor='loss', patience=30, mode='auto',
                    restore_best_weights=True
                    )
 
-model.fit([x1_trains, x2_trains], [y1_trains], epochs=300, batch_size=16, validation_split=0.2,
+model.fit([x1_trains, x2_trains], [y1_trains], epochs=30, batch_size=16, validation_split=0.2,
           callbacks=[es])
 
 
 #모델 저장
-model.save('./_save/samsung/keras53_samsung21_pmg.h5')  ##컴파일, 훈련 다음에 save
+model.save('./_save/samsung/keras53_samsung2_pmg.h5')  ##컴파일, 훈련 다음에 save
 
 
 #4. 평가, 예측 
@@ -190,12 +195,15 @@ print("loss:", loss)
 y_pred = model.predict([x1_tests, x2_tests])
 # print(y_pred.shape)
 print("23.03.28의 종가:", y_pred)
-print("23.03.28의 종가:", round(y_pred[0], 2))
+print("23.03.28의 종가:", "%.2f"% y_pred[0]) 
 
 
 '''
-#23.03.28의 종가: [62967.12]
+#('./_save/samsung/keras53_samsung2_pmk.h5')
+23.03.28의 종가: [62967.12]
 
 #데이터 역순
 23.03.28의 종가: [63373.617]
+
+
 '''
