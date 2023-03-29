@@ -135,8 +135,6 @@ model = load_model('./_save/samsung/keras53_samsung4_pmg.h5')  #가중치 저장
 #           callbacks=[es])
 
 
-
-
 #4. 평가, 예측 
 
 loss = model.evaluate([x1_tests, x2_tests], y2_tests)
