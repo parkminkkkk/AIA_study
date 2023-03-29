@@ -143,3 +143,8 @@ print("loss:", loss)
 y_pred = model.predict([x1_pred, x2_pred])
 # print(y_pred.shape)
 print("내일(0329)종가:", "%.2f"% y_pred[0]) 
+
+'''
+loss: 4579608.0
+내일(0329)종가: 63486.34
+'''

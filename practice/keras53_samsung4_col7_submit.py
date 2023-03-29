@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler,RobustScaler
-from tensorflow.keras.models import Sequential, Model,load_model
+from tensorflow.keras.models import Sequential, Model, load_model
 from tensorflow.keras.layers import Dense, Input,LSTM, Conv1D, Reshape, Flatten, Dropout, MaxPooling2D
 from tensorflow.keras.layers import concatenate, Concatenate
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
@@ -45,13 +45,12 @@ print(datasetH.isnull().sum())
 
 
 #1-2 데이터 분리 
-x1_ss = datasetS.drop(['전일비','등락률','금액(백만)','외인(수량)','외국계','프로그램','외인비'], axis=1)
+x1_ss = datasetS.drop(['전일비','등락률','금액(백만)','신용비','기관','외인(수량)','외국계','프로그램','외인비'], axis=1)
 print(x1_ss)
-x2_hd = datasetH.drop(['전일비','등락률','금액(백만)','외인(수량)','외국계','프로그램','외인비'], axis=1)
+x2_hd = datasetH.drop(['전일비','등락률','금액(백만)','신용비','기관','외인(수량)','외국계','프로그램','외인비'], axis=1)
 print(x2_hd)
 y2_hd = datasetH['시가']
 
-# x2_hd = datasetH.drop(['전일비','등락률','금액(백만)','신용비','기관','외인(수량)','외국계','프로그램','외인비'], axis=1)
 
 #X,Y
 # x1_ss = x1_ss[:900].values
@@ -119,23 +118,22 @@ print(y2_trains.shape, y2_tests.shape)  #(696,) (294,)
 #2. 모델구성 
 
 #모델 로드
-# model = load_model('./_save/samsung/keras53_samsung41_179475.39.h5')  #가중치 저장
 # model.summary()
-model = load_model('./_save/samsung/keras53_samsung4_pmk.h5')  #가중치 저장
+model = load_model('./_save/samsung/keras53_samsung4_pmg.h5')  #가중치 저장
 
 
-
-#3. 컴파일, 훈련 
+# #3. 컴파일, 훈련 
 
 # model. compile(loss='mse', optimizer='adam')
 
-# es = EarlyStopping(monitor='val_loss', patience=40, mode='min', 
+# es = EarlyStopping(monitor='val_loss', patience=32, mode='min', 
 #                    verbose=1, 
 #                    restore_best_weights=True
 #                    )
 
-# hist=model.fit([x1_trains, x2_trains], [y2_trains], epochs=100, batch_size=2, validation_split=0.2,
+# hist=model.fit([x1_trains, x2_trains], [y2_trains], epochs=256, batch_size=8, validation_split=0.2,
 #           callbacks=[es])
+
 
 
 
@@ -147,11 +145,16 @@ print("loss:", loss)
 y_pred = model.predict([x1_pred, x2_pred])
 # print(y_pred.shape)
 # print("모레(0330)시가:", np.round(y_pred,2)) 
+
 print("모레(0330)시가:", "%.2f"% y_pred) 
 
-
+#그래프
+# import matplotlib.pyplot as plt
+# plt.plot(range(len(y2_tests)),y2_tests,label='real', color='red')
+# plt.plot(range(len(y2_tests)),model.predict([x1_tests,x2_tests]),label='model')
+# plt.legend()
+# plt.show()
 
 '''
-loss: 35169388.0
-모레(0330)시가: 179475.39
+
 '''
