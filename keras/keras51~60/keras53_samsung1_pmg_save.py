@@ -109,10 +109,10 @@ timesteps = 4
 
 #Scaler
 scaler=StandardScaler()
+# scaler=RobustScaler()
 x1_train=scaler.fit_transform(x1_train)
 x1_test=scaler.transform(x1_test)
-scaler=RobustScaler()
-x2_train=scaler.fit_transform(x2_train)
+x2_train=scaler.transform(x2_train)
 x2_test=scaler.transform(x2_test)
 
 x1_pred = x1_test[-timesteps:].reshape(1,timesteps,9)
