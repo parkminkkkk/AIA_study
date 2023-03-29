@@ -79,33 +79,33 @@ x1_ss = datasetS.drop(['전일비','등락률','금액(백만)','외인(수량)'
 print(x1_ss)
 x2_hd = datasetH.drop(['전일비','등락률','금액(백만)','외인(수량)','외국계','프로그램','외인비'], axis=1)
 print(x2_hd)
-y1_ss = datasetS['종가']
+y2_hd = datasetH['시가']
 
 
 #X,Y
 # x1_ss = x1_ss[:900].values
-x1_ss = np.array(x1_ss[:1000])
-x2_hd = np.array(x2_hd[:1000])
-y1_ss = np.array(y1_ss[:1000])
+x1_ss = np.array(x1_ss[:500])[::-1]
+x2_hd = np.array(x2_hd[:500])[::-1]
+y2_hd = np.array(y2_hd[:500])[::-1]
 
-x1_ss = x1_ss[::-1]
-x2_hd = x2_hd[::-1]
-y1_ss = y1_ss[::-1]
+# x1_ss = x1_ss[::-1]
+# x2_hd = x2_hd[::-1]
+# y2_hd = y2_hd[::-1]
 
 print(x1_ss.shape, x2_hd.shape) #(1000, 11) (1000, 11)
-print(y1_ss.shape) #(1000,)
+print(y2_hd.shape) #(1000,)
 
 x1_ss = np.char.replace(x1_ss.astype(str), ',', '').astype(np.float64)
-y1_ss = np.char.replace(y1_ss.astype(str), ',', '').astype(np.float64)
 x2_hd = np.char.replace(x2_hd.astype(str), ',', '').astype(np.float64)
+y2_hd = np.char.replace(y2_hd.astype(str), ',', '').astype(np.float64)
 
 x1_train, x1_test, x2_train, x2_test, \
-y1_train, y1_test= train_test_split(
-    x1_ss, x2_hd, y1_ss, shuffle=False, train_size=0.7)
+y2_train, y2_test= train_test_split(
+    x1_ss, x2_hd, y2_hd, shuffle=False, train_size=0.7)
 
 print(x1_train.shape) #(700, 11)
 
-timesteps = 4 
+timesteps = 5
 
 #Scaler
 scaler=StandardScaler()
@@ -115,31 +115,34 @@ scaler=RobustScaler()
 x2_train=scaler.fit_transform(x2_train)
 x2_test=scaler.transform(x2_test)
 
-x1_pred = x1_test[-timesteps:].reshape(1,timesteps,9)
-x2_pred = x2_test[-timesteps:].reshape(1,timesteps,9)
 
 #split함수정의  
 def splitX(dataset, timesteps):                   
     aaa = []                                      
-    for i in range(len(dataset) - timesteps): 
+    for i in range(len(dataset) - timesteps+1): 
         subset = dataset[i : (i + timesteps)]     
         aaa.append(subset)                         
     return np.array(aaa)      
 
 x1_trains = splitX(x1_train, timesteps)
 x1_tests = splitX(x1_test, timesteps)
+x1_pred = np.reshape(x1_tests[-1],([1]+list(x1_trains.shape[1:])))
+x1_tests = x1_tests[:-2]
+
 x2_trains = splitX(x2_train, timesteps)
 x2_tests = splitX(x2_test, timesteps)
+x2_pred = np.reshape(x2_tests[-1],([1]+list(x2_trains.shape[1:])))
+x2_tests = x2_tests[:-2]
 
 
-print(x1_trains.shape, x2_trains.shape)  #(695, 5, 9) (695, 5, 9)
-print(x1_tests.shape, x2_tests.shape)    #(295, 5, 9) (295, 5, 9)
+print(x1_trains.shape, x2_trains.shape)  #(696, 5, 9) (696, 5, 9)
+print(x1_tests.shape, x2_tests.shape)    #(294, 5, 9) (294, 5, 9)
 print(x1_pred.shape, x2_pred.shape)      #(1, 5, 9) (1, 5, 9)
 
-y1_trains = y1_train[timesteps:]
-y1_tests = y1_test[timesteps:]
+y2_trains = np.concatenate((y2_train[timesteps+1:],y2_test[:2]),axis=0)    #x,y데이터 개수 차이만큼 2개 데이터 생성 (y2_train에 y2_test데이터 값 2개 붙임)
+y2_tests = y2_test[timesteps+1:]
 
-print(y1_trains.shape, y1_tests.shape)  #(690,) (290,)
+print(y2_trains.shape, y2_tests.shape)  #(696,) (294,)
 
 
 #2. 모델구성 
@@ -153,7 +156,7 @@ output1 = Dense(16, name='output1')(dense4)
 
 
 #2-2. 현대모델 
-input2 = Input(shape=(4,9))
+input2 = Input(shape=(5,9))
 dense11 = LSTM(16, return_sequences=True, activation='selu', name='hd1')(input2)
 dense12 = LSTM(16, activation='relu', name='hd2')(dense11)
 dense13 = Dense(32, activation='swish', name='hd3')(dense12)
@@ -180,58 +183,48 @@ model = Model(inputs=[input1, input2], outputs=[last_output])
 
 model. compile(loss='mse', optimizer='adam')
 
-es = EarlyStopping(monitor='loss', patience=30, mode='auto', 
+es = EarlyStopping(monitor='val_loss', patience=30, mode='min', 
                    verbose=1, 
                    restore_best_weights=True
                    )
 
-model.fit([x1_trains, x2_trains], [y1_trains], epochs=500, batch_size=128, validation_split=0.2,
+hist=model.fit([x1_trains, x2_trains], [y2_trains], epochs=100, batch_size=8, validation_split=0.2,
           callbacks=[es])
 
 
 #모델 저장
-model.save('./_save/samsung/keras53_samsung20_pmg.h5')  ##컴파일, 훈련 다음에 save
+model.save('./_save/samsung/keras53_samsung43_pmg.h5')  ##컴파일, 훈련 다음에 save
 
 
 #4. 평가, 예측 
 
-loss = model.evaluate([x1_tests, x2_tests], y1_tests)
+loss = model.evaluate([x1_tests, x2_tests], y2_tests)
 print("loss:", loss)
 
 y_pred = model.predict([x1_pred, x2_pred])
 # print(y_pred.shape)
-print("내일(0329)종가:", "%.2f"% y_pred[0]) 
+print("모레(0330)시가:", np.round(y_pred,2)) 
 
+# print("모레(0330)시가:", "%.2f"% y_pred) 
+
+#그래프
+import matplotlib.pyplot as plt
+plt.plot(range(len(y2_tests)),y2_tests,label='real', color='red')
+plt.plot(range(len(y2_tests)),model.predict([x1_tests,x2_tests]),label='model')
+plt.legend()
+plt.show()
 
 '''
-#삼성2/현대자동차(제철)
-#('./_save/samsung/keras53_samsung2_pmk.h5')
-23.03.28의 종가: [62967.12]
+# 데이터 두개 추가 ('./_save/samsung/keras53_samsung40_pmg.h5')
+loss: 36684032.0
+모레(0330)시가: 172784.67
+===================================================================
+# 데이터 두개 삭제 ('./_save/samsung/keras53_samsung41_pmg.h5')
+loss: 35186024.0
+모레(0330)시가: 175022.05
 
-#데이터 역순
-23.03.28의 종가: [63373.617]
-====================================================
-#삼성3/현대자동차2[62900원]
-#('./_save/samsung/keras53_samsung11_pmg.h5')
-내일(0329)종가: 61446.80
-----------------------------------------------------
-#('./_save/samsung/keras53_samsung12_pmg.h5')
-내일(0329)종가: 63181.04
-#('./_save/samsung/keras53_samsung13_pmg.h5')
-내일(0329)종가: 63101.36
-# ('./_save/samsung/keras53_samsung14_pmg.h5')
-내일(0329)종가: 62930.22
-#('./_save/samsung/keras53_samsung15_pmg.h5')
-내일(0329)종가: 63070.99
-#('./_save/samsung/keras53_samsung16_pmg.h5')
-내일(0329)종가: 63486.34
-#('./_save/samsung/keras53_samsung17_pmg.h5')
-내일(0329)종가: 61205.64
-# ('./_save/samsung/keras53_samsung18_pmg.h5')
-내일(0329)종가: 61598.17
-# ('./_save/samsung/keras53_samsung19_pmg.h5')
-내일(0329)종가: 63366.38
-================================================
-#('./_save/samsung/keras53_samsung16_pmg.h5')
-내일(0329)종가: 63486.34
+#('./_save/samsung/keras53_samsung42_pmg.h5')
+loss: 60284364.0
+모레(0330)시가: 177634.88
+
 '''
