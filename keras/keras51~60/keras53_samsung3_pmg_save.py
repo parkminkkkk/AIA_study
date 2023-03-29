@@ -105,7 +105,7 @@ y2_train, y2_test= train_test_split(
 
 print(x1_train.shape) #(700, 9)
 
-timesteps = 5
+
 
 #Scaler
 scaler=StandardScaler()
@@ -115,8 +115,6 @@ x1_test=scaler.transform(x1_test)
 x2_train=scaler.transform(x2_train)
 x2_test=scaler.transform(x2_test)
 
-x1_pred = x1_test[-timesteps:].reshape(1,timesteps,9)
-x2_pred = x2_test[-timesteps:].reshape(1,timesteps,9)
 
 #split함수정의  
 def splitX(dataset, timesteps):                   
@@ -126,11 +124,14 @@ def splitX(dataset, timesteps):
         aaa.append(subset)                         
     return np.array(aaa)      
 
+timesteps = 5
 x1_trains = splitX(x1_train, timesteps)
 x1_tests = splitX(x1_test, timesteps)
 x2_trains = splitX(x2_train, timesteps)
 x2_tests = splitX(x2_test, timesteps)
 
+x1_pred = x1_test[-timesteps:].reshape(1,timesteps,9)
+x2_pred = x2_test[-timesteps:].reshape(1,timesteps,9)
 
 print(x1_trains.shape, x2_trains.shape)  #(694, 5, 9) (694, 5, 9)
 print(x1_tests.shape, x2_tests.shape)    #(294, 5, 9) (294, 5, 9)
