@@ -75,18 +75,18 @@ print(datasetH.isnull().sum())
 
 
 #1-2 데이터 분리 
-x1_ss = datasetS.drop(['전일비','등락률','금액(백만)','외인(수량)','외국계','프로그램','외인비'], axis=1)
+x1_ss = datasetS.drop(['전일비','등락률','금액(백만)','신용비','기관','외인(수량)','외국계','프로그램','외인비'], axis=1)
 print(x1_ss)
-x2_hd = datasetH.drop(['전일비','등락률','금액(백만)','외인(수량)','외국계','프로그램','외인비'], axis=1)
+x2_hd = datasetH.drop(['전일비','등락률','금액(백만)','신용비','기관','외인(수량)','외국계','프로그램','외인비'], axis=1)
 print(x2_hd)
 y2_hd = datasetH['시가']
 
 
 #X,Y
 # x1_ss = x1_ss[:900].values
-x1_ss = np.array(x1_ss[:500])[::-1]
-x2_hd = np.array(x2_hd[:500])[::-1]
-y2_hd = np.array(y2_hd[:500])[::-1]
+x1_ss = np.array(x1_ss[:300])[::-1]
+x2_hd = np.array(x2_hd[:300])[::-1]
+y2_hd = np.array(y2_hd[:300])[::-1]
 
 # x1_ss = x1_ss[::-1]
 # x2_hd = x2_hd[::-1]
@@ -147,7 +147,7 @@ print(y2_trains.shape, y2_tests.shape)  #(696,) (294,)
 
 #2. 모델구성 
 #2-1. 삼성모델 
-input1 = Input(shape=(timesteps,9))
+input1 = Input(shape=(timesteps,7))
 dense1 = LSTM(16, activation='relu',return_sequences=True, name='ss1')(input1)
 dense2 = LSTM(32, activation='swish', name='ss2')(dense1)
 dense3 = Dense(32, activation='selu', name='ss3')(dense2)
@@ -156,7 +156,7 @@ output1 = Dense(16, name='output1')(dense4)
 
 
 #2-2. 현대모델 
-input2 = Input(shape=(5,9))
+input2 = Input(shape=(5,7))
 dense11 = LSTM(16, return_sequences=True, activation='selu', name='hd1')(input2)
 dense12 = LSTM(16, activation='relu', name='hd2')(dense11)
 dense13 = Dense(32, activation='swish', name='hd3')(dense12)
@@ -183,17 +183,17 @@ model = Model(inputs=[input1, input2], outputs=[last_output])
 
 model. compile(loss='mse', optimizer='adam')
 
-es = EarlyStopping(monitor='val_loss', patience=30, mode='min', 
+es = EarlyStopping(monitor='val_loss', patience=32, mode='min', 
                    verbose=1, 
                    restore_best_weights=True
                    )
 
-hist=model.fit([x1_trains, x2_trains], [y2_trains], epochs=100, batch_size=8, validation_split=0.2,
+hist=model.fit([x1_trains, x2_trains], [y2_trains], epochs=256, batch_size=8, validation_split=0.2,
           callbacks=[es])
 
 
 #모델 저장
-model.save('./_save/samsung/keras53_samsung43_pmg.h5')  ##컴파일, 훈련 다음에 save
+model.save('./_save/samsung/keras53_samsung41_.h5')  ##컴파일, 훈련 다음에 save
 
 
 #4. 평가, 예측 
@@ -208,16 +208,21 @@ print("모레(0330)시가:", np.round(y_pred,2))
 # print("모레(0330)시가:", "%.2f"% y_pred) 
 
 #그래프
-import matplotlib.pyplot as plt
-plt.plot(range(len(y2_tests)),y2_tests,label='real', color='red')
-plt.plot(range(len(y2_tests)),model.predict([x1_tests,x2_tests]),label='model')
-plt.legend()
-plt.show()
+# import matplotlib.pyplot as plt
+# plt.plot(range(len(y2_tests)),y2_tests,label='real', color='red')
+# plt.plot(range(len(y2_tests)),model.predict([x1_tests,x2_tests]),label='model')
+# plt.legend()
+# plt.show()
 
 '''
-# 데이터 두개 추가 ('./_save/samsung/keras53_samsung40_pmg.h5')
+종가:[180,400] 179,300~180,600
+
+# 데이터 두개 추가 ('./_save/samsung/keras53_samsung41_.h5')
 loss: 36684032.0
 모레(0330)시가: 172784.67
+
+loss: 79297184.0
+모레(0330)시가: [[170306.1]]
 ===================================================================
 # 데이터 두개 삭제 ('./_save/samsung/keras53_samsung41_pmg.h5')
 loss: 35186024.0

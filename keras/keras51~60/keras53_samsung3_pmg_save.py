@@ -92,7 +92,7 @@ y2_hd = np.array(y2_hd[:1000])[::-1]
 # x2_hd = x2_hd[::-1]
 # y2_hd = y2_hd[::-1]
 
-print(x1_ss.shape, x2_hd.shape) #(1000, 11) (1000, 11)
+print(x1_ss.shape, x2_hd.shape) #(1000, 9) (1000, 9)
 print(y2_hd.shape) #(1000,)
 
 x1_ss = np.char.replace(x1_ss.astype(str), ',', '').astype(np.float64)
@@ -103,7 +103,7 @@ x1_train, x1_test, x2_train, x2_test, \
 y2_train, y2_test= train_test_split(
     x1_ss, x2_hd, y2_hd, shuffle=False, train_size=0.7)
 
-print(x1_train.shape) #(700, 11)
+print(x1_train.shape) #(700, 9)
 
 timesteps = 5
 
@@ -185,12 +185,12 @@ es = EarlyStopping(monitor='loss', patience=30, mode='auto',
                    restore_best_weights=True
                    )
 
-model.fit([x1_trains, x2_trains], [y2_trains], epochs=500, batch_size=128, validation_split=0.2,
+model.fit([x1_trains, x2_trains], [y2_trains], epochs=100, batch_size=8, validation_split=0.2,
           callbacks=[es])
 
 
 #모델 저장
-model.save('./_save/samsung/keras53_samsung41_pmg.h5')  ##컴파일, 훈련 다음에 save
+model.save('./_save/samsung/keras53_samsung40_.h5')  ##컴파일, 훈련 다음에 save
 
 
 #4. 평가, 예측 
@@ -202,11 +202,21 @@ y_pred = model.predict([x1_pred, x2_pred])
 # print(y_pred.shape)
 print("모레(0330)시가:", "%.2f"% y_pred) 
 
+#그래프
+# import matplotlib.pyplot as plt
+# plt.plot(range(len(y2_tests)),y2_tests,label='real', color='red')
+# plt.plot(range(len(y2_tests)),model.predict([x1_tests,x2_tests]),label='model')
+# plt.legend()
+# plt.show()
 
 '''
-# 데이터 두개 추가 ('./_save/samsung/keras53_samsung40_pmg.h5')
+# 데이터 두개 추가 ('./_save/samsung/keras53_samsung40_.h5')
 loss: 36684032.0
 모레(0330)시가: 172784.67
+
+#('./_save/samsung/keras53_samsung41_pmg.h5')
+loss: 89005832.0
+모레(0330)시가: 168656.48
 =================================================================
 # 데이터 두개 삭제 ('./_save/samsung/keras53_samsung41_pmg.h5')
 loss: 35186024.0
