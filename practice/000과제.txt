@@ -43,3 +43,11 @@ kingkeras@naver.com
 (목)-실제 이미지 작업
 
 #iterator 정리하기 
+
+
+<tensoflow test>
+1. 
+2.
+3. 이미지 분류 
+4.
+5.

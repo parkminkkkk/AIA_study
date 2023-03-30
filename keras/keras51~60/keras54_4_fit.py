@@ -38,18 +38,6 @@ xy_test = test_datagen.flow_from_directory(
     shuffle=True,
 )
 
-print(xy_train)    # <keras.preprocessing.image.DirectoryIterator object at 0x0000028A4F535F70>
-print(xy_train[0])
-
-print(len(xy_train))        # 32 [(160/5=32), (batch_size로 잘려져있음)]/ [0]~[31]까지 있음/ [0][0]=x, [0][1]=y
-print(len(xy_train[0]))     # 2  (x,y)/ 첫번째 batch
-print(xy_train[0][0])       # x : 5개 들어가있음 (batch=5일때)
-print(xy_train[0][1])       # y : [0. 1. 1. 1. 0.]
-print(xy_train[0][0].shape) #(5, 200, 200, 1)  #numpy형태라 shape가능
-print(xy_train[0][1].shape) #(5,)
-
-#현재 x는 (5,200,200,1) 짜리 데이터가 32덩어리 
-
 
 #2. 모델 구성 
 from tensorflow.keras.models import Sequential
@@ -129,3 +117,9 @@ plt.legend()
 plt.show()
 
 
+'''
+acc: 0.987500011920929
+val_acc: 0.949999988079071
+loss: 0.10580079257488251
+val_loss: 0.2043430209159851
+'''

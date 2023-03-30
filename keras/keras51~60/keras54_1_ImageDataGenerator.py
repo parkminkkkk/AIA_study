@@ -88,3 +88,4 @@ print(type(xy_train[0])) #<class 'tuple'>
 print(type(xy_train[0][0])) #<class 'numpy.ndarray'>
 print(type(xy_train[0][1])) #<class 'numpy.ndarray'>
 
+###x와 y가 합쳐진 iterator형태이다!!###
