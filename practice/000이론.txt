@@ -31,3 +31,9 @@ cls : clean 새창
 
 #\n : print(\n) : 다음 줄 
 # \ : 다음줄 띄우기 
+
+# 카데고리별 개수 확인
+# pandas - value_counts / numpy - unique ruturn count
+
+#<keras.preprocessing.image.DirectoryIterator object at 0x000001B167355F70>
+'Iterator' : 반복자  /  [] list, for문
