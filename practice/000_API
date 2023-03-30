@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 
+from tensorflow.keras.preprocessing.image import ImageDataGenerator #이미지 전처리
 from sklearn.preprocessing import OneHotEncoder
 from tensorflow.keras.utils import to_categorical
 
