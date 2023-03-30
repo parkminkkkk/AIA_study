@@ -101,15 +101,15 @@ submission.to_csv(path_save + 'submit_0314_0930_MaxAbScaler.csv') # 파일생성
 #그림(그래프)
 import matplotlib.pyplot as plt
 import matplotlib
-matplotlib.rcParams['font.family'] = 'Malgun Gothic'
+matplotlib.rcParams['font.family'] = 'Malgun Gothic' #한글깨짐 해결 #다른 폰트 필요시 윈도우 폰트파일에 추가해줘야함
 plt.figure(figsize=(9,6))
-plt.plot(hist.history['loss'], marker='.', c='red')
+plt.plot(hist.history['loss'], marker='.', c='red') #marker='.' 점점으로 표시->선이됨
 plt.plot(hist.history['val_loss'], marker='.', c='blue')
 plt.title('따릉이')
 plt.xlabel('epochs')
 plt.ylabel('loss, val_loss')
-plt.legend(('로스', '발_로스'))
-plt.grid()
+plt.legend(('로스', '발_로스')) # 범례 표시 
+plt.grid()    #격자표시 
 plt.show()
 
 

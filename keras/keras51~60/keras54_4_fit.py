@@ -22,17 +22,17 @@ test_datagen = ImageDataGenerator(rescale=1./255,)
 xy_train = train_datagen.flow_from_directory( 
     'd:/study_data/_data/brain/train/',
     target_size=(100,100),       
-    batch_size= 5,                    ###전체 데이터 쓸려면 160넣기(통배치)###
+    batch_size= 16,                    ###전체 데이터 쓸려면 160넣기(통배치)###
     class_mode='binary', 
     color_mode='grayscale',
-    # color_mode='rgb', #컬러 (5, 200, 200, 3)  #cf) rgba :투명도  (5, 200, 200, 4)
+    # color_mode='rgb', #컬러 (5, 100, 100, 3)  #cf) rgba :투명도  (5, 100, 100, 4)
     shuffle=True,
 )
 
 xy_test = test_datagen.flow_from_directory(
     'd:/study_data/_data/brain/test/',
     target_size=(100,100),       
-    batch_size=5, 
+    batch_size=16, 
     class_mode='binary', 
     color_mode='grayscale', 
     shuffle=True,
@@ -68,19 +68,25 @@ model.add(Dense(1, activation='sigmoid'))
 
 #3. 컴파일, 훈련 
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
-'''
-# model.fit(xy_train[:][0], xy_train[:][1], epochs=10)  #TypeError: '>=' not supported between instances of 'slice' and 'int'
 
-# model.fit(xy_train[0][0],xy_train[0][1], epochs=10)     #int형태이므로 돌어감
-#이미지를 가져와서 batch하는것이 아니라, batch하고 이미지가져와서 한번에 처리하겠다. 
-###전체 데이터 쓸려면 160넣기(통배치)= 데이터를 통으로 쓰고싶다하면 batch_size를 전체 데이터 개수(160)이상으로 잡으면 됨### 
-(160,100,100,1)(160,) =>[0][0],[0][1]하면 x,y모두 가져오는 것임 (통배치일 경우[1][0],[1][0]은 없으므로..)
-'''
-hist = model.fit_generator(xy_train, epochs=100,  # (fit_generator) x데이터,y데이터,batch_size까지 된 것
-                    steps_per_epoch=32,   # 훈련(train)데이터/batch = 160/5=32 (32가 한계사이즈임(max), 이만큼 잡아주는게 좋음/이상 쓰면 과적합, 더 적은 숫자일 경우 훈련 덜 돌게 됨)
+#1)통배치로 fit
+# hist = model.fit(xy_train[0][0], xy_train[0][1], batch_size=16, epochs=10,
+#           validation_data=(xy_test[0][0],xy_test[0][1]))  
+
+#2)fit_generator
+# hist = model.fit_generator(xy_train, epochs=100,  # (fit_generator) x데이터,y데이터,batch_size까지 된 것
+#                     steps_per_epoch=32,   # 훈련(train)데이터/batch = 160/5=32 (32가 한계사이즈임(max), 이만큼 잡아주는게 좋음/이상 쓰면 과적합, 더 적은 숫자일 경우 훈련 덜 돌게 됨)
+#                     validation_data=xy_test,
+#                     validation_steps=24,  # val(test)데이터/batch = 120/5=24
+#                     )   
+
+#3)fit
+hist = model.fit(xy_train, epochs=1000,  # (fit_generator) x데이터,y데이터,batch_size까지 된 것
+                    steps_per_epoch=10,   # 훈련(train)데이터/batch = 160/5=32 (32가 한계사이즈임(max), 이만큼 잡아주는게 좋음/이상 쓰면 과적합, 더 적은 숫자일 경우 훈련 덜 돌게 됨)
                     validation_data=xy_test,
-                    validation_steps=24,  # val(test)데이터/batch = 120/5=24
-                    )   
+                    validation_steps=120/16,  # val(test)데이터/batch = 120/5=24
+                    )  
+
 #history=(metrics)loss, val_loss, acc
 loss = hist.history['loss']
 val_loss = hist.history['val_loss']

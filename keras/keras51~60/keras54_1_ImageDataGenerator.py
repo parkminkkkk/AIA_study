@@ -26,6 +26,7 @@ xy_train = train_datagen.flow_from_directory( #이미지제너레이터는 폴�
     batch_size=10, 
     class_mode='binary', #0,1로 구별(nomal,ad) / 0,1,2(가위,바위,보)// #원핫사용한 경우 => 'categorical'
     color_mode='grayscale',
+     # color_mode='rgb', #컬러 (5, 200, 200, 3)  #cf) rgba :투명도  (5, 200, 200, 4)
     shuffle=True,
 )
 
@@ -39,7 +40,7 @@ xy_test = test_datagen.flow_from_directory(
 )
 
 '''
-#수치화 된 것 확인가능(실행)
+#수치화 된 것 확인가능(실행) #수치화해서 iterator형태로 구성함 
 Found 160 images belonging to 2 classes. #xy_train #x_train.shape = (160,200,200,1)            #y_train.shape =(160,)
 Found 120 images belonging to 2 classes. #xy_test  #x_test.shape = (120,200,200,1)로 바뀜(흑백) #y_test.shape  =(120,) : 이미지제너레이터는 폴더별로 라벨값 부여하므로 y는 (0,1)->120
 
@@ -47,8 +48,7 @@ Found 120 images belonging to 2 classes. #xy_test  #x_test.shape = (120,200,200,
 # pandas - value_counts / numpy - unique 
 '''
 
-print(xy_train) 
-# <keras.preprocessing.image.DirectoryIterator object at 0x0000028A4F535F70>
+print(xy_train) # <keras.preprocessing.image.DirectoryIterator object at 0x0000028A4F535F70>
 print(xy_train[0])
 '''
 (x[0] : array([[[[0.22352943],
@@ -66,16 +66,16 @@ y[0] : array([0., 1., 1., 1., 1.]
 '''
 
 # print(xy_train.shape) #error => #numpy, pandas만
-print(len(xy_train))        # 32 /(160/5(batch_size))/ [0]~[31]까지 있음/ [0][0]=x, [0][1]=y
+print(len(xy_train))        # 32 [(160/5=32), (batch_size로 잘려져있음)]/ [0]~[31]까지 있음/ [0][0]=x, [0][1]=y
 print(len(xy_train[0]))     # 2  (x,y)/ 첫번째 batch
-print(xy_train[0][0])       # x 5개 들어가있음 (batch=5일때)
-print(xy_train[0][1])       # y [0. 1. 1. 1. 0.]
+print(xy_train[0][0])       # x : 5개 들어가있음 (batch=5일때)
+print(xy_train[0][1])       # y : [0. 1. 1. 1. 0.]
 print(xy_train[0][0].shape) #(5, 200, 200, 1)  #numpy형태라 shape가능
 print(xy_train[0][1].shape) #(5,)
 
 '''
 x와 y가 합쳐진 iterator형태는 같이 넣어도 됨
-batch_size=10일 때  
+ *batch_size=10일 때  
 print(xy_train[0][0])        #x 10개 들어가있음
 print(xy_train[0][1])        #[0. 1. 0. 1. 1. 0. 1. 1. 1. 0.]
 print(xy_train[0][0].shape)  #(10, 200, 200, 1)
@@ -83,7 +83,7 @@ print(xy_train[0][1].shape)  #(10,)
 '''
 
 print("===========================================================")
-print(type(xy_train))  #<class 'keras.preprocessing.image.DirectoryIterator'>
+print(type(xy_train))  #<class 'keras.preprocessing.image.DirectoryIterator'> : Iterator형태로 구성되어있음 
 print(type(xy_train[0])) #<class 'tuple'>
 print(type(xy_train[0][0])) #<class 'numpy.ndarray'>
 print(type(xy_train[0][1])) #<class 'numpy.ndarray'>
