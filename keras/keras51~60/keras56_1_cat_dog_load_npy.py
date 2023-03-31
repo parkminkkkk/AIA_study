@@ -1,22 +1,39 @@
+#불러와서 모델 완성 
+#1. time.time()으로 이미지 수치화하는 시간 체크 
+#2. time.time()으로 넘파이로 변경하는 시간 체크할 것 
+#고양이 666, 개 11702 깨진 파일
+
 import numpy as np
+import time
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from sklearn.model_selection import train_test_split
 
-#1. 데이터
+# 넘파이까지 저장 
+path = 'd:/study_data/_data/cat_dog/PetImages/'
+save_path = 'd:/study_data/_save/cat_dog/'
 
-path = 'd:/study_data/_save/_npy/'
-# np.save(path + 'keras55_1_x_train.npy', arr= xy_train[0][0])
-# np.save(path + 'keras55_1_x_test.npy', arr= xy_train[0][0])
-# np.save(path + 'keras55_1_y_train.npy', arr= xy_train[0][1])
-# np.save(path + 'keras55_1_y_test.npy', arr= xy_train[0][1])
 
-x_train = np.load(path + 'keras55_1_x_train.npy')
-x_test = np.load(path + 'keras55_1_x_test.npy')
-y_train = np.load(path + 'keras55_1_y_train.npy')
-y_test = np.load(path + 'keras55_1_y_test.npy')
 
-# print(x_train)
-print(x_train.shape, x_test.shape) #(160, 100, 100, 1) (160, 100, 100, 1)
-print(y_train.shape, y_test.shape) #(160,) (160,)
+#1. 데이터 
+# #이미지 전처리 (수치화만)
+# datagen = ImageDataGenerator(rescale=1./255) 
+
+# xy = datagen.flow_from_directory(
+#     'd:/study_data/_data/cat_dog/PetImages/',
+#     target_size=(100,100),
+#     batch_size=24998,
+#     class_mode='binary',
+#     color_mode='rgb',
+#     shuffle=True)
+
+# x = xy[0][0]
+# y = xy[0][1]
+
+
+x_train = np.load(save_path + 'keras56_x_train.npy')
+x_test = np.load(save_path + 'keras56_x_test.npy')
+y_train = np.load(save_path + 'keras56_y_train.npy')
+y_test = np.load(save_path + 'keras56_y_test.npy')
 
 
 
@@ -25,21 +42,21 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D, Flatten
 
 model = Sequential()
-model.add(Conv2D(32, (5,5), input_shape=(100,100,1), activation='relu'))
+model.add(Conv2D(32, (5,5), input_shape=(100,100,3), activation='relu'))
 model.add(Conv2D(64, (3,3), activation='relu'))
 model.add(Flatten())
 model.add(Dense(16, activation='relu'))
 model.add(Dense(16, activation='relu'))
 model.add(Dense(16, activation='relu'))
 model.add(Dense(16, activation='relu'))
-model.add(Dense(1, activation='sigmoid'))
+model.add(Dense(1, activation='sigmoid')) 
 
 
 #3. 컴파일, 훈련 
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 
 #3)fit
-hist = model.fit(x_train,y_train, epochs=1000,  # (fit_generator) x데이터,y데이터,batch_size까지 된 것
+hist = model.fit(x_train,y_train, epochs=100,  # (fit_generator) x데이터,y데이터,batch_size까지 된 것
                     steps_per_epoch=10,   # 훈련(train)데이터/batch = 160/5=32 (32가 한계사이즈임(max), 이만큼 잡아주는게 좋음/이상 쓰면 과적합, 더 적은 숫자일 경우 훈련 덜 돌게 됨)
                     validation_data=[x_test, y_test],
                     validation_steps=24,  # val(test)데이터/batch = 120/5=24
@@ -85,12 +102,3 @@ plt.plot(hist.history['val_acc'], marker='.', label='val_acc', c='blue')
 plt.legend()
 
 plt.show()
-
-
-'''
-acc: 1.0
-val_acc: 0.606249988079071
-loss: 1.0756574297943189e-08
-val_loss: 4.42763614654541
-
-'''

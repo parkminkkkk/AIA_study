@@ -29,7 +29,7 @@ print(xy)
 
 ett1 = time.time()
 print('이미지 수치화 시간 :', np.round(ett1-stt, 2)) 
-#이미지 수치화 시간 : 0.09
+#이미지 수치화 시간 : 0.6
 
 x = xy[0][0]
 y = xy[0][1]
@@ -38,8 +38,8 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=640, test_size=0.3)
 
 
-print(xy[0][0].shape)  #(1027, 150, 150, 3)
-print(xy[0][1].shape)  #(1027,)
+print(xy[0][0].shape)  #(2520, 150, 150, 3)
+print(xy[0][1].shape)  #(2520,)
 
 
 np.save(save_path + 'keras56_x_train.npy', arr=x_train)
@@ -51,5 +51,5 @@ ett2 = time.time()
 
 print('넘파이 변경 시간 :', np.round(ett2-stt, 2))
 '''
-넘파이 변경 시간 : 22.69
+넘파이 변경 시간 : 198.42
 '''

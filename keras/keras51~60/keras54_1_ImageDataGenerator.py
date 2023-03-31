@@ -34,7 +34,7 @@ xy_test = test_datagen.flow_from_directory(
     'd:/study_data/_data/brain/test/', #분류된 폴더의 상위폴더까지 지정
     target_size=(200,200),        #수집한 데이터마다 이미지 사진크기 다르므로 이미지크기 동일하게 고정
     batch_size=5, 
-    class_mode='binary', #0,1로 구별(nomal,ad) / 0,1,2(가위,바위,보)// #원핫사용한 경우 => 'categorical'
+    class_mode='binary', #0,1로 구별(nomal,ad) // 0,1,2(가위,바위,보)/ #원핫 사용해야하는 경우 => 'categorical'
     color_mode='grayscale',
     shuffle=True,
 )
