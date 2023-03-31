@@ -24,7 +24,7 @@ xy_train = train_datagen.flow_from_directory( #이미지제너레이터는 폴�
     'd:/study_data/_data/brain/train/', #분류된 폴더의 상위폴더까지 지정  #directory=폴더
     target_size=(200,200),        #수집한 데이터마다 이미지 사진크기 다르므로 이미지크기 동일하게 고정
     batch_size=10, 
-    class_mode='binary', #0,1로 구별(nomal,ad) / 0,1,2(가위,바위,보)// #원핫사용한 경우 => 'categorical'
+    class_mode='binary',    #y라벨 class(폴더별) #binary=수치화(0,1) #0,1로 구별(nomal,ad) / 0,1,2(가위,바위,보)// #원핫사용한 경우 => 'categorical'
     color_mode='grayscale',
      # color_mode='rgb', #컬러 (5, 200, 200, 3)  #cf) rgba :투명도  (5, 200, 200, 4)
     shuffle=True,
