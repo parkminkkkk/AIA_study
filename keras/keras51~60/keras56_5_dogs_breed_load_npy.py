@@ -33,21 +33,22 @@ y_test = np.load(save_path + 'keras56_y_test.npy')
 
 #2. 모델 구성 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Conv2D, Flatten
+from tensorflow.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D
 
 model = Sequential()
-model.add(Conv2D(32, (5,5), input_shape=(150,150,3), activation='relu'))
+model.add(Conv2D(32, (5,5), input_shape=(100,100,3), activation='relu'))
+model.add(MaxPooling2D())
 model.add(Conv2D(64, (3,3), activation='relu'))
 model.add(Flatten())
 model.add(Dense(16, activation='relu'))
 model.add(Dense(16, activation='relu'))
 model.add(Dense(16, activation='relu'))
 model.add(Dense(16, activation='relu'))
-model.add(Dense(1, activation='sigmoid')) 
+model.add(Dense(5, activation='softmax')) 
 
 
 #3. 컴파일, 훈련 
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
 #3)fit
 hist = model.fit(x_train,y_train, epochs=100,  # (fit_generator) x데이터,y데이터,batch_size까지 된 것
@@ -71,7 +72,10 @@ print("val_loss:",val_loss[-1])
 
 
 '''
-
+acc: 0.24271844327449799
+val_acc: 0.2330097109079361
+loss: -3.1099787546713915e+19
+val_loss: -3.2232438454951084e+19
 '''
 
 '''

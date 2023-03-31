@@ -21,7 +21,7 @@ xy = datagen.flow_from_directory(
     'd:/study_data/_data/dogs_breed/',
     target_size=(100,100),
     batch_size=1030,
-    class_mode='binary',
+    class_mode='categorical',
     color_mode='rgb',
     shuffle=True)
 
@@ -29,7 +29,7 @@ print(xy)
 
 ett1 = time.time()
 print('이미지 수치화 시간 :', np.round(ett1-stt, 2)) 
-#이미지 수치화 시간 : 0.04
+#이미지 수치화 시간 : 0.05
 
 x = xy[0][0]
 y = xy[0][1]
@@ -51,5 +51,5 @@ ett2 = time.time()
 
 print('넘파이 변경 시간 :', np.round(ett2-stt, 2))
 '''
-넘파이 변경 시간 : 198.42
+넘파이 변경 시간 : 261.74
 '''

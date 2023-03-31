@@ -26,16 +26,16 @@ print(np.tile(x_train[0].reshape(28*28),argment_size).reshape(-1,28,28,1).shape)
 #np.tile(데이터, 증폭시킬 개수) 
 #(100, 28, 28, 1) #1개의 이미지를 100개로 증폭시켜라 
 
-print(np.zeros(argment_size))        #100개의 0을 출력해줌 
+print(np.zeros(argment_size))        #100(argment_size)개의 0을 출력해줌 
 print(np.zeros(argment_size).shape)  #(100,)
 
 
 
-# 디렉토리 있는 것을 이미지 만드는 것 : 경로 받아들임
+# flow_from_directory: 폴더에 있는 것을 이미지 만드는 것 : 경로 받아들임(경로 명시)
 # flow : 원래 있는 데이터를 증폭시키는 것
 
 x_data = train_datagen.flow(
-    np.tile(x_train[5].reshape(28*28),argment_size).reshape(-1,28,28,1), #x데이터
+    np.tile(x_train[0].reshape(28*28),argment_size).reshape(-1,28,28,1), #x데이터
     np.zeros(argment_size), #y데이터(임의'0') : 그림만 그릴거라서 y값 필요없어서 임의의 숫자 0 넣음
     batch_size=argment_size,
     shuffle=True,
