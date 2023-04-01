@@ -5,28 +5,52 @@ from tensorflow.python.keras.layers import Dense, Input
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
 import pandas as pd
+from sklearn.experimental import enable_iterative_imputer 
+from sklearn.impute import IterativeImputer
+from xgboost import XGBRegressor
 
 #1. 데이터
 path = './_data/dacon_ddarung/'
 path_save = './_save/dacon_ddarung/'
 
 train_csv = pd.read_csv(path + 'train.csv', index_col=0)
-print(train_csv) #(1459, 10)
+# print(train_csv) #(1459, 10)
 
 test_csv = pd.read_csv(path + 'test.csv', index_col=0)
-print(test_csv) #(715, 9) count제외
+# print(test_csv) #(715, 9) count제외
 
 # print(train_csv.columns)
+'''
+Index(['hour', 'hour_bef_temperature', 'hour_bef_precipitation',
+       'hour_bef_windspeed', 'hour_bef_humidity', 'hour_bef_visibility',
+       'hour_bef_ozone', 'hour_bef_pm10', 'hour_bef_pm2.5', 'count'],
+      dtype='object')
+'''
 # print(train_csv.info())
 # print(train_csv.describe())
 # print(type(train_csv))
 # print(train_csv.isnull().sum())
 
-###결측치제거### 
-train_csv = train_csv.dropna()   #결측치 삭제함수 .dropna()
-print(train_csv.isnull().sum())
-# print(train_csv.info())
-print(train_csv.shape)  #(1328, 10)
+# ###결측치제거### 
+# train_csv = train_csv.dropna()   #결측치 삭제함수 .dropna()
+# print(train_csv.isnull().sum())
+# # print(train_csv.info())
+# print(train_csv.shape)  #(1328, 10)
+
+###결측치처리###
+imputer = IterativeImputer(estimator=XGBRegressor())
+train_csv = imputer.fit_transform(train_csv)
+test_csv = imputer.fit_transform(test_csv)
+
+train_csv = pd.DataFrame(train_csv)
+test_csv = pd.DataFrame(test_csv)
+train_csv.columns = ['hour', 'hour_bef_temperature', 'hour_bef_precipitation','hour_bef_windspeed', 'hour_bef_humidity', 'hour_bef_visibility',
+                    'hour_bef_ozone', 'hour_bef_pm10', 'hour_bef_pm2.5', 'count']
+test_csv.columns = ['hour', 'hour_bef_temperature', 'hour_bef_precipitation','hour_bef_windspeed', 'hour_bef_humidity', 'hour_bef_visibility',
+                    'hour_bef_ozone', 'hour_bef_pm10', 'hour_bef_pm2.5']
+print(train_csv)  
+print(test_csv)
+
 
 ###데이터분리(train_set)###
 x = train_csv.drop(['count'], axis=1)
@@ -116,6 +140,12 @@ plt.show()
 
 
 '''
+##결측치 처리 : IterativeImputer###
+점수 : 70.8995636829   *성능향상*
+loss :  3098.23681640625
+r2스코어 : 0.5376026065728127
+RMSE :  55.66180729942712
+==================================================
 1. [1754_es] 73.68점(갱신*)
 Epoch 00273: early stopping/ loss :  2475.7314453125/ r2스코어 : 0.5751303841838872/ RMSE :  49.75672111342364
 -patience=15, random_state=34553, Dense(16'relu',8'relu', 4'relu',1), 'mse'
@@ -134,6 +164,4 @@ Epoch3000
 loss :  1989.625732421875
 r2스코어 : 0.7303451862110664
 RMSE :  44.605220624545105
-
-6.*staScaler
 '''

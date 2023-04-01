@@ -6,6 +6,9 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, MaxAbsScaler, RobustScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.callbacks import EarlyStopping
+from sklearn.experimental import enable_iterative_imputer 
+from sklearn.impute import IterativeImputer
+from xgboost import XGBRegressor
 
 # 1. 데이터
 # 1.1 경로, 가져오기
@@ -21,6 +24,7 @@ print(train_csv.columns, test_csv.columns)
 
 # 1.3 결측치
 print(train_csv.isnull().sum())
+print(train_csv.info())        #dtypes: float64(3), int64(34), object(43)
 
 
 # 1.4 라벨인코딩( object 에서 )
@@ -29,13 +33,53 @@ for i in train_csv.columns:
     if train_csv[i].dtype=='object':
         train_csv[i] = le.fit_transform(train_csv[i])
         test_csv[i] = le.fit_transform(test_csv[i])
-print(len(train_csv.columns))
+# print(len(train_csv.columns))
 print(train_csv.info())
-train_csv=train_csv.dropna()
 print(train_csv.shape) #(1121, 80)
 
-train_csv = train_csv.fillna(train_csv.median())
-test_csv = test_csv.fillna(test_csv.median())
+###결측치 처리####
+# train_csv = train_csv.fillna(train_csv.median())
+# test_csv = test_csv.fillna(test_csv.median())
+
+imputer = IterativeImputer(estimator=XGBRegressor())
+train_csv = imputer.fit_transform(train_csv)
+test_csv = imputer.fit_transform(test_csv)
+train_csv = pd.DataFrame(train_csv)
+test_csv = pd.DataFrame(test_csv)
+train_csv.columns = ['MSSubClass', 'MSZoning', 'LotFrontage', 'LotArea', 'Street', 'Alley',
+       'LotShape', 'LandContour', 'Utilities', 'LotConfig', 'LandSlope',
+       'Neighborhood', 'Condition1', 'Condition2', 'BldgType', 'HouseStyle',
+       'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd', 'RoofStyle',
+       'RoofMatl', 'Exterior1st', 'Exterior2nd', 'MasVnrType', 'MasVnrArea',
+       'ExterQual', 'ExterCond', 'Foundation', 'BsmtQual', 'BsmtCond',
+       'BsmtExposure', 'BsmtFinType1', 'BsmtFinSF1', 'BsmtFinType2',
+       'BsmtFinSF2', 'BsmtUnfSF', 'TotalBsmtSF', 'Heating', 'HeatingQC',
+       'CentralAir', 'Electrical', '1stFlrSF', '2ndFlrSF', 'LowQualFinSF',
+       'GrLivArea', 'BsmtFullBath', 'BsmtHalfBath', 'FullBath', 'HalfBath',
+       'BedroomAbvGr', 'KitchenAbvGr', 'KitchenQual', 'TotRmsAbvGrd',
+       'Functional', 'Fireplaces', 'FireplaceQu', 'GarageType', 'GarageYrBlt',
+       'GarageFinish', 'GarageCars', 'GarageArea', 'GarageQual', 'GarageCond',
+       'PavedDrive', 'WoodDeckSF', 'OpenPorchSF', 'EnclosedPorch', '3SsnPorch',
+       'ScreenPorch', 'PoolArea', 'PoolQC', 'Fence', 'MiscFeature', 'MiscVal',
+       'MoSold', 'YrSold', 'SaleType', 'SaleCondition', 'SalePrice']
+test_csv.columns = ['MSSubClass', 'MSZoning', 'LotFrontage', 'LotArea', 'Street', 'Alley',
+       'LotShape', 'LandContour', 'Utilities', 'LotConfig', 'LandSlope',
+       'Neighborhood', 'Condition1', 'Condition2', 'BldgType', 'HouseStyle',
+       'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd', 'RoofStyle',
+       'RoofMatl', 'Exterior1st', 'Exterior2nd', 'MasVnrType', 'MasVnrArea',
+       'ExterQual', 'ExterCond', 'Foundation', 'BsmtQual', 'BsmtCond',
+       'BsmtExposure', 'BsmtFinType1', 'BsmtFinSF1', 'BsmtFinType2',
+       'BsmtFinSF2', 'BsmtUnfSF', 'TotalBsmtSF', 'Heating', 'HeatingQC',
+       'CentralAir', 'Electrical', '1stFlrSF', '2ndFlrSF', 'LowQualFinSF',
+       'GrLivArea', 'BsmtFullBath', 'BsmtHalfBath', 'FullBath', 'HalfBath',
+       'BedroomAbvGr', 'KitchenAbvGr', 'KitchenQual', 'TotRmsAbvGrd',
+       'Functional', 'Fireplaces', 'FireplaceQu', 'GarageType', 'GarageYrBlt',
+       'GarageFinish', 'GarageCars', 'GarageArea', 'GarageQual', 'GarageCond',
+       'PavedDrive', 'WoodDeckSF', 'OpenPorchSF', 'EnclosedPorch', '3SsnPorch',
+       'ScreenPorch', 'PoolArea', 'PoolQC', 'Fence', 'MiscFeature', 'MiscVal',
+       'MoSold', 'YrSold', 'SaleType', 'SaleCondition']
+print(train_csv.isnull().sum())
+
 
 # 1.5 x, y 분리
 x = train_csv.drop(['SalePrice'], axis=1)
@@ -99,10 +143,8 @@ date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
 y_submit = model.predict(test_csv)
-import numpy as np
-import pandas as pd
 y_submit = pd.DataFrame(y_submit)
-y_submit = y_submit.fillna(y_submit.mode()[0])
+# y_submit = y_submit.fillna(y_submit.mode()[0])
 y_submit = np.array(y_submit)
 
 submission = pd.read_csv(path + 'sample_submission.csv', index_col=0)
@@ -111,6 +153,12 @@ submission.to_csv(path_save + 'kaggle_house_' + date + '.csv')
 
 
 '''
+##결측치 처리 : IterativeImputer###
+점수 :0.15336 **new**
+loss :  [586457024.0, 0.0]
+r2 :  0.9038864724426658
+RMSE :  24216.874227061064
+=============================================================
 *test_csv median
 loss :  [1644365824.0, 0.0]
 r2 :  0.7591257125073961
