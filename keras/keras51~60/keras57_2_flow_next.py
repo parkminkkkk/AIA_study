@@ -4,7 +4,6 @@ import numpy as np
 
 (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 
-#증폭
 train_datagen = ImageDataGenerator(
     rescale=1./255,
     # horizontal_flip=True,
@@ -22,6 +21,7 @@ print(x_train[1].shape) #(28, 28)
 print(x_train[0][0].shape) #(28,)
 
 
+#증폭
 augment_size = 100 #증폭사이즈 
 print(np.tile(x_train[0].reshape(28*28),augment_size).reshape(-1,28,28,1).shape)
 #np.tile(데이터, 증폭시킬 개수) 
@@ -31,22 +31,29 @@ print(np.zeros(augment_size))        #100(augment_size)개의 0을 출력해줌
 print(np.zeros(augment_size).shape)  #(100,)
 
 
-
-# flow_from_directory: 폴더에 있는 것을 이미지로 만드는 것 : 경로 받아들임(경로 명시)
-# flow : 원래 있는 데이터를 증폭시키는 것
-
 x_data = train_datagen.flow(
     np.tile(x_train[0].reshape(28*28),augment_size).reshape(-1,28,28,1), #x데이터
     np.zeros(augment_size), #y데이터(임의'0') : 그림만 그릴거라서 y값 필요없어서 임의의 숫자 0 넣음
     batch_size=augment_size,
     shuffle=True,
-)
+).next()
+#반복자(Iterator)에서 next()를 호출하면 컨테이너의 다음 요소가 반환됨
 
-print(x_data) #<keras.preprocessing.image.NumpyArrayIterator object at 0x000001D31663FDF0>
-print(x_data[0]) #x와 y가 모두 포함 
-print(x_data[0][0].shape) #x : (100,28,28,1)
-print(x_data[0][1])       #y : (100,)
+# #################################.next() 사용#############################################
+print(x_data) #x와 y가 합쳐진 데이터 출력 (= next미사용에서, x_data[0]과 동일한 형태)
+print(type(x_data)) #<class 'tuple'> =>tuple(x,y)은 numpy구조(x:nump,y:nump)를 포함함(shape가능)
+print(type(x_data[0])) #<class 'numpy.ndarray'
+print(x_data[0]) #x데이터  
+print(x_data[1]) #y데이터 
+print(x_data[0].shape) #(100, 28, 28, 1)
+print(x_data[1].shape) #(100,)
 
+
+# #################################.next()미사용#############################################
+# print(x_data) #<keras.preprocessing.image.NumpyArrayIterator object at 0x000001D31663FDF0>
+# print(x_data[0]) #x와 y가 모두 포함 
+# print(x_data[0][0].shape) #x : (100,28,28,1)
+# print(x_data[0][1])       #y : (100,)
 
 
 import matplotlib.pyplot as plt
@@ -54,6 +61,7 @@ plt.figure(figsize=(7,7))
 for i in range(49):
     plt.subplot(7, 7, i+1)
     plt.axis('off')
-    plt.imshow(x_data[0][0][i], cmap='gray')
+    plt.imshow(x_data[0][i], cmap='gray')      #.next(사용)/ tuple형태, x : numpy형태이므로 
+    # plt.imshow(x_data[0][0][i], cmap='gray') #.next(미사용)/ iterator형태에 batch포함된 형태이므로 
 plt.show()
 

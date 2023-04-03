@@ -24,7 +24,7 @@ xy_train = train_datagen.flow_from_directory( #이미지제너레이터는 폴�
     'd:/study_data/_data/brain/train/', #분류된 폴더의 상위폴더까지 지정  #directory=폴더
     target_size=(200,200),        #수집한 데이터마다 이미지 사진크기 다르므로 이미지크기 동일하게 고정
     batch_size=10, 
-    class_mode='binary',    #y라벨 class(폴더별) #binary=수치화(0,1) #0,1로 구별(nomal,ad) / 0,1,2(가위,바위,보)// #원핫사용한 경우 => 'categorical'
+    class_mode='binary',    #y라벨 class(폴더별) #binary=수치화(0,1) #0,1로 구별(nomal,ad) // 0,1,2(가위,바위,보)/ #원핫사용한 경우 => 'categorical'
     color_mode='grayscale',
      # color_mode='rgb', #컬러 (5, 200, 200, 3)  #cf) rgba :투명도  (5, 200, 200, 4)
     shuffle=True,
@@ -69,7 +69,7 @@ y[0] : array([0., 1., 1., 1., 1.]
 print(len(xy_train))        # 32 [(160/5=32), (batch_size로 잘려져있음)]/ [0]~[31]까지 있음/ [0][0]=x, [0][1]=y
 print(len(xy_train[0]))     # 2  (x,y)/ 첫번째 batch
 print(xy_train[0][0])       # x : 5개 들어가있음 (batch=5일때)
-print(xy_train[0][1])       # y : [0. 1. 1. 1. 0.]
+print(xy_train[0][1])       # y : [0. 1. 1. 1. 0.] 5개
 print(xy_train[0][0].shape) #(5, 200, 200, 1)  #numpy형태라 shape가능
 print(xy_train[0][1].shape) #(5,)
 

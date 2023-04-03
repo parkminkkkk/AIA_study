@@ -19,6 +19,7 @@ import datetime
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 from sklearn.metrics import r2_score, mean_squared_error, accuracy_score
+from sklearn.metrics import F1_score
 
 
 #시간저장
