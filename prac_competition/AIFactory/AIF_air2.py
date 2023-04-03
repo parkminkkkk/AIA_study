@@ -14,13 +14,10 @@ train_data = pd.read_csv(path+'train_data.csv')
 test_data = pd.read_csv(path+'test_data.csv')
 submission = pd.read_csv(path+'answer_sample.csv')
 
-
-
 # Combine train and test data
 data = pd.concat([train_data, test_data], axis=0)
 
 # Preprocess data
-# 
 def type_to_HP(type):
     HP=[30,20,10,50,30,30,30,30]
     gen=(HP[i] for i in type)
@@ -30,7 +27,7 @@ test_data['type']=type_to_HP(test_data['type'])
 
 
 # Select subset of features for Autoencoder model
-features = ['air_inflow','air_end_temp','motor_current','motor_rpm','motor_temp','motor_vibe']
+features = ['air_inflow','air_end_temp','out_pressure','motor_current','motor_rpm','motor_temp','motor_vibe']
 
 # Split data into train and validation sets
 x_train, x_val = train_test_split(data[features], train_size=0.8, random_state=640)
@@ -51,7 +48,7 @@ autoencoder.compile(optimizer='adam', loss='mean_squared_error')
 
 # Train Autoencoder model
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=50)
-autoencoder.fit(x_train, x_train, epochs=5000, batch_size=8, validation_data=(x_val, x_val), callbacks=[es])
+autoencoder.fit(x_train, x_train, epochs=5, batch_size=8, validation_data=(x_val, x_val), callbacks=[es])
 
 # Predict anomalies in test data
 test_data = scaler.transform(test_data[features])
@@ -76,4 +73,3 @@ date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")  
 
 submission.to_csv(save_path+'submit_air_'+date+ '.csv', index=False)
-

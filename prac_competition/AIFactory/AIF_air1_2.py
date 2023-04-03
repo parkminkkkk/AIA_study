@@ -67,7 +67,7 @@ model.fit(train_data)
 predictions = model.predict(test_data)
 
 # Evaluate model performance
-acc = accuracy_score(test_data['type'], predictions)
+acc = accuracy_score(test_data['type'], predictions) #error
 print('Accuracy:', acc)
 
 f1_score = f1_score(test_data['type'], predictions, average='macro')
