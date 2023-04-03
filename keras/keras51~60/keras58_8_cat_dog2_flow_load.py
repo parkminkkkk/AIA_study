@@ -34,7 +34,7 @@ hist = model.fit(x_train,y_train, epochs=10,  # (fit_generator) x데이터,y데�
                     # steps_per_epoch=10,   # 훈련(train)데이터/batch = 160/5=32 (32가 한계사이즈임(max), 이만큼 잡아주는게 좋음/이상 쓰면 과적합, 더 적은 숫자일 경우 훈련 덜 돌게 됨)
                     validation_data=[x_test, y_test],
                     batch_size = 32
-                    # validation_steps=24,  # val(test)데이터/batch = 120/5=24
+                    validation_steps=24,  # val(test)데이터/batch = 120/5=24
                     )  
 #history=(metrics)loss, val_loss, acc
 loss = hist.history['loss']

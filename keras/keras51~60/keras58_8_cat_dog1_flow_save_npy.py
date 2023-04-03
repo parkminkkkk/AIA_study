@@ -85,7 +85,7 @@ y_test = to_categorical(y_test)
 
 ett1 = time.time()
 print('이미지 증폭 시간 :', np.round(ett1-stt, 2)) 
-#이미지 증폭 시간 : 4.31
+#이미지 증폭 시간 : 345.63
 
 
 np.save(save_path + 'keras58_8_x_train.npy', arr=x_train)
@@ -96,6 +96,6 @@ np.save(save_path + 'keras58_8_y_test.npy', arr=y_test)
 ett2 = time.time()
 
 print('넘파이 변경 시간 :', np.round(ett2-stt, 2))
-# 넘파이 변경 시간 : 5.55
+# 넘파이 변경 시간 : 363.99
 
 

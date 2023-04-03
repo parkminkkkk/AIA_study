@@ -26,7 +26,7 @@ test_datagen = ImageDataGenerator(rescale=1./255,)
 
 #D드라이브에서 데이터 가져오기 
 xy_train = train_datagen.flow_from_directory( 
-    'd:/study_data/_data/brain/train/',
+    'd:/study_data/_data/dogs_breed/',
     target_size=(100,100),       
     batch_size= 1030,                    ###전체 데이터 쓸려면 160넣기(통배치)###
     class_mode='categorical',         #y라벨 class(폴더별) #binary=수치화(0,1)  # categorical (5,)-> (5,2) onehotencoding 되어 나옴
@@ -35,7 +35,7 @@ xy_train = train_datagen.flow_from_directory(
     shuffle=True,
 )
 xy_test = test_datagen.flow_from_directory(
-    'd:/study_data/_data/brain/test/',
+    'd:/study_data/_data/dogs_breed/',
     target_size=(100,100),       
     batch_size= 1030, 
     class_mode='categorical',     

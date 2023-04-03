@@ -26,7 +26,7 @@ test_datagen = ImageDataGenerator(rescale=1./255,)
 
 #D드라이브에서 데이터 가져오기 
 xy_train = train_datagen.flow_from_directory( 
-    'd:/study_data/_data/brain/train/',
+    'd:/study_data/_data/men_women/',
     target_size=(150,150),       
     batch_size= 2520,                    ###전체 데이터 쓸려면 160넣기(통배치)###
     class_mode='binary',         #y라벨 class(폴더별) #binary=수치화(0,1)  # categorical (5,)-> (5,2) onehotencoding 되어 나옴
@@ -35,7 +35,7 @@ xy_train = train_datagen.flow_from_directory(
     shuffle=True,
 )
 xy_test = test_datagen.flow_from_directory(
-    'd:/study_data/_data/brain/test/',
+    'd:/study_data/_data/men_women/',
     target_size=(150,150),       
     batch_size= 2520, 
     class_mode='binary',     
@@ -85,7 +85,7 @@ y_test = to_categorical(y_test)
 
 ett1 = time.time()
 print('이미지 증폭 시간 :', np.round(ett1-stt, 2)) 
-#이미지 증폭 시간 : 4.31
+#이미지 증폭 시간 : 20.63
 
 
 np.save(save_path + 'keras58_99_x_train.npy', arr=x_train)
@@ -96,6 +96,6 @@ np.save(save_path + 'keras58_99_y_test.npy', arr=y_test)
 ett2 = time.time()
 
 print('넘파이 변경 시간 :', np.round(ett2-stt, 2))
-# 넘파이 변경 시간 : 5.55
+# 넘파이 변경 시간 : 29.15
 
 
