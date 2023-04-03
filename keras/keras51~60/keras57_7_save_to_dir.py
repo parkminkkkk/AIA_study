@@ -25,7 +25,7 @@ print(x_train[1].shape) #(28, 28)
 print(x_train[0][0].shape) #(28,)
 
 #6만개를 4만개 데이터로 증폭(총 10만개)
-augment_size = 40000 #증폭사이즈  
+augment_size = 100 #증폭사이즈  
 
 # randidx = np.random.randint(60000, size = 40000) #랜덤하게 6만개에서 4만개 뽑을 것
 randidx = np.random.randint(x_train.shape[0], size=augment_size) 
@@ -46,40 +46,27 @@ x_test = x_test.reshape(x_test.shape[0], x_test.shape[1], x_test.shape[2], 1) #�
 # x_test = x_test.reshape(10000,28,28,1)과 동일 
 x_augmented = x_augmented.reshape(x_augmented.shape[0], x_augmented.shape[1], x_augmented.shape[2], 1)
 
+import time
+start_time = time.time()
 
-'''
-#x_augmented 변환 방법1. 
-x_augmented = train_datagen.flow(
-    x_augmented, y_augmented, batch_size=augment_size, shuffle=False
-) #y넣을 필요는 없지만 x,y쌍으로 되어있으므로 넣음
-
-#x와 y가 합쳐진 iterator형태 됨 -> x_train과 합체 안됨 
-print(x_augmented) #<keras.preprocessing.image.NumpyArrayIterator object at 0x0000014508EA3B20>
-print(x_augmented[0][0].shape) #(40000, 28, 28,1) #x_train과 합체
-'''
+#증폭하는 부분에서 save
 #x_augmented 변환 방법2. '.next()사용'
 x_augmented = train_datagen.flow(
-    x_augmented, y_augmented, batch_size=augment_size, shuffle=False
+    x_augmented, y_augmented, batch_size=augment_size, shuffle=False,
+    save_to_dir='d:/temp/'
     ).next()[0]  #첫번째 튜플이 나옴(x_augmented[0]이 나옴) =>.next()[0]하면 x_augmented[0][0]까지 나옴
-print(x_augmented)
-print(x_augmented.shape) #(40000, 28, 28, 1)
+# print(x_augmented)
+# print(x_augmented.shape) #(40000, 28, 28, 1)
 
-#문제
-print(np.max(x_train), np.min(x_train))         #255.0 0.0
-print(np.max(x_augmented), np.min(x_augmented)) #1.0 0.0 : datagen에서 augmented는 이미 scaler를 했음
-#x_train은 scale안되어있으므로 scale해주기 
+end_time = time.time() - start_time
 
+print(augment_size, "개 증폭에 걸린 시간:", np.round(end_time,2), "초")
 
-#x_train, x_augmented합치기 (10만데이터)/ y_train, y_augmented합치기 
+# #x_train, x_augmented합치기 (10만데이터)/ y_train, y_augmented합치기 
+# x_train = np.concatenate((x_train/255. ,x_augmented)) #x_train, x_augmented를 뒤에 엮겠다.
+# y_train = np.concatenate((y_train,y_augmented), axis=0)  #y는 scale하면 안됨!!!
+# x_test = x_test/255.
+# print(x_train.shape, y_train.shape) #(100000, 28, 28, 1), (100000)
 
-#ValueError: operands could not be broadcast together with shapes (60000,28,28,1) (40000,28,28,1)
-# x_train = x_train + x_augmented
-# print(x_train.shape) 
-
-x_train = np.concatenate((x_train/255. ,x_augmented)) #x_train, x_augmented를 뒤에 엮겠다.
-y_train = np.concatenate((y_train,y_augmented), axis=0)  #y는 scale하면 안됨!!!
-x_test = x_test/255.
-print(x_train.shape, y_train.shape) #(100000, 28, 28, 1), (100000)
-
-print(np.max(x_train), np.min(x_train))         
-print(np.max(x_augmented), np.min(x_augmented)) 
+# print(np.max(x_train), np.min(x_train))         
+# print(np.max(x_augmented), np.min(x_augmented)) 

@@ -1,3 +1,5 @@
+#57_5 copy -> 57_8 : iterator형태로 바꾸기(x,y합치기)/fit_generator로 사용
+
 from tensorflow.keras.datasets import fashion_mnist
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import numpy as np
@@ -20,6 +22,10 @@ train_datagen = ImageDataGenerator(
     shear_range=0.7,
     fill_mode='nearest'
 )
+train_datagen2 = ImageDataGenerator(
+    rescale=1./1, #밑에서 scale해주므로, 여기서도 하면 flow이후 scale이 두번 적용되어 /255,/255됨, 값너무 작아짐
+    )
+
 print(x_train.shape)    #(60000, 28, 28)
 print(x_train[0].shape) #(28, 28)
 print(x_train[1].shape) #(28, 28)
@@ -65,40 +71,33 @@ x_augmented = train_datagen.flow(
 # print(x_augmented)
 # print(x_augmented.shape) #(40000, 28, 28, 1)
 
-# #문제
-# print(np.max(x_train), np.min(x_train))         #255.0 0.0
-# print(np.max(x_augmented), np.min(x_augmented)) #1.0 0.0 : datagen에서 augmented는 이미 scaler를 했음
-#x_train은 scale안되어있으므로 scale해주기 
-
 
 #x_train, x_augmented합치기 (10만데이터)/ y_train, y_augmented합치기 
-
-#ValueError: operands could not be broadcast together with shapes (60000,28,28,1) (40000,28,28,1)
-# x_train = x_train + x_augmented
-# print(x_train.shape) 
-
 x_train = np.concatenate((x_train/255. ,x_augmented)) #x_train, x_augmented를 뒤에 엮겠다.
 y_train = np.concatenate((y_train,y_augmented), axis=0)  #y는 scale하면 안됨!!!
-x_test = x_test/255.
-print(x_train.shape, y_train.shape) #(100000, 28, 28, 1), (100000)
-print(np.max(x_train), np.min(x_train))         
-print(np.max(x_augmented), np.min(x_augmented)) 
-
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
+x_test = x_test/255.
+# print(x_train.shape, y_train.shape) #(100000, 28, 28, 1), (100000)
+# print(np.max(x_train), np.min(x_train))         
+# print(np.max(x_augmented), np.min(x_augmented)) 
+
+################[x, y합치기]########################
+#numpy, tuple, iterator형태로 만들어주는 것 : flow 
+batch_size=64
+xy_train = train_datagen2.flow(x_train, y_train, batch_size=batch_size, shuffle=True)
 
 
 
 #[실습] 모델, 증폭/증폭x비교 
-
 #2. 모델구성 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D
 
 model = Sequential()
-model.add(Conv2D(32, (5,5), input_shape=(28,28,1), activation='relu'))
+model.add(Conv2D(64, (2,2), input_shape=(28,28,1), activation='relu'))
 model.add(MaxPooling2D())
-model.add(Conv2D(64, (3,3), activation='relu'))
+model.add(Conv2D(64, (2,2), activation='relu'))
 model.add(Flatten())
 model.add(Dense(16, activation='relu'))
 model.add(Dense(16, activation='relu'))
@@ -106,15 +105,16 @@ model.add(Dense(16, activation='relu'))
 model.add(Dense(16, activation='relu'))
 model.add(Dense(10, activation='softmax')) 
 
+
 #3. 컴파일, 훈련 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
 #3)fit
-hist = model.fit(x_train,y_train, epochs=10,  # (fit_generator) x데이터,y데이터,batch_size까지 된 것
-                    # steps_per_epoch=10,   # 훈련(train)데이터/batch = 160/5=32 (32가 한계사이즈임(max), 이만큼 잡아주는게 좋음/이상 쓰면 과적합, 더 적은 숫자일 경우 훈련 덜 돌게 됨)
+hist = model.fit_generator(xy_train, epochs=10,  # (fit_generator) x데이터,y데이터,batch_size까지 된 것
+                    steps_per_epoch=len(xy_train)/batch_size,   
                     validation_data=[x_test, y_test],
-                    batch_size = 16
-                    # validation_steps=24,  # val(test)데이터/batch = 120/5=24
+                    # batch_size = 16,
+                    validation_steps=24,  
                     )  
 
 #history=(metrics)loss, val_loss, acc
