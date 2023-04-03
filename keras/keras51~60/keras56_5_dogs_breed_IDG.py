@@ -29,7 +29,7 @@ print(xy)
 
 ett1 = time.time()
 print('이미지 수치화 시간 :', np.round(ett1-stt, 2)) 
-#이미지 수치화 시간 : 0.05
+#이미지 수치화 시간 : 0.35
 
 x = xy[0][0]
 y = xy[0][1]

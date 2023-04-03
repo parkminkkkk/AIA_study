@@ -46,8 +46,8 @@ kingkeras@naver.com
 
 
 <tensoflow test>
-1. 
-2. 
-3. 이미지 분류(말/사람, 가위바위보) 
-4. 자연어처리
+1. keras01
+2. mnist,fashion mnist
+3. 이미지 분류[말/사람-sigmoid, softmax], [가위바위보-다중분류softmax], 개/고양이) (150,150) 
+4. 자연어처리 []
 5. 시계열
