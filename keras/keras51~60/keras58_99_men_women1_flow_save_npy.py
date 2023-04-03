@@ -27,19 +27,19 @@ test_datagen = ImageDataGenerator(rescale=1./255,)
 #D드라이브에서 데이터 가져오기 
 xy_train = train_datagen.flow_from_directory( 
     'd:/study_data/_data/brain/train/',
-    target_size=(100,100),       
-    batch_size= 500,                    ###전체 데이터 쓸려면 160넣기(통배치)###
+    target_size=(150,150),       
+    batch_size= 2520,                    ###전체 데이터 쓸려면 160넣기(통배치)###
     class_mode='binary',         #y라벨 class(폴더별) #binary=수치화(0,1)  # categorical (5,)-> (5,2) onehotencoding 되어 나옴
-    color_mode='grayscale',
+    color_mode='rgb',
     # color_mode='rgb', #컬러 (5, 100, 100, 3)  #cf) rgba :투명도  (5, 100, 100, 4)
     shuffle=True,
 )
 xy_test = test_datagen.flow_from_directory(
     'd:/study_data/_data/brain/test/',
-    target_size=(100,100),       
-    batch_size= 150, 
+    target_size=(150,150),       
+    batch_size= 2520, 
     class_mode='binary',     
-    color_mode='grayscale', 
+    color_mode='rgb', 
     shuffle=True,
 )
 print(xy_train[0][0].shape) #(160, 100, 100, 1)
@@ -88,10 +88,10 @@ print('이미지 증폭 시간 :', np.round(ett1-stt, 2))
 #이미지 증폭 시간 : 4.31
 
 
-np.save(save_path + 'keras58_5_x_train.npy', arr=x_train)
-np.save(save_path + 'keras58_5_x_test.npy', arr=x_test)
-np.save(save_path + 'keras58_5_y_train.npy', arr=y_train)  
-np.save(save_path + 'keras58_5_y_test.npy', arr=y_test) 
+np.save(save_path + 'keras58_99_x_train.npy', arr=x_train)
+np.save(save_path + 'keras58_99_x_test.npy', arr=x_test)
+np.save(save_path + 'keras58_99_y_train.npy', arr=y_train)  
+np.save(save_path + 'keras58_99_y_test.npy', arr=y_test) 
 
 ett2 = time.time()
 

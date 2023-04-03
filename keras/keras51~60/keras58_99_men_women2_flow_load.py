@@ -5,17 +5,17 @@ from sklearn.model_selection import train_test_split
 
 save_path = 'd:/study_data/_save/keras58/'
 
-x_train = np.load(save_path + 'keras58_5_x_train.npy')
-x_test = np.load(save_path + 'keras58_5_x_test.npy')
-y_train = np.load(save_path + 'keras58_5_y_train.npy')
-y_test = np.load(save_path + 'keras58_5_y_test.npy')
+x_train = np.load(save_path + 'keras58_99_x_train.npy')
+x_test = np.load(save_path + 'keras58_99_x_test.npy')
+y_train = np.load(save_path + 'keras58_99_y_train.npy')
+y_test = np.load(save_path + 'keras58_99_y_test.npy')
 
 #2. 모델 구성 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D, Dropout
 
 model = Sequential()
-model.add(Conv2D(32, (5,5), input_shape=(100,100,1), activation='relu'))
+model.add(Conv2D(32, (5,5), input_shape=(150,150,3), activation='relu'))
 model.add(Conv2D(64, (3,3), activation='relu'))
 model.add(Flatten())
 model.add(Dense(16, activation='relu'))
