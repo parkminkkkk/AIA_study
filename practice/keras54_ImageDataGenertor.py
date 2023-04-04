@@ -14,7 +14,7 @@ test_dtgen = ImageDataGenerator(rescale=1./255)
 
 #D드라이브에서 데이터 가져오기
 xy_train = train_dtgen.flow_from_directory(
-    'd:/study/'
+    'd:/study/',
     target_size=(100,100),
     batch_size=10,
     class_mode='binary',
@@ -23,7 +23,7 @@ xy_train = train_dtgen.flow_from_directory(
 )
 
 xy_test = test_dtgen.flow_from_directory(
-    'd:/study/'
+    'd:/study/',
     target_size=(100,100),
     batch_size=10,
     class_mode='binary',

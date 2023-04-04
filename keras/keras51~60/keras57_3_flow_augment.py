@@ -60,7 +60,7 @@ print(x_augmented[0][0].shape) #(40000, 28, 28,1) #x_train과 합체
 #x_augmented 변환 방법2. '.next()사용'
 x_augmented = train_datagen.flow(
     x_augmented, y_augmented, batch_size=augment_size, shuffle=False
-    ).next()[0]  #첫번째 튜플이 나옴(x_augmented[0]이 나옴) =>.next()[0]하면 x_augmented[0][0]까지 나옴
+    ).next()[0]  #.next() : 첫번째 튜플이 나옴(x_augmented[0]이 나옴) =>.next()[0]하면 x_augmented[0][0]까지 나옴
 print(x_augmented)
 print(x_augmented.shape) #(40000, 28, 28, 1)
 
@@ -75,7 +75,6 @@ print(np.max(x_augmented), np.min(x_augmented)) #1.0 0.0 : datagen에서 augment
 #ValueError: operands could not be broadcast together with shapes (60000,28,28,1) (40000,28,28,1)
 # x_train = x_train + x_augmented
 # print(x_train.shape) 
-
 x_train = np.concatenate((x_train/255. ,x_augmented)) #x_train, x_augmented를 뒤에 엮겠다.
 y_train = np.concatenate((y_train,y_augmented), axis=0)  #y는 scale하면 안됨!!!
 x_test = x_test/255.

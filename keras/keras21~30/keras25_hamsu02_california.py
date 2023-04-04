@@ -51,7 +51,7 @@ es = EarlyStopping(monitor='val_loss', patience=20, mode='min',
               restore_best_weights=True
              )  
 
-hist = model.fit(x_train, y_train, epochs=10000, batch_size=64,
+hist = model.fit(x_train, y_train, epochs=10, batch_size=64,
           validation_split=0.2,
           verbose=1,
           callbacks=[es]
@@ -60,7 +60,7 @@ hist = model.fit(x_train, y_train, epochs=10000, batch_size=64,
 
 
 #4. 평가, 예측
-loss = model.evaluate(x_test, y_test)
+loss = model.evaluate((x_test, y_test))
 print('loss :', loss)
 
 y_predict = model.predict(x_test)
