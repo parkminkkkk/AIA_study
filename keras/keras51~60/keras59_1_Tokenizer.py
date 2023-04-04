@@ -25,7 +25,6 @@ print(type(x))
 ######1. to_categorical ######
 from tensorflow.keras.utils import to_categorical
 import numpy as np
-
 x = to_categorical(x)
 x=np.delete(x, 0, axis=1)
 print(x)
@@ -60,7 +59,6 @@ print(x.shape)
 ######3. OneHotEncoer (2차원 받아들임)######
 from sklearn.preprocessing import OneHotEncoder
 import numpy as np
-
 ohe = OneHotEncoder()
 x = np.array(x)
 x = x.reshape(-1,1)                   #가로세로 바꿈 (1,11)->(11,1) #즉, 2차원으로 받아들여야함!!(ravel()적용안됨)

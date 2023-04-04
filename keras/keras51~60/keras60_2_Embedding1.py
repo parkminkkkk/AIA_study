@@ -1,4 +1,9 @@
+#Embedding : 자연어처리 효율적인 onehotencoding
+#텍스트데이터 처리할때 유용
+#각 단어를 고정된 크기의 벡터로 변환/ 좌표(2~10차원)로 수치화
+
 from keras.preprocessing.text import Tokenizer
+import pandas as pd
 import numpy as np
 
 #1. 데이터 
@@ -61,11 +66,37 @@ print("단어사전개수:", word_size)  #단어사전개수: 28
 
 
 #2. 모델구성 
-#뒤쪽값이 영향을 미치는 경우(어순, 순서) -> 시계열 모델(RNN) 
+#뒤쪽 값이 영향을 미치는 경우(어순, 순서) -> 시계열 모델(RNN) 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, LSTM
+from tensorflow.keras.layers import Dense, LSTM, Dropout, Reshape, Embedding
 
 pad_x = pad_x.reshape(14,5,1)
+# pad_x = pad_x.reshape(pad_x.shape[0],pad_x.shape[1],1)
 
 model = Sequential()
-model.add(LSTM(10, input_shape=(5,1), return_sequences=True))
+model.add(Embedding(input_dim=28, output_dim=32, input_length=5)) #(단어사전개수(최적), output(튜닝), 텍스트최대길이(timesteps, maxlen=5))  
+# model.add(Embedding(28,32)) #input_length 최댓값으로 자동 조정됨 
+# model.add(Embedding(28,32, input_length=5))  
+# model.add(Embedding(28,32, 5)) #valueError : could not interpret initializer indentifier:5 /#input_length는 꼭 파라미터명시해줘야함   
+model.add(LSTM(32)) #Embedding으로 벡터화 만들어주므로 통상적으로 다음에 LSTM 사용(그 외 Conv1D)
+model.add(Dense(16, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(1, activation='sigmoid')) #긍정/부정 : 이진분류
+
+model.summary()
+
+#3. 컴파일, 훈련 
+model.compile(loss="binary_crossentropy", optimizer='adam', metrics=['acc'])
+
+model.fit(pad_x, labels, epochs=50, batch_size=8)
+
+
+#4. 평가, 예측
+acc = model.evaluate(pad_x, labels)[1]
+print("acc:", acc)
+
+'''
+#LSTM acc: 0.9285714030265808
+
+#Embedding acc: 1.0
+'''

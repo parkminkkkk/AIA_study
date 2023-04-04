@@ -48,7 +48,7 @@ autoencoder.compile(optimizer='adam', loss='mean_squared_error')
 
 # Train Autoencoder model
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=50)
-autoencoder.fit(x_train, x_train, epochs=5, batch_size=8, validation_data=(x_val, x_val), callbacks=[es])
+autoencoder.fit(x_train, x_train, epochs=50, batch_size=8, validation_data=(x_val, x_val), callbacks=[es])
 
 # Predict anomalies in test data
 test_data = scaler.transform(test_data[features])
