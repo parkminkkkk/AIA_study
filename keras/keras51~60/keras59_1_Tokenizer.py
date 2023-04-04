@@ -19,17 +19,18 @@ x = token.texts_to_sequences([text])
 print(x) #[[3, 4, 2, 2, 5, 6, 7, 1, 1, 1, 8]] #1행 11열 
 print(type(x))
 
-
+##########################################################################################################
 #원핫인코딩 (숫자가 커질 수록 가치가 부여되는 것이 아니므로)#
 
 ######1. to_categorical ######
 from tensorflow.keras.utils import to_categorical
 import numpy as np
 x = to_categorical(x)
-x=np.delete(x, 0, axis=1)
+# x=np.delete(x, 0, axis=1)
 print(x)
 print(x.shape) #(1, 11, 9) 
-# 문제 발생 : tokenizer로 변화했을때는 1~8까지 (숫자1부터시작), 그러나 to_categorical의 경우(0부터 시작)=> '0'삭제 & reshape(11,8)
+# 문제 발생 : tokenizer로 변화했을때는 1~8까지 (숫자1부터시작), 그러나 to_categorical의 경우(0부터 시작)
+# => '0'삭제 & reshape(11,8)
 
 
 ######2. get_dummies (1차원 받아들임)######
@@ -66,5 +67,6 @@ x = ohe.fit_transform(x).toarray()
 #x = ohe.fit_transform(np.array(x).reshape(-1,1)).toarray()
 print(x)
 print(x.shape)
+##########################################################################################################
 
 

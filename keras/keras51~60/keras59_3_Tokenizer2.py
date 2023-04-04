@@ -17,12 +17,14 @@ print(token.word_counts) #단어 사용한 횟수
 
 #숫자로 바꾸는 작업(수치화)
 x = token.texts_to_sequences([text1, text2])
-print(x)       #[[2, 5, 3, 3, 6, 7, 8, 1, 1, 1, 9], [2, 10, 11, 12, 4, 4, 13]]  
+print(x)      
+#[[2, 5, 3, 3, 6, 7, 8, 1, 1, 1, 9], [2, 10, 11, 12, 4, 4, 13]]  
 print(type(x)) #<class 'list'>
 
 ###list합치기 (더하기) # append로도 가능###
 x = x[0] + x[1]
 print(x)
+#[2, 5, 3, 3, 6, 7, 8, 1, 1, 1, 9, 2, 10, 11, 12, 4, 4, 13]
 ##########################################
 
 #원핫인코딩 (숫자가 커질 수록 가치가 부여되는 것이 아니므로)#
@@ -36,12 +38,12 @@ print(x)
 
 
 ######2. get_dummies (1차원 받아들임)######
-# import pandas as pd
-# import numpy as np
-# # x = pd.get_dummies(np.array(x).reshape(-1,))
-# x = pd.get_dummies(np.array(x).ravel())
-# print(x) 
-# print(x.shape) #(18, 13)
+import pandas as pd
+import numpy as np
+# x = pd.get_dummies(np.array(x).reshape(-1,))
+x = pd.get_dummies(np.array(x).ravel())
+print(x) 
+print(x.shape) #(18, 13)
 
 
 ######3. OneHotEncoer (2차원 받아들임)######

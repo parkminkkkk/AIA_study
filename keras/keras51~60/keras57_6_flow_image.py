@@ -94,7 +94,7 @@ y_test = to_categorical(y_test)
 #[실습] x_augmented 10개와 x_train 10개를 비교하는 이미지를 출력하기 (2,10)짜리
 
 import matplotlib.pyplot as plt
-plt.figure(figsize=(50,50)) #그림사이즈 
+plt.figure(figsize=(30,30)) #화면사이즈 
 for i in range(10):
     plt.subplot(2, 10, i+1)
     plt.axis('off')

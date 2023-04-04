@@ -88,7 +88,6 @@ batch_size=64
 xy_train = train_datagen2.flow(x_train, y_train, batch_size=batch_size, shuffle=True)
 
 
-
 #[실습] 모델, 증폭/증폭x비교 
 #2. 모델구성 
 from tensorflow.keras.models import Sequential
