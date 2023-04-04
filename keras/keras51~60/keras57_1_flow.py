@@ -4,7 +4,7 @@ import numpy as np
 
 (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 
-#증폭
+#증폭(조건)
 train_datagen = ImageDataGenerator(
     rescale=1./255,
     # horizontal_flip=True,
