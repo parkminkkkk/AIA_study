@@ -49,7 +49,6 @@ x_test=x_test.reshape(-1,100,1)
 from tensorflow.keras.utils import to_categorical
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
-
 print(y_train.shape)
 
 #2.모델 구성
