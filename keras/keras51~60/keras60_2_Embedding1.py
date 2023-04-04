@@ -74,7 +74,8 @@ pad_x = pad_x.reshape(14,5,1)
 # pad_x = pad_x.reshape(pad_x.shape[0],pad_x.shape[1],1)
 
 model = Sequential()
-model.add(Embedding(input_dim=28, output_dim=32, input_length=5)) #(단어사전개수(최적), output(튜닝), 텍스트최대길이(timesteps, maxlen=5))  
+model.add(Embedding(input_dim=28, output_dim=32, input_length=5)) 
+#(단어사전개수(최적), output(튜닝), 텍스트최대길이(timesteps, maxlen=5))  
 # model.add(Embedding(28,32)) #input_length 최댓값으로 자동 조정됨 
 # model.add(Embedding(28,32, input_length=5))  
 # model.add(Embedding(28,32, 5)) #valueError : could not interpret initializer indentifier:5 /#input_length는 꼭 파라미터명시해줘야함   

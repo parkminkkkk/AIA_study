@@ -99,13 +99,14 @@ print("acc:", acc)
 x_predict = ['나는 성호가 정말 재미없다 너무 정말']
 token.fit_on_texts(x_predict)
 x_predict = token.texts_to_sequences(x_predict)
+
 x_predict = np.array(x_predict)
 x_predict = x_predict.reshape(-1,6,1)
-
 
 predict = model.predict([x_predict])
 print("긍정/부정", predict)
 
+#####################################
 def pred(x):
     if x>0.5:
         return print("긍정")
@@ -115,7 +116,7 @@ pred(predict)
 print(pred)
 
 '''
-#LSTM acc: 0.9285714030265808
-
-#Embedding acc: 1.0
+acc: 1.0
+긍정/부정 [[0.99723864]]
+긍정
 '''
