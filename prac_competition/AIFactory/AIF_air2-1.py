@@ -39,16 +39,18 @@ x_val = scaler.transform(x_val)
 
 # Define Autoencoder model
 input_layer = Input(shape=(len(features),))
-encoder = Dense(4, activation='relu')(input_layer)
-decoder = Dense(len(features), activation='sigmoid')(encoder)
+encoder1 = Dense(16, activation='selu')(input_layer)
+encoder2 = Dense(16, activation='selu')(encoder1)
+encoder3 = Dense(16, activation='swish')(encoder2)
+decoder = Dense(len(features), activation='sigmoid')(encoder3)
 autoencoder = Model(inputs=input_layer, outputs=decoder)
 
 # Compile Autoencoder model
-autoencoder.compile(optimizer='adam', loss='mean_squared_error')
+autoencoder.compile(optimizer='adam', loss='mean_squared_error', metrics=['acc'])
 
 # Train Autoencoder model
-es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=50)
-autoencoder.fit(x_train, x_train, epochs=50, batch_size=8, validation_data=(x_val, x_val), callbacks=[es])
+es = EarlyStopping(monitor='val_acc', mode='max', verbose=1, patience=50)
+autoencoder.fit(x_train, x_train, epochs=500, batch_size=8, validation_data=(x_val, x_val), callbacks=[es])
 
 # Predict anomalies in test data
 test_data = scaler.transform(test_data[features])
