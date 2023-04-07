@@ -1,0 +1,53 @@
+#from gtp : Text_Data Augumentation
+
+import random
+from transformers import pipeline
+
+# Initialize a pipeline for text generation using GPT-2 model
+text_generator = pipeline('text-generation', model='gpt2')
+
+# Sample text for augmentation
+text = "The quick brown fox jumped over the lazy dog."
+
+# Define a function for synonym replacement
+def synonym_replacement(text, n=3):
+    """
+    Replace n words in the input text with their synonyms.
+    """
+    words = text.split()
+    new_words = words.copy()
+    random_indices = random.sample(range(len(words)), n)
+    for i in random_indices:
+        synonyms = [syn for syn in wordnet.synsets(words[i])]
+        if synonyms:
+            synonym = random.choice(synonyms).lemmas()[0].name()
+            new_words[i] = synonym
+    return ' '.join(new_words)
+
+# Define a function for paraphrasing
+def paraphrasing(text):
+    """
+    Generate a paraphrased version of the input text.
+    """
+    output = text_generator(text, max_length=50, do_sample=True, temperature=0.7)
+    return output[0]['generated_text']
+
+# Define a function for back-translation
+def back_translation(text):
+    """
+    Generate a back-translated version of the input text.
+    """
+    translator = google_translator()
+    translated_text = translator.translate(text, lang_tgt='es')
+    back_translated_text = translator.translate(translated_text, lang_src='es', lang_tgt='en')
+    return back_translated_text
+
+# Example usage
+augmented_text = synonym_replacement(text, n=2)
+print(augmented_text)
+
+augmented_text = paraphrasing(text)
+print(augmented_text)
+
+augmented_text = back_translation(text)
+print(augmented_text)

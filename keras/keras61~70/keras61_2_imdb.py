@@ -12,6 +12,7 @@ from tensorflow.keras.layers import Dense, LSTM, Dropout, Reshape, Embedding
 print(x_train)
 print(y_train)
 print(x_train.shape, x_test.shape) #(25000,) (25000,)
+print(y_train.shape)
 print(np.unique(y_train, return_counts=True)) #[0 1] #(array([0, 1], dtype=int64), array([12500, 12500], dtype=int64))
 ###numpy : np.unique / pandas : value_counts : y 라벨값 확인 ###
 print(pd.value_counts(y_train)) #1  12500/ 0  12500
@@ -19,6 +20,9 @@ print(pd.value_counts(y_train)) #1  12500/ 0  12500
 
 print("영화평의 최대길이:", max(len(i) for i in x_train)) #영화평의 최대길이: 2494
 print("영화평의 평균길이:", sum(map(len, x_train))/ len(x_train)) #영화평의 평균길이: 238.71364 #중요도를 모르니까 평균치 알아보기 위해서(추측)
+#map(function, iterable) = map(적용시킬 함수, 적용할 값들)
+#함수의 동작은 두 번째 인자로 들어온 반복 가능한 자료형 (리스트나 튜플)을 첫 번째 인자로 들어온 함수에 하나씩 집어넣어서 함수를 수행하는 함수
+
 
 #전처리
 from tensorflow.keras.preprocessing.sequence import pad_sequences
