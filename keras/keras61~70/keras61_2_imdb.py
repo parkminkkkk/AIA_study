@@ -20,9 +20,10 @@ print(pd.value_counts(y_train)) #1  12500/ 0  12500
 
 print("영화평의 최대길이:", max(len(i) for i in x_train)) #영화평의 최대길이: 2494
 print("영화평의 평균길이:", sum(map(len, x_train))/ len(x_train)) #영화평의 평균길이: 238.71364 #중요도를 모르니까 평균치 알아보기 위해서(추측)
+#len(i) for i in x_train = map(len,x_train)
 #map(function, iterable) = map(적용시킬 함수, 적용할 값들)
 #함수의 동작은 두 번째 인자로 들어온 반복 가능한 자료형 (리스트나 튜플)을 첫 번째 인자로 들어온 함수에 하나씩 집어넣어서 함수를 수행하는 함수
-
+#즉, sum(map(len, x_train))은 x_train의 모든 문자열 길이의 합/ en(x_train)은 x_train의 총 문자열 수를 반환
 
 #전처리
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -32,8 +33,8 @@ x_train = pad_sequences(x_train, padding="pre", maxlen=200,
                         ) 
 
 x_test = pad_sequences(x_test, padding="pre", maxlen=200,
-                        truncating='pre' #maxlen크기보다 더 많은 데이터가 있는 경우는 어디를 자를 것인가 
-                        ) 
+                       truncating='pre' #maxlen크기보다 더 많은 데이터가 있는 경우는 어디를 자를 것인가 
+                       ) 
 
 print(x_train.shape, x_test.shape) #(25000, 200) (25000, 200)
 x_train=x_train.reshape(-1,200,1)
