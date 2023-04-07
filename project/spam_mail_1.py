@@ -16,6 +16,9 @@ email_y = dt_eng["label_num"]
 print("이메일 최대길이", max(len(i) for i in email)) #이메일 최대길이 32258
 print("이메일 평균길이", sum(map(len, email))/len(email)) #이메일 평균길이 1048.391993811642
 
+email = email.apply(lambda x : x.lower())
+
+
 #Text processing 
 import nltk 
 from tensorflow.keras.preprocessing.text import Tokenizer
