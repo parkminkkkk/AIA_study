@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+import matplotlib.pyplot as plt
+import seaborn as sns
 #
 import nltk
 # nltk.download('punkt')
@@ -8,21 +9,22 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.model_selection import train_test_split
 #
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from tensorflow.python.keras.models import Sequential, Model, load_model 
 from tensorflow.python.keras.layers import Dense, Input, Dropout
 from tensorflow.keras.layers import Conv1D, Conv2D, LSTM, Reshape, Embedding
 from tensorflow.keras.layers import concatenate, Concatenate
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, f1_score
-from sklearn import metrics
 
 
 path = './_data/project/'
 save_path = '/_save/project/'
 
 dt_eng = pd.read_csv(path + 'spam_ham_dataset.csv')
+#한글 데이터
 print(dt_eng.columns)
 dt_eng.drop('Unnamed: 0', axis=1, inplace= True)
 dt_eng.columns = ['label', 'text', 'class']
@@ -41,6 +43,7 @@ stopwords = set(stopwords.words('english'))
 dt_eng['text'] = dt_eng['text'].apply(lambda x: ' '.join([ word for word in word_tokenize(x)
                                                           if not word in stopwords]))
 print(dt_eng.sample(10))
+print(dt_eng['text'][0])
 
 eng_x = dt_eng.loc[:,'text'] 
 eng_y = dt_eng.loc[:,'class']
@@ -50,19 +53,19 @@ x_train, x_test, y_train, y_test = train_test_split (eng_x, eng_y, train_size=0.
 print(x_train.shape, x_test.shape) #(3619,) (1552,)
 
 #vectorizer
-cVect = CountVectorizer()
-# tfVect = TfidfVectorizer()
+# cVect = CountVectorizer()
+tfVect = TfidfVectorizer()
+#두개 비교
 
-cVect.fit(x_train)
-train_engV = cVect.transform(x_train).toarray()
-test_engV = cVect.transform(x_test).toarray()
-print(train_engV)
-print(train_engV.shape) #(3619, 41290)
+tfVect.fit(x_train)
+train_engV = tfVect.transform(x_train).toarray()
+test_engV = tfVect.transform(x_test).toarray()
 print(train_engV.shape[0], test_engV.shape[0]) #3619 #1552
 print(train_engV.shape[1], test_engV.shape[1]) #41290 # 41290
 
 #model
-lr = LogisticRegression(verbose=0)
+lr = LogisticRegression(verbose=1)
+#모델 다른거쓰기 
 
 #fit
 lr.fit(train_engV, y_train)
@@ -71,7 +74,6 @@ lr.fit(train_engV, y_train)
 pred = lr.predict(test_engV)
 
 print('Accuracy: ', accuracy_score(y_test, pred))
-print(metrics.confusion_matrix(y_test, pred))
 
 '''
 Accuracy:  0.9787371134020618

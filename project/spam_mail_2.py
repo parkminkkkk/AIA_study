@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+import matplotlib.pyplot as plt
+import seaborn as sns
 #
 import nltk
 # nltk.download('punkt')
@@ -8,15 +9,15 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.model_selection import train_test_split
 #
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from tensorflow.python.keras.models import Sequential, Model, load_model 
 from tensorflow.python.keras.layers import Dense, Input, Dropout
 from tensorflow.keras.layers import Conv1D, Conv2D, LSTM, Reshape, Embedding
 from tensorflow.keras.layers import concatenate, Concatenate
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, f1_score
-from sklearn import metrics
 
 
 path = './_data/project/'
@@ -50,28 +51,36 @@ x_train, x_test, y_train, y_test = train_test_split (eng_x, eng_y, train_size=0.
 print(x_train.shape, x_test.shape) #(3619,) (1552,)
 
 #vectorizer
-cVect = CountVectorizer()
-# tfVect = TfidfVectorizer()
+# cVect = CountVectorizer()
+tfVect = TfidfVectorizer()
 
-cVect.fit(x_train)
-train_engV = cVect.transform(x_train).toarray()
-test_engV = cVect.transform(x_test).toarray()
-print(train_engV)
-print(train_engV.shape) #(3619, 41290)
+tfVect.fit(x_train)
+train_engV = tfVect.transform(x_train).toarray()
+test_engV = tfVect.transform(x_test).toarray()
 print(train_engV.shape[0], test_engV.shape[0]) #3619 #1552
 print(train_engV.shape[1], test_engV.shape[1]) #41290 # 41290
 
 #model
-lr = LogisticRegression(verbose=0)
+# lr = LogisticRegression(verbose=1)
 
-#fit
-lr.fit(train_engV, y_train)
+model = Sequential()
+model.add(LSTM(32))
+model.add(Dense(10, activation='relu'))
+model.add(Dense(10, activation='relu'))
+model.add(Dense(10, activation='relu'))
+model.add(Dense(10, activation='relu'))
+model.add(Dense(1, activation='sigmoid'))
+
+
+#compile, fit
+model.compile(loss='binary_crossentropy', optimizer = 'adam', metrics = ['acc'])
+
+model.fit(train_engV, y_train, epochs=100, batch_size=16, validation_split=0.2)
 
 #Predic, Evaluate
-pred = lr.predict(test_engV)
+pred = model.predict(test_engV)
 
 print('Accuracy: ', accuracy_score(y_test, pred))
-print(metrics.confusion_matrix(y_test, pred))
 
 '''
 Accuracy:  0.9787371134020618

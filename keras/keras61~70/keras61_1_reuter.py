@@ -58,7 +58,7 @@ model.add(LSTM(32))
 model.add(Dense(16, activation='relu'))
 model.add(Dense(8, activation='relu'))
 # model.add(Dropout(0.3))
-model.add(Dense(46, activation='softmax')) #긍정/부정 : 이진분류
+model.add(Dense(46, activation='softmax')) 
 
 
 #3.컴파일, 훈련
