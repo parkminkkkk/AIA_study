@@ -24,6 +24,7 @@ path = './_data/project/'
 save_path = '/_save/project/'
 
 dt_eng = pd.read_csv(path + 'spam_ham_dataset.csv')
+#한글 데이터
 print(dt_eng.columns)
 dt_eng.drop('Unnamed: 0', axis=1, inplace= True)
 dt_eng.columns = ['label', 'text', 'class']
@@ -42,6 +43,7 @@ stopwords = set(stopwords.words('english'))
 dt_eng['text'] = dt_eng['text'].apply(lambda x: ' '.join([ word for word in word_tokenize(x)
                                                           if not word in stopwords]))
 print(dt_eng.sample(10))
+print(dt_eng['text'][0])
 
 eng_x = dt_eng.loc[:,'text'] 
 eng_y = dt_eng.loc[:,'class']
@@ -53,6 +55,7 @@ print(x_train.shape, x_test.shape) #(3619,) (1552,)
 #vectorizer
 # cVect = CountVectorizer()
 tfVect = TfidfVectorizer()
+#두개 비교
 
 tfVect.fit(x_train)
 train_engV = tfVect.transform(x_train).toarray()
@@ -61,24 +64,14 @@ print(train_engV.shape[0], test_engV.shape[0]) #3619 #1552
 print(train_engV.shape[1], test_engV.shape[1]) #41290 # 41290
 
 #model
-# lr = LogisticRegression(verbose=1)
+lr = LogisticRegression(verbose=1)
+#모델 다른거쓰기 
 
-model = Sequential()
-model.add(LSTM(32))
-model.add(Dense(10, activation='relu'))
-model.add(Dense(10, activation='relu'))
-model.add(Dense(10, activation='relu'))
-model.add(Dense(10, activation='relu'))
-model.add(Dense(1, activation='sigmoid'))
-
-
-#compile, fit
-model.compile(loss='binary_crossentropy', optimizer = 'adam', metrics = ['acc'])
-
-model.fit(train_engV, y_train, epochs=100, batch_size=16, validation_split=0.2)
+#fit
+lr.fit(train_engV, y_train)
 
 #Predic, Evaluate
-pred = model.predict(test_engV)
+pred = lr.predict(test_engV)
 
 print('Accuracy: ', accuracy_score(y_test, pred))
 
