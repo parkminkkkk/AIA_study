@@ -68,8 +68,8 @@ print(y_train.shape) #(3619,)
 
 # train_engV = pad_sequences(train_engV, maxlen = 300, truncating='post')
 # test_engV = pad_sequences(test_engV, maxlen = 300, truncating='post')
-# train_engV=train_engV.reshape(-1,1,41290)
-# test_engV=test_engV.reshape(-1,1,41290)
+train_engV=train_engV.reshape(3619,1,41290)
+test_engV=test_engV.reshape(1552,1,41290)
 
 # train_engV=train_engV.reshape(*train_engV.shape,1)
 # test_engV=test_engV.reshape(*test_engV.shape,1)
@@ -92,11 +92,10 @@ max_length = 10    # 위에서 그래프 확인 후 정함
 
 
 model = Sequential()
-model.add(Embedding(input_dim=vocab_size, output_dim=2, input_shape =(10,4129)))
-# model.add(Input(shape=train_engV.shape[1:]))
-# model.add(Conv1D(64,kernel_size=10,strides=5,padding='same'))
+# model.add(Embedding(input_dim=vocab_size, output_dim=2, input_shape =(1,41290)))
+model.add(Input(shape=train_engV.shape[1:]))
+model.add(Conv1D(64,kernel_size=10,strides=5,padding='same'))
 # model.add(Conv1D(16,kernel_size=10,strides=2))
-model.add(Reshape(target_shape=(20,4129)))
 model.add(LSTM(32))
 model.add(Dense(10, activation='relu'))
 model.add(Dense(10, activation='relu'))
@@ -109,10 +108,7 @@ model.summary()
 #compile, fit
 model.compile(loss='binary_crossentropy', optimizer = 'adam', metrics = ['acc'])
 
-train_engV = train_engV.reshape(-1,10,4129)
-print(train_engV.shape) #(3619, 10, 4129)
-print(y_train.shape) #(3619,)
-
+# train_engV = train_engV.reshape(-1,1,41290)
 model.fit(train_engV, y_train, epochs=1, batch_size=64, validation_split=0.2)
 
 

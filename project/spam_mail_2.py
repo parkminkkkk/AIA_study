@@ -76,7 +76,7 @@ pred = lr.predict(test_engV)
 print('Accuracy: ', accuracy_score(y_test, pred))
 
 '''
-Accuracy:  0.9787371134020618
+Accuracy:  0.9890463917525774
 '''
 
 
