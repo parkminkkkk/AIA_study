@@ -83,16 +83,8 @@ embedding_dim = 200
 max_length = 10    # 위에서 그래프 확인 후 정함
 # padding_type='post'
 
-# model2 = Sequential([Embedding(vocab_size, embedding_dim, input_length =max_length),
-#         tf.keras.layers.LSTM(units = 64, return_sequences = True),
-#         tf.keras.layers.LSTM(units = 64, return_sequences = True),
-#         tf.keras.layers.LSTM(units = 64),
-#         Dense(7, activation='softmax')    # 결과값이 0~4 이므로 Dense(5)
-#     ])
-
-
 model = Sequential()
-model.add(Embedding(input_dim=vocab_size, output_dim=2, input_shape =(10,4129)))
+model.add(Embedding(vocab_size, output_dim=2, input_shape =(10,4129)))
 # model.add(Input(shape=train_engV.shape[1:]))
 # model.add(Conv1D(64,kernel_size=10,strides=5,padding='same'))
 # model.add(Conv1D(16,kernel_size=10,strides=2))
@@ -105,7 +97,6 @@ model.add(Dense(1, activation='sigmoid'))
 model.summary()
 
 
-
 #compile, fit
 model.compile(loss='binary_crossentropy', optimizer = 'adam', metrics = ['acc'])
 
@@ -113,7 +104,7 @@ train_engV = train_engV.reshape(-1,10,4129)
 print(train_engV.shape) #(3619, 10, 4129)
 print(y_train.shape) #(3619,)
 
-model.fit(train_engV, y_train, epochs=1, batch_size=64, validation_split=0.2)
+model.fit(train_engV, y_train, epochs=1, batch_size=256, validation_split=0.2)
 
 
 # #Predic, Evaluate
