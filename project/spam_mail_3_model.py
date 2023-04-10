@@ -13,8 +13,8 @@ from keras.preprocessing.sequence import pad_sequences
 #
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from tensorflow.python.keras.models import Sequential, Model, load_model 
-from tensorflow.python.keras.layers import Dense, Input, Dropout
+from tensorflow.keras.models import Sequential, Model, load_model 
+from tensorflow.keras.layers import Dense, Dropout,Input
 from tensorflow.keras.layers import Conv1D, Conv2D, LSTM, Reshape, Embedding
 from tensorflow.keras.layers import concatenate, Concatenate
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
@@ -64,38 +64,52 @@ print(train_engV.shape) #(3619, 41290)
 # print("메일의 최대길이:", max(len(i) for i in train_engV)) #41290
 # print("메일의 평균길이:", sum(map(len, train_engV))/ len(train_engV)) #41290.0
 
-
-train_engV = pad_sequences(train_engV, maxlen = 300, truncating='post')
-test_engV = pad_sequences(test_engV, maxlen = 300, truncating='post')
-
-train_engV=train_engV.reshape(-1,300,1)
-test_engV=test_engV.reshape(-1,300,1)
+# train_engV = pad_sequences(train_engV, maxlen = 300, truncating='post')
+# test_engV = pad_sequences(test_engV, maxlen = 300, truncating='post')
+train_engV=train_engV.reshape(*train_engV.shape,1)
+test_engV=test_engV.reshape(*test_engV.shape,1)
 
 #model
 # lr = LogisticRegression(verbose=1)
 
+#파라미터 설정
+vocab_size = 2000 # 제일 많이 사용하는 사이즈
+embedding_dim = 200  
+max_length = 14    # 위에서 그래프 확인 후 정함
+padding_type='post'
+
+model2 = Sequential([Embedding(vocab_size, embedding_dim, input_length =max_length),
+        tf.keras.layers.LSTM(units = 64, return_sequences = True),
+        tf.keras.layers.LSTM(units = 64, return_sequences = True),
+        tf.keras.layers.LSTM(units = 64),
+        Dense(7, activation='softmax')    # 결과값이 0~4 이므로 Dense(5)
+    ])
+
+
 model = Sequential()
+# model.add(Input(shape=train_engV.shape[1:]))
+model.add(Conv1D(64,kernel_size=10,strides=5,padding='same'))
+model.add(Conv1D(16,kernel_size=10,strides=2))
 model.add(LSTM(32))
-model.add(Dense(10, activation='relu'))
-model.add(Dense(10, activation='relu'))
 model.add(Dense(10, activation='relu'))
 model.add(Dense(10, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 
+model.summary()
 
 #compile, fit
-model.compile(loss='binary_crossentropy', optimizer = 'adam', metrics = ['acc'])
+# model.compile(loss='binary_crossentropy', optimizer = 'adam', metrics = ['acc'])
 
-model.fit(train_engV, y_train, epochs=1, batch_size=64, validation_split=0.2)
+# model.fit(train_engV, y_train, epochs=1, batch_size=64, validation_split=0.2)
 
-#Predic, Evaluate
-pred = model.predict(test_engV)
+# #Predic, Evaluate
+# pred = model.predict(test_engV)
 
-print('Accuracy: ', accuracy_score(y_test, pred))
+# print('Accuracy: ', accuracy_score(y_test, pred))
 
-'''
-Accuracy:  0.9787371134020618
-'''
+# '''
+# Accuracy:  0.9787371134020618
+# '''
 
 
 
