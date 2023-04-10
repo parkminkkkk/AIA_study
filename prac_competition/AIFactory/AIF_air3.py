@@ -8,7 +8,7 @@ train_data = pd.read_csv(path+'train_data.csv')
 test_data = pd.read_csv(path+'test_data.csv')
 submission = pd.read_csv(path+'answer_sample.csv')
 # Preprocess data
-# ...
+#
 
 # Train k-means clustering model
 kmeans = KMeans(n_clusters=300, random_state=42)
