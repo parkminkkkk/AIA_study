@@ -107,3 +107,8 @@ RandomForestClassifier와 달리 GradientBoostingClassifier의 결정 트리는 
  '''
 
 
+1. 한글데이터 
+2. 한글데이터 전처리 
+3. 모델 비교 
+4. 그래프 찍어보기&비교 -> 한글데이터 비율 맞추기 
+5. ppt만들기 
