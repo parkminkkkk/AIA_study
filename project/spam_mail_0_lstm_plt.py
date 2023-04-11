@@ -31,7 +31,7 @@ save_path = '/_save/project/'
 
 #Data
 dt_eng = pd.read_csv(path + 'spam_ham_dataset.csv')
-dt_kor = pd.read_csv(path + 'kor_spam_ham_dataset2.csv')
+dt_kor = pd.read_csv(path + 'kor_spam_ham_dataset3.csv')
 print(dt_eng.columns)
 
 dt_eng.drop('Unnamed: 0', axis=1, inplace= True)
@@ -100,8 +100,8 @@ print(train_engV.shape[1], test_engV.shape[1]) #41290 # 41290
 # 변환된 시퀀스 번호를 이용해 단어 임베딩 벡터 생성
 word_index = tokenizer.word_index
 max_length = 100
-padding_type='post'
-train_korx = pad_sequences(sequences_train, padding='post', maxlen=max_length)
+padding_type='pre'
+train_korx = pad_sequences(sequences_train, padding='pre', maxlen=max_length)
 test_korx = pad_sequences(sequences_test, padding=padding_type, maxlen=max_length)
 
 print(train_korx.shape, test_korx.shape) #(90, 14) (39, 14)
@@ -154,7 +154,7 @@ model.fit([train_korx, train_engx], y_train, epochs=300, batch_size=16, validati
 #LSTM
 #Predict, Evaluate
 test_engx = test_engx[:test_korx.shape[0]]
-y_test = y_test[:39]
+y_test = y_test[:109]
 acc = model.evaluate([test_korx, test_engx], y_test)[1]
 print('Accuracy: ', acc)
 
@@ -171,9 +171,10 @@ print('Accuracy: ', acc)
 #lstm 
 Accuracy:  0.7333333492279053
 
-#데이터 추가
+#데이터 추가2
 Accuracy:  0.4871794879436493
 Accuracy:  0.7948718070983887
+Accuracy:  0.7179487347602844
 '''
 
 '''

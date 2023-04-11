@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import random
+import matplotlib.pyplot as plt
+import seaborn as sns
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from nltk.corpus import stopwords
@@ -25,6 +27,13 @@ dt_kor = pd.read_csv(path + 'kor_spam_ham_dataset3.csv')
 dt_eng.drop('Unnamed: 0', axis=1, inplace= True)
 dt_eng.columns = ['label', 'text', 'class']
 dt_eng.head()
+
+# Barplot describes the count of the class labels
+# dt_eng['label'].value_counts().plot.bar(color = ["b","r"])
+dt_kor['label'].value_counts().plot.bar(color = ["b","r"])
+plt.title('Total number of ham and spam in the dataset')
+plt.show()
+
 #Eng_Text processing 
 #Remove stopwords from the data
 stopwords = set(stopwords.words('english'))
