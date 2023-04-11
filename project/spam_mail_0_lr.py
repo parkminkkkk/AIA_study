@@ -50,6 +50,7 @@ X_english_train, X_english_test, y_english_train, y_english_test = train_test_sp
     dt_eng['text'], dt_eng['class'], test_size=0.3, random_state=42,stratify=dt_eng['class'])
 
 # Feature extraction
+# vectorizer = CountVectorizer()
 vectorizer = TfidfVectorizer()
 X_korean_train_features = vectorizer.fit_transform(X_korean_train).toarray()
 X_korean_test_features = vectorizer.transform(X_korean_test).toarray()
@@ -104,6 +105,7 @@ voting_clf = VotingClassifier(estimators=[('korean', korean_clf), ('english', en
 
 # Fit the voting classifier on the training data
 voting_clf.fit(train_korx, y_korean_train)
+
 
 # Test the voting classifier on the testing data
 y_pred = voting_clf.predict(test_korx)

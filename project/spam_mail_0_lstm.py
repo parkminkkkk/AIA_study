@@ -21,7 +21,8 @@ from tensorflow.python.keras.layers import Dense, Input, Dropout
 from tensorflow.keras.layers import Conv1D, Conv2D, LSTM, Reshape, Embedding
 from tensorflow.keras.layers import concatenate, Concatenate
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
 
 random.seed(42)
 
@@ -106,14 +107,14 @@ test_korx = pad_sequences(sequences_test, padding=padding_type, maxlen=max_lengt
 print(train_korx.shape, test_korx.shape) #(90, 14) (39, 14)
 print(train_korx)
 
-train_engV = pad_sequences(train_engV, padding='post', maxlen=max_length)
-test_engV = pad_sequences(test_engV, padding=padding_type, maxlen=max_length)
+train_engx = pad_sequences(train_engV, padding='post', maxlen=max_length)
+test_engx = pad_sequences(test_engV, padding=padding_type, maxlen=max_length)
 print(train_engV)
 
 train_korx= train_korx.reshape(-1,max_length,1)
 test_korx= test_korx.reshape(-1,max_length,1)
-train_engV= train_engV.reshape(-1,max_length,1)
-test_engV= test_engV.reshape(-1,max_length,1)
+train_engx= train_engx.reshape(-1,max_length,1)
+test_engx= test_engx.reshape(-1,max_length,1)
 
 
 #model1
@@ -145,23 +146,32 @@ model.summary()
 model. compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 
 # model.fit(train_engV, y_train)
-model.fit([train_korx, train_engV], y_train, epochs=300, batch_size=16, validation_split=0.2,)
+model.fit([train_korx, train_engx], y_train, epochs=3, batch_size=16, validation_split=0.2,)
 
 #Predict, Evaluate
-test_engV = test_engV[:test_korx.shape[0]]
+test_engx = test_engx[:test_korx.shape[0]]
 y_test = y_test[:39]
-
-acc = model.evaluate([test_korx, test_engV], y_test)[1]
+acc = model.evaluate([test_korx, test_engx], y_test)[1]
 print('Accuracy: ', acc)
 
+
 # # Evaluate the performance of the model
-# accuracy = accuracy_score(y_korean_test, y_pred)
-# precision = precision_score(y_korean_test, y_pred)
-# recall = recall_score(y_korean_test, y_pred)
-# f1 = f1_score(y_korean_test, y_pred)
+# test_engx = test_engx[:test_korx.shape[0]]
+# y_pred = model.predict([test_korx, test_engx]) 
+# accuracy = accuracy_score(ky_test, y_pred)
+# precision = precision_score(ky_test, y_pred)
+# recall = recall_score(ky_test, y_pred)
+# f1 = f1_score(ky_test, y_pred)
 
 '''
-#lstm
+#lstm 
 Accuracy:  0.7333333492279053
+
+#데이터 추가
+Accuracy:  0.4871794879436493
+Accuracy:  0.7948718070983887
 '''
 
+'''
+
+'''
