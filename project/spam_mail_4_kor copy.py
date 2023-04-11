@@ -50,14 +50,8 @@ stopwords = set(stopwords.words('english'))
 dt_eng['text'] = dt_eng['text'].apply(lambda x: ' '.join([ word for word in word_tokenize(x)
                                                           if not word in stopwords]))
 # print(dt_eng.sample(10))
-# print(dt_eng['text'][0])
+print(dt_eng['text'][0])
 
-#Kor_Text processing 
-# tokenizer = Okt()
-# data['text'] = data['text'].apply(lambda x: ' '.join(tokenizer.morphs(x)))
-# tfidf = TfidfVectorizer(stop_words=['은', '는', '이', '가', '을', '를'])
-# X = tfidf.fit_transform(data['text'])
-# y = data['class']
 
 # 먼저 train 데이터와 test 데이터 인덱스 없이 배열로 만들기
 kor_x = np.array([x for x in dt_kor['text']])
@@ -78,36 +72,45 @@ kx_train, kx_test, ky_train, ky_test = train_test_split (kor_x, kor_y, train_siz
 # cVect = CountVectorizer()
 tfVect = TfidfVectorizer()
 
-#Tokenizer
+#Tokenizer kor
 vocab_size = 2000 
 tokenizer = Tokenizer(num_words = vocab_size)  
 tokenizer.fit_on_texts(kx_train) 
-sequences_train = tokenizer.texts_to_sequences(kx_train) 
-sequences_test = tokenizer.texts_to_sequences(kx_test)  
-print(len(sequences_train), len(sequences_test)) #69 30
+sequences_ktrain = tokenizer.texts_to_sequences(kx_train) 
+sequences_ktest = tokenizer.texts_to_sequences(kx_test)  
+print(len(sequences_ktrain), len(sequences_ktest)) #69 30
 
+#Tokenizer eng
+vocab_size = 2000 
+tokenizer = Tokenizer(num_words = vocab_size)  
+tokenizer.fit_on_texts(kx_train) 
+sequences_etrain = tokenizer.texts_to_sequences(kx_train) 
+sequences_etest = tokenizer.texts_to_sequences(kx_test)  
+print(len(sequences_etrain), len(sequences_etest)) #69 30
+print(sequences_etrain)
 
+# tfVect.fit(x_train)
+# train_engV = tfVect.transform(x_train).toarray()
+# test_engV = tfVect.transform(x_test).toarray()
+# print(train_engV.shape[0], test_engV.shape[0]) #3619 #1552
+# print(train_engV.shape[1], test_engV.shape[1]) #41290 # 41290
 
-tfVect.fit(x_train)
-train_engV = tfVect.transform(x_train).toarray()
-test_engV = tfVect.transform(x_test).toarray()
-print(train_engV.shape[0], test_engV.shape[0]) #3619 #1552
-print(train_engV.shape[1], test_engV.shape[1]) #41290 # 41290
 
 
 # 변환된 시퀀스 번호를 이용해 단어 임베딩 벡터 생성
 word_index = tokenizer.word_index
-max_length = 14
+max_length = 50
 padding_type='post'
-train_korx = pad_sequences(sequences_train, padding='post', maxlen=max_length)
-test_korx = pad_sequences(sequences_test, padding=padding_type, maxlen=max_length)
 
+train_korx = pad_sequences(sequences_ktrain, padding='post', maxlen=max_length)
+test_korx = pad_sequences(sequences_ktest, padding=padding_type, maxlen=max_length)
 print(train_korx.shape, test_korx.shape) #(69, 14) (30, 14)
 print(train_korx)
 
-train_engV = pad_sequences(train_engV, padding='post', maxlen=max_length)
-test_engV = pad_sequences(test_engV, padding=padding_type, maxlen=max_length)
+train_engV = pad_sequences(sequences_etrain, padding='post', maxlen=max_length)
+test_engV = pad_sequences(sequences_etest, padding=padding_type, maxlen=max_length)
 print(train_engV)
+
 
 train_korx= train_korx.reshape(-1,max_length,1)
 test_korx= test_korx.reshape(-1,max_length,1)
@@ -115,15 +118,14 @@ train_engV= train_engV.reshape(-1,max_length,1)
 test_engV= test_engV.reshape(-1,max_length,1)
 
 
-
 #model1
-input1 = Input(shape=(14,1))
+input1 = Input(shape=(50,1))
 dense1 = LSTM(16, activation='relu', name='kor1')(input1)
 dense2 = Dense(16, activation='relu', name='kor2')(dense1)
 dense4 = Dense(16, activation='swish', name='kor4')(dense2)
 output1 = Dense(16, name='output1')(dense4)
 #model2
-input2 = Input(shape=(14,1))
+input2 = Input(shape=(50,1))
 dense11 = LSTM(16, activation='relu', name='eng1')(input2)
 dense12 = Dense(16, activation='relu', name='eng2')(dense11)
 dense14 = Dense(16, activation='swish', name='eng4')(dense12)
@@ -145,7 +147,7 @@ model.summary()
 model. compile(loss='binary_crossentropy', optimizer='adam')
 
 # model.fit(train_engV, y_train)
-model.fit([train_korx, train_engV], y_train, epochs=1, batch_size=128, validation_split=0.2,)
+model.fit([train_korx, train_engV], y_train, epochs=1, batch_size=16, validation_split=0.2,)
 
 #Predic, Evaluate
 acc = model.evaluate([test_korx, test_engV], y_test)
@@ -155,7 +157,8 @@ acc = model.evaluate([test_korx, test_engV], y_test)
 print('Accuracy: ', acc)
 
 '''
-Accuracy:  0.9787371134020618
+
+
 '''
 
 
