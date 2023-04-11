@@ -79,38 +79,41 @@ train_korx, test_korx, train_kory, test_kory = train_test_split (kor_x, kor_y, t
 
 
 
-#Tokenizer
-vocab_size = 2000 
-tokenizer = Tokenizer(num_words = vocab_size)  
-tokenizer.fit_on_texts(train_korx) 
-sequences_train = tokenizer.texts_to_sequences(train_korx) 
-sequences_test = tokenizer.texts_to_sequences(test_korx)  
-print(len(sequences_train), len(sequences_test)) #69 30
+# #Tokenizer
+# vocab_size = 2000 
+# tokenizer = Tokenizer(num_words = vocab_size)  
+# tokenizer.fit_on_texts(train_korx) 
+# sequences_train = tokenizer.texts_to_sequences(train_korx) 
+# sequences_test = tokenizer.texts_to_sequences(test_korx)  
+# print(len(sequences_train), len(sequences_test)) #69 30
 
 
 #vectorizer
 # vectorizer = CountVectorizer()
 vectorizer = TfidfVectorizer()
 vectorizer.fit(train_engx)
-train_engx = vectorizer.transform(train_engx).toarray()
+train_korx = vectorizer.fit_transform(train_korx).toarray()
+test_korx = vectorizer.transform(test_korx).toarray()
+train_engx = vectorizer.fit_transform(train_engx).toarray()
 test_engx = vectorizer.transform(test_engx).toarray()
-print(train_engx.shape[0], train_engx.shape[0]) #3619 #1552
-print(test_engx.shape[1], test_engx.shape[1]) #41290 # 41290
+print(train_korx.shape, test_korx.shape) #=#(253, 1487) (109, 1487)
+print(train_engx.shape, test_engx.shape) #=#(3619, 41290) (1552, 41290)
+
 
 
 # 변환된 시퀀스 번호를 이용해 단어 임베딩 벡터 생성
-word_index = tokenizer.word_index
+# word_index = tokenizer.word_index
 max_length = 230
 padding_type='pre'
-train_korx = pad_sequences(sequences_train, padding='pre', maxlen=max_length)
-test_korx = pad_sequences(sequences_test, padding=padding_type, maxlen=max_length)
+train_korx = pad_sequences(train_korx, padding='post', maxlen=max_length)
+test_korx = pad_sequences(test_korx, padding=padding_type, maxlen=max_length)
 
 print(train_korx.shape, test_korx.shape) #(90, 14) (39, 14)
-print(train_korx)
+# print(train_korx)
 
-train_engx = pad_sequences(train_engx, padding='pre', maxlen=max_length)
+train_engx = pad_sequences(train_engx, padding='post', maxlen=max_length)
 test_engx = pad_sequences(test_engx, padding=padding_type, maxlen=max_length)
-print(test_engx)
+# print(test_engx)
 
 train_korx= train_korx.reshape(-1,max_length,1)
 test_korx= test_korx.reshape(-1,max_length,1)
@@ -118,14 +121,14 @@ train_engx= train_engx.reshape(-1,max_length,1)
 test_engx= test_engx.reshape(-1,max_length,1)
 
 
-#model1
+# Korean model1
 input1 = Input(shape=(230,1))
 dense1 = LSTM(16, activation='relu', name='kor1')(input1)
 dense2 = Dense(16, activation='relu', name='kor2')(dense1)
 drop1 = Dropout(0.2)(dense2)
 dense3 = Dense(16, activation='swish', name='kor4')(drop1)
 output1 = Dense(16, name='output1')(dense3)
-#model2
+# English model2
 input2 = Input(shape=(230,1))
 dense11 = LSTM(16, activation='relu', name='eng1')(input2)
 dense12 = Dense(16, activation='relu', name='eng2')(dense11)
@@ -133,7 +136,7 @@ drop11 = Dropout(0.2)(dense12)
 dense13 = Dense(16, activation='swish', name='eng4')(drop11)
 output2 = Dense(16, name='output2')(dense13)
 
-#2-3. 모델 합침 
+# model merge
 merge1 = concatenate([output1, output2], name='mg1')  
 merge2 = Dense(32, activation='selu', name='mg2')(merge1)
 merge3 = Dense(32, activation='swish', name='mg3')(merge2)
@@ -141,7 +144,6 @@ mdrop1 = Dropout(0.2)(merge3)
 merge4 = Dense(16, activation='relu', name='mg4')(mdrop1)
 last_output = Dense(1,activation='sigmoid', name='last')(merge4)
 
-#2-4 모델 정의 
 model = Model(inputs=[input1, input2], outputs=[last_output])
 
 model.summary()
@@ -150,7 +152,7 @@ model.summary()
 model. compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 
 # model.fit(train_engV, y_train)
-model.fit([train_korx, train_engx], train_engy, epochs=300, batch_size=16, validation_split=0.2,)
+model.fit([train_korx, train_engx], train_engy, epochs=100, batch_size=16, validation_split=0.2,)
 
 #LSTM
 #Predict, Evaluate
@@ -194,6 +196,18 @@ Accuracy:  0.7981651425361633
 TfidfVectorizer()
 #max_len : 230
 Accuracy:  0.752293586730957
-Accuracy:  0.7614678740501404 #'pre'
+Accuracy:  0.8073394298553467
+'''
+
+'''
+#데이터 추가3 
+-CountVectorizer()
+-max_len : 230
+-epochs =1/ 100
+Accuracy:  0.8073394298553467
+
+-TfidfVectorizer()
+-max_len : 230
+-epochs =1/ 100
 Accuracy:  0.8073394298553467
 '''

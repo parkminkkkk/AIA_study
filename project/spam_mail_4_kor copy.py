@@ -100,7 +100,7 @@ print(sequences_etrain)
 
 # 변환된 시퀀스 번호를 이용해 단어 임베딩 벡터 생성
 word_index = tokenizer.word_index
-max_length = 50
+max_length = 230
 padding_type='post'
 
 train_korx = pad_sequences(sequences_ktrain, padding='post', maxlen=max_length)
@@ -120,13 +120,13 @@ test_engV= test_engV.reshape(-1,max_length,1)
 
 
 #model1
-input1 = Input(shape=(50,1))
+input1 = Input(shape=(230,1))
 dense1 = LSTM(16, activation='relu', name='kor1')(input1)
 dense2 = Dense(16, activation='relu', name='kor2')(dense1)
 dense4 = Dense(16, activation='swish', name='kor4')(dense2)
 output1 = Dense(16, name='output1')(dense4)
 #model2
-input2 = Input(shape=(50,1))
+input2 = Input(shape=(230,1))
 dense11 = LSTM(16, activation='relu', name='eng1')(input2)
 dense12 = Dense(16, activation='relu', name='eng2')(dense11)
 dense14 = Dense(16, activation='swish', name='eng4')(dense12)
