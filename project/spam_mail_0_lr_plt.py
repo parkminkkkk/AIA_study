@@ -78,8 +78,8 @@ X_english_train, X_english_test, y_english_train, y_english_test = train_test_sp
     dt_eng['text'], dt_eng['class'], test_size=0.3, random_state=42,stratify=dt_eng['class'])
 
 # Feature extraction
-# vectorizer = CountVectorizer()
-vectorizer = TfidfVectorizer()
+vectorizer = CountVectorizer()
+# vectorizer = TfidfVectorizer()
 X_korean_train_features = vectorizer.fit_transform(X_korean_train).toarray()
 X_korean_test_features = vectorizer.transform(X_korean_test).toarray()
 X_english_train_features = vectorizer.fit_transform(X_english_train).toarray()
@@ -88,7 +88,7 @@ print(X_korean_train_features.shape[0], X_korean_train_features.shape[1])  #90 9
 print(X_english_train_features.shape[0], X_english_train_features.shape[1]) #3619 41179
 
 # 변환된 시퀀스 번호를 이용해 단어 임베딩 벡터 생성
-max_length = 230
+max_length = 8862
 padding_type='pre'
 train_korx = pad_sequences(X_korean_train_features, padding='pre', maxlen=max_length)
 test_korx = pad_sequences(X_korean_test_features, padding=padding_type, maxlen=max_length)
@@ -118,6 +118,23 @@ E_clf.fit(train_korx, y_korean_train)
 # Test the voting classifier on the testing data
 y_pred = E_clf.predict(test_korx)
 # y_pred = voting_clf.predict(test_korx)
+
+# Predict the label of a new email in Korean
+new_email_korean = ['광고. 스팸 이메일입니다.']
+new_email_korean = vectorizer.fit_transform(new_email_korean).toarray()
+new_email_korean = pad_sequences(new_email_korean, padding='pre', maxlen=max_length)
+# print(new_email_korean.shape) #(1, 230)
+mail_pred = E_clf.predict(new_email_korean)
+print('Prediction:', mail_pred)
+
+# #[실습]# 긍정인지 부정인지 맞추기 
+# x_predict = ['나는 성호가 정말 재미없다 너무 정말']
+# token.fit_on_texts(x_predict)
+# x_predict = token.texts_to_sequences(x_predict)
+# x_predict = np.array(x_predict)
+# x_predict = x_predict.reshape(-1,6,1)
+# predict = model.predict([x_predict])
+# print("긍정/부정", predict)
 
 #lr
 # Evaluate the performance of the model

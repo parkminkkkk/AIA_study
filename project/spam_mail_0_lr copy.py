@@ -180,11 +180,7 @@ F1-score: 0.9615384615384615
 '''
 
 
-# # Predict the label of a new email in Korean
-# new_email_korean = ['스팸 이메일입니다.']
-# new_email_korean_features = vectorizer.transform(new_email_korean)
-# new_email_korean_pred = voting_clf.predict(new_email_korean_features)
-# print('Prediction:', new_email_korean_pred)
+
 
 # # Predict the label of a new email in English
 # new_email_english = ['Buy cheap Viagra now!']
@@ -196,20 +192,8 @@ F1-score: 0.9615384615384615
 # x_predict = ['나는 성호가 정말 재미없다 너무 정말']
 # token.fit_on_texts(x_predict)
 # x_predict = token.texts_to_sequences(x_predict)
-
 # x_predict = np.array(x_predict)
 # x_predict = x_predict.reshape(-1,6,1)
-
-# predict = model.predict([x_predict])
-# print("긍정/부정", predict)
-# #[실습]# 긍정인지 부정인지 맞추기 
-# x_predict = ['나는 성호가 정말 재미없다 너무 정말']
-# token.fit_on_texts(x_predict)
-# x_predict = token.texts_to_sequences(x_predict)
-
-# x_predict = np.array(x_predict)
-# x_predict = x_predict.reshape(-1,6,1)
-
 # predict = model.predict([x_predict])
 # print("긍정/부정", predict)
 

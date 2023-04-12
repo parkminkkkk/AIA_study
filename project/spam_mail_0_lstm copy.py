@@ -152,7 +152,8 @@ model.summary()
 model. compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 
 # model.fit(train_engV, y_train)
-model.fit([train_korx, train_engx], train_engy, epochs=100, batch_size=16, validation_split=0.2,)
+model.fit([train_korx, train_engx], train_engy, epochs=1, batch_size=16, validation_split=0.2,)
+
 
 #LSTM
 #Predict, Evaluate
@@ -160,6 +161,25 @@ test_engx = test_engx[:test_korx.shape[0]]
 train_engy = train_engy[:109]
 acc = model.evaluate([test_korx, test_engx], train_engy)[1]
 print('Accuracy: ', acc)
+
+# Predict the label of a new email in Korean
+new_email_korean = ['광고. 스팸 이메일입니다.']
+new_email_english = ['This is spam email bro.']
+new_email_korean = vectorizer.fit_transform(new_email_korean).toarray()
+new_email_korean = pad_sequences(new_email_korean, padding='pre', maxlen=max_length)
+new_email_english = vectorizer.fit_transform(new_email_english).toarray()
+new_email_english = pad_sequences(new_email_english, padding='pre', maxlen=max_length)
+# print(new_email_korean.shape) #(1, 230)
+mail_pred = model.predict([new_email_korean,new_email_english])
+print('Prediction:', mail_pred)
+
+def pred(x):
+    if x>0.5:
+        return print("스팸")
+    else: 
+        return print("비스팸")
+pred(mail_pred)
+print(pred)
 
 # y_pred = model.predict([test_korx, test_engx])
 # f1 = f1_score(test_kory, y_pred)
