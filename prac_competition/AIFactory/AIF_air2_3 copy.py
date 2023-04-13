@@ -6,7 +6,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler, MinMaxScaler
 from sklearn.metrics import f1_score, make_scorer, accuracy_score
-
+from keras import regularizers
 
 # Load train and test data
 path='./_data/AIFac_air/'
@@ -42,13 +42,21 @@ test_data_scaled = scaler.transform(test_data.drop('type', axis=1))
 input_dim = train_data.shape[1]
 encoding_dim = 4
 input_layer = Input(shape=(input_dim,))
-encoder = Dense(encoding_dim, activation='relu')(input_layer)
-decoder = Dense(input_dim, activation='sigmoid')(encoder)
+encoder1 = Dense(16, activation='selu')(input_layer)
+encoder2 = Dense(32, activation='selu',activity_regularizer=regularizers.l1(0.001))(encoder1)
+encoder2 = Dense(32, activation='selu',activity_regularizer=regularizers.l1(0.001))(encoder1)
+encoder3 = Dense(16, activation='swish')(encoder2)
+decoder = Dense(input_dim, activation='sigmoid')(encoder3)
 autoencoder = Model(inputs=input_layer, outputs=decoder)
-autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
 
-# Train the autoencoder on normal data only
-autoencoder.fit(train_data, train_data, epochs=500, batch_size=16, shuffle=True, validation_data=(test_data, test_data))
+
+# Train Autoencoder model
+autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
+es = EarlyStopping(monitor='val_acc', mode='max', verbose=1, patience=50)
+autoencoder.fit(x_train, x_train, epochs=500, batch_size=8, validation_data=(x_val, x_val), callbacks=[es])
+
+# # Train the autoencoder on normal data only
+# autoencoder.fit(train_data, train_data, epochs=500, batch_size=16, shuffle=True, validation_data=(test_data, test_data))
 
 # Generate reconstruction errors for the test data
 test_recon = autoencoder.predict(test_data)

@@ -30,9 +30,9 @@ dt_eng.head()
 
 # Barplot describes the count of the class labels
 # dt_eng['label'].value_counts().plot.bar(color = ["b","r"])
-# dt_kor['label'].value_counts().plot.bar(color = ["b","r"])
-# plt.title('Total number of ham and spam in the dataset')
-# plt.show()
+dt_kor['label'].value_counts().plot.bar(color = ["r","b"])
+plt.title('Total number of ham and spam in the dataset')
+plt.show()
 
 # 문장 길이 분포도 확인
 # dt_eng['text'] = dt_eng.text.apply(lambda words: len(words.split()))

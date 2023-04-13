@@ -95,8 +95,12 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 의사 결정 트리는 데이터의 서로 다른 하위 집합에 대해 학습되며 각 트리에는 각 분할에서 고려되는 기능의 임의 하위 집합이 있습니다. 
 그러면 'RandomForestClassifier'의 출력은 개별 트리의 예측된 클래스의 모드입니다. 
 이 접근 방식은 여러 의사 결정 트리의 장점을 결합하여 과적합을 줄이고 정확도를 높이는 데 도움이 됩니다.
+-앙상블 : 훈련 과정에서 구성한 다수의 결정 트리들을 랜덤하게 학습시켜 분류 또는 회귀의 결과도출에 사용
+-모델 내부에 트리를 만들기 위해 데이터에 대한 부트스트랩 샘플들을 생성한다.
+ 부트스트랩 샘플이란 중복을 허용한 샘플로서, 데이터에서 부트스트랩 샘플이 생성
 
 반면 'GradientBoostingClassifier'는 일련의 결정 트리를 데이터에 맞추는 또 다른 앙상블 학습 방법입니다. 
+여러 개의 결정 트리를 묶어 강력한 모델을 만드는 또 다른 앙상블 방법
 RandomForestClassifier와 달리 GradientBoostingClassifier의 결정 트리는 순차적으로 학습되며 각 후속 트리는 이전 트리에서 발생한 오류를 수정하려고 시도합니다. 
 즉, 이전 트리에서 만든 예측을 개선하는 데 중점을 둡니다. 그러면 'GradientBoostingClassifier'의 출력은 개별 트리의 예측 값의 합입니다. 
 이 접근 방식은 특히 복잡한 데이터 세트를 처리할 때 RandomForestClassifier보다 훨씬 더 나은 정확도로 이어질 수 있습니다.

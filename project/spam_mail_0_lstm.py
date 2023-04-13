@@ -17,7 +17,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from tensorflow.python.keras.models import Sequential, Model, load_model 
-from tensorflow.python.keras.layers import Dense, Input, Dropout
+from tensorflow.keras.layers import Dense, Input, Dropout, Bidirectional
 from tensorflow.keras.layers import Conv1D, Conv2D, LSTM, Reshape, Embedding
 from tensorflow.keras.layers import concatenate, Concatenate
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
@@ -100,7 +100,7 @@ print(test_engx.shape[1], test_engx.shape[1]) #41290 # 41290
 
 # 변환된 시퀀스 번호를 이용해 단어 임베딩 벡터 생성
 word_index = tokenizer.word_index
-max_length = 230
+max_length = 500
 padding_type='pre'
 train_korx = pad_sequences(sequences_train, padding='pre', maxlen=max_length)
 test_korx = pad_sequences(sequences_test, padding=padding_type, maxlen=max_length)
@@ -119,15 +119,15 @@ test_engx= test_engx.reshape(-1,max_length,1)
 
 
 #model1
-input1 = Input(shape=(230,1))
-dense1 = LSTM(16, activation='relu', name='kor1')(input1)
+input1 = Input(shape=(500,1))
+dense1 = Bidirectional(LSTM(16, activation='relu', name='kor1'))(input1)
 dense2 = Dense(16, activation='relu', name='kor2')(dense1)
 drop1 = Dropout(0.2)(dense2)
 dense3 = Dense(16, activation='swish', name='kor4')(drop1)
 output1 = Dense(16, name='output1')(dense3)
 #model2
-input2 = Input(shape=(230,1))
-dense11 = LSTM(16, activation='relu', name='eng1')(input2)
+input2 = Input(shape=(500,1))
+dense11 = Bidirectional(LSTM(16, activation='relu', name='eng1'))(input2)
 dense12 = Dense(16, activation='relu', name='eng2')(dense11)
 drop11 = Dropout(0.2)(dense12)
 dense13 = Dense(16, activation='swish', name='eng4')(drop11)
@@ -139,7 +139,8 @@ merge2 = Dense(32, activation='selu', name='mg2')(merge1)
 merge3 = Dense(32, activation='swish', name='mg3')(merge2)
 mdrop1 = Dropout(0.2)(merge3)
 merge4 = Dense(16, activation='relu', name='mg4')(mdrop1)
-last_output = Dense(1,activation='sigmoid', name='last')(merge4)
+merge5 = Dense(32, activation='swish', name='mg5')(merge4)
+last_output = Dense(1,activation='sigmoid', name='last')(merge5)
 
 #2-4 모델 정의 
 model = Model(inputs=[input1, input2], outputs=[last_output])
@@ -150,7 +151,7 @@ model.summary()
 model. compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 
 # model.fit(train_engV, y_train)
-model.fit([train_korx, train_engx], train_engy, epochs=300, batch_size=16, validation_split=0.2,)
+model.fit([train_korx, train_engx], train_engy, epochs=1, batch_size=16, validation_split=0.2,)
 
 #LSTM
 #Predict, Evaluate
@@ -158,6 +159,21 @@ test_engx = test_engx[:test_korx.shape[0]]
 train_engy = train_engy[:109]
 acc = model.evaluate([test_korx, test_engx], train_engy)[1]
 print('Accuracy: ', acc)
+
+y_pred = np.round(model.predict([test_korx, test_engx]))
+# precision = precision_score(test_engy[:109], y_pred)
+# recall = recall_score(test_engy[:109], y_pred)
+f1 = f1_score(test_engy[:109], y_pred, average='macro')  
+print('f1', f1)
+
+#[관점!]
+# sigmoid, binary_crossentropy로 y_pred을 뽑음 => 따라서, 0.2/0.3/0.5...이런식으로 나오니까 round해줘야함
+# kor, eng의 
+
+
+# y_pred = model.predict(test_korx)
+# f1_score = f1_score(test_korx, y_pred, average='macro')
+# print('f1', f1_score)
 
 # y_pred = model.predict([test_korx, test_engx])
 # f1 = f1_score(test_kory, y_pred)
@@ -170,6 +186,18 @@ print('Accuracy: ', acc)
 # precision = precision_score(ky_test, y_pred)
 # recall = recall_score(ky_test, y_pred)
 # f1 = f1_score(ky_test, y_pred)
+
+'''
+#[최종 결과]
+Accuracy:  0.6880733966827393
+f1 0.42138523761375124
+
+Accuracy:  0.7431192398071289
+f1 0.5101123595505618
+
+
+'''
+
 
 '''
 #lstm 

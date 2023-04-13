@@ -7,7 +7,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import VotingClassifier, RandomForestClassifier, GradientBoostingClassifier
+from sklearn.ensemble import VotingClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.model_selection import train_test_split
 
@@ -73,46 +73,19 @@ train_engx = pad_sequences(X_english_train_features, padding='pre', maxlen=max_l
 test_engx = pad_sequences(X_english_test_features, padding=padding_type, maxlen=max_length)
 print(train_engx.shape, test_engx.shape) #(3619, 1000) (1552, 1000)
 
-# Korean model1
+# Train the Korean logistic regression model
 korean_clf = LogisticRegression(random_state=42).fit(train_korx, y_korean_train)
 
-# English model2
+# Train the English logistic regression model
 english_clf = LogisticRegression(random_state=42).fit(train_engx, y_english_train)
 
-# classifier with the two models
-E_clf = RandomForestClassifier()
-# E_clf = GradientBoostingClassifier()
+# Create a voting classifier with the two models
+E_clf = GradientBoostingClassifier()
+# voting_clf = VotingClassifier(estimators=[('korean', korean_clf), ('english', english_clf)], voting='soft')
 
 # Fit the voting classifier on the training data
 E_clf.fit(train_korx, y_korean_train)
-
-# korean_clf.summary() # 머신러닝 모델은  summary 제공x
-#훈련된 모델의 요약을 찾고 있다면 모델 coef_의 속성/ 훈련된 모델의 요약을 찾고 있다면 모델 coef_의 속성
-print("Korean Model Coefficients:")
-print(korean_clf.coef_)
-
-print("English Model Coefficients:")
-print(english_clf.coef_)
-#훈련된 모델에서 각 기능의 중요도
-print("Feature Importances of the Random Forest Classifier:")
-print(E_clf.feature_importances_)
-
-#total params전체 매개변수
-#총 매개변수 수는 입력 데이터의 기능 수에 따라 결정됩니다.
-# 특히 매개변수의 수는 특성 수에 1(편향 항)을 더한 것과 같습니다./ 각 입력 데이터 세트의 기능 수가 인쇄
-print("Number of features in train_korx:", train_korx.shape[1])
-print("Number of features in train_engx:", train_engx.shape[1])
-#그런 다음 각 로지스틱 회귀 모델에 대한 총 매개변수 수를 계산하기 위해 기능 수에 1을 더할 수 있습니다.
-kor_params = train_korx.shape[1] + 1
-eng_params = train_engx.shape[1] + 1
-
-print("Total parameters in Korean logistic regression model:", kor_params)
-print("Total parameters in English logistic regression model:", eng_params)
-
-#랜덤 포레스트 및 그래디언트 부스팅 분류기의 경우 매개변수의 총 수는 트리 수 또는 추정기 수와 같이 모델에 대해 선택한 하이퍼 매개변수에 따라 달라집니다.
-#이렇게 하면 모델의 트리 수와 입력 데이터의 기능 수를 기반으로 랜덤 포레스트 분류기의 총 매개변수 수가 인쇄
-print("Total parameters in Random Forest Classifier:", E_clf.n_estimators * (train_korx.shape[1] + 1))
-#결정트리의 개수 : n_estimators
+# voting_clf.fit(train_korx, y_korean_train)
 
 
 # Test the voting classifier on the testing data
@@ -130,6 +103,32 @@ print('Precision:', precision)
 print('Recall:', recall)
 print('F1-score:', f1)
 
+# Predict the label of a new email in Korean
+new_email_korean = ['광고. 스팸 이메일입니다.']
+new_email_korean = vectorizer.fit_transform(new_email_korean).toarray()
+new_email_korean = pad_sequences(new_email_korean, padding='pre', maxlen=max_length)
+# print(new_email_korean.shape) #(1, 230)
+mail_pred = E_clf.predict(new_email_korean)
+print('Prediction:', mail_pred)
+
+'''
+[최종]
+(253, 8862) (109, 8862)
+(3619, 8862) (1552, 8862)
+Prediction: [1]
+Accuracy: 0.963302752293578
+Precision: 0.9615384615384616
+Recall: 1.0
+F1-score: 0.9803921568627451
+'''
+
+'''
+#E_clf = GradientBoostingClassifier()
+Accuracy: 0.926605504587156
+Precision: 0.9259259259259259
+Recall: 1.0
+F1-score: 0.9615384615384615
+'''
 '''
 #data2
 vectorizer = TfidfVectorizer()
@@ -168,16 +167,14 @@ Recall: 1.0
 F1-score: 0.9569377990430622
 '''
 
-'''
-#E_clf = GradientBoostingClassifier()
-Accuracy: 0.926605504587156
-Precision: 0.9259259259259259
-Recall: 1.0
-F1-score: 0.9615384615384615
-'''
 
 
 
+# # Predict the label of a new email in Korean
+# new_email_korean = ['스팸 이메일입니다.']
+# new_email_korean_features = vectorizer.transform(new_email_korean)
+# new_email_korean_pred = voting_clf.predict(new_email_korean_features)
+# print('Prediction:', new_email_korean_pred)
 
 # # Predict the label of a new email in English
 # new_email_english = ['Buy cheap Viagra now!']
@@ -185,14 +182,6 @@ F1-score: 0.9615384615384615
 # new_email_english_pred = voting_clf.predict(new_email_english_features)
 # print('Prediction:', new_email_english_pred)
 
-# #[실습]# 긍정인지 부정인지 맞추기 
-# x_predict = ['나는 성호가 정말 재미없다 너무 정말']
-# token.fit_on_texts(x_predict)
-# x_predict = token.texts_to_sequences(x_predict)
-# x_predict = np.array(x_predict)
-# x_predict = x_predict.reshape(-1,6,1)
-# predict = model.predict([x_predict])
-# print("긍정/부정", predict)
 
 
 ##############################
