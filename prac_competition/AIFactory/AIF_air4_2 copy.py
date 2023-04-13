@@ -1,7 +1,8 @@
 import pandas as pd
-from sklearn.preprocessing import StandardScaler,RobustScaler,MinMaxScaler
+from sklearn.preprocessing import StandardScaler, RobustScaler, MinMaxScaler
 from sklearn.neighbors import LocalOutlierFactor
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
+
 # Load train and test data
 path='./_data/AIFac_air/'
 save_path= './_save/AIFac_air/'
@@ -18,16 +19,30 @@ def type_to_HP(type):
 train_data['type']=type_to_HP(train_data['type'])
 test_data['type']=type_to_HP(test_data['type'])
 
-# Define the model
 # Feature Scaling
 scaler = MinMaxScaler()
 X_train = scaler.fit_transform(train_data.iloc[:, :-1])
 X_test = scaler.transform(test_data.iloc[:, :-1])
 
-# Model Definition
-model = LocalOutlierFactor(contamination= 0.049, n_neighbors=25)
-# model = LocalOutlierFactor(n_neighbors=25, contamination=0.048)
+# Define the model
+model = LocalOutlierFactor()
 
+# Define the hyperparameters to search over
+param_grid = {'n_neighbors': [5, 10, 15, 20, 25],
+              'algorithm': ['ball_tree', 'kd_tree', 'brute'],
+              'contamination': [0.01, 0.02, 0.03, 0.04, 0.05]}
+
+# Perform grid search with cross-validation
+grid_search = GridSearchCV(estimator=model, param_grid=param_grid, scoring='roc_auc')
+grid_search.fit(X_train)
+
+# Print the best parameters and score
+print("Best parameters: ", grid_search.best_params_)
+print("Best score: ", grid_search.best_score_)
+
+# Model Definition with best hyperparameters
+best_params = grid_search.best_params_
+model = LocalOutlierFactor(n_neighbors=best_params['n_neighbors'], algorithm=best_params['algorithm'], contamination=best_params['contamination'])
 
 # Model Training
 model.fit(X_train)
@@ -43,16 +58,12 @@ print(submission['label'].value_counts())
 import datetime 
 date = datetime.datetime.now()  
 date = date.strftime("%m%d_%H%M")  
-submission.to_csv(save_path+'submit_air'+date+ '_0.049.csv', index=False)
+submission.to_csv(save_path+'submit_air_'+date+ '.csv', index=False)
 
 '''
 #gridsearch/ 'ball_tree',5, 0.01
 0    7315
 1      74
 Name: label, dtype: int64
-
-#(contamination= 0.049, n_neighbors=25)
-=>0.883123354
-#(contamination= 0.048, n_neighbors=25)
-=>0.889184209
+=>
 '''
