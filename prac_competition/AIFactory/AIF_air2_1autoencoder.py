@@ -1,3 +1,4 @@
+# Import necessary libraries
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.layers import Input, Dense
@@ -8,7 +9,7 @@ from sklearn.metrics import f1_score, make_scorer, accuracy_score
 from keras import regularizers
 
 
-# Load train and test data
+# Load the data
 path='./_data/AIFac_air/'
 save_path= './_save/AIFac_air/'
 train_data = pd.read_csv(path+'train_data.csv')
@@ -20,7 +21,6 @@ submission = pd.read_csv(path+'answer_sample.csv')
 data = pd.concat([train_data, test_data], axis=0)
 
 # Preprocess data
-# 
 def type_to_HP(type):
     HP=[30,20,10,50,30,30,30,30]
     gen=(HP[i] for i in type)
@@ -60,7 +60,8 @@ autoencoder.fit(x_train, x_train, epochs= 5000, batch_size= 20, validation_data=
 test_data = scaler.transform(test_data[features])
 predictions = autoencoder.predict(test_data)
 mse = ((test_data - predictions) ** 2).mean(axis=1)
-threshold = mse.mean() + mse.std() * 2  # Set threshold based on mean and standard deviation of MSE
+threshold = mse.mean() + mse.std() * 2  
+# Set threshold based on mean and standard deviation of MSE
 
 # Evaluate model performance
 binary_predictions = [1 if x > threshold else 0 for x in mse]
@@ -76,7 +77,7 @@ date = date.strftime("%m%d_%H%M")
 submission.to_csv(save_path+'submit_air_'+date+ '.csv', index=False)
 
 '''
-Epoch 00694: early stopping
-0    7285
-1     104
+0    6650
+1     739
+Name: label, dtype: int64
 '''
