@@ -43,7 +43,7 @@ print(submission['label'].value_counts())
 import datetime 
 date = datetime.datetime.now()  
 date = date.strftime("%m%d_%H%M")  
-submission.to_csv(save_path+'submit_air'+date+ '_0.048_39.csv', index=False)
+# submission.to_csv(save_path+'submit_air'+date+ '_0.0481.csv', index=False)
 
 '''
 #gridsearch/ 'ball_tree',5, 0.01
@@ -55,4 +55,7 @@ Name: label, dtype: int64
 =>0.883123354
 #(contamination= 0.048, n_neighbors=25)
 =>0.889184209
+#(contamination= 0.048, n_neighbors=25)
+=>0.9531917404 ('ball_tree', 'kd_tree', 'brute')
+
 '''
