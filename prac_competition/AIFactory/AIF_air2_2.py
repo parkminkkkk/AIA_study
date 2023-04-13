@@ -41,7 +41,7 @@ x_val = scaler.transform(x_val)
 # Define Autoencoder model
 input_layer = Input(shape=(len(features),))
 encoder1 = Dense(16, activation='selu')(input_layer)
-encoder2 = Dense(16, activation='selu',activity_regularizer=regularizers.l1(0.001))(encoder1)
+encoder2 = Dense(16, activation='selu')(encoder1)
 encoder3 = Dense(16, activation='swish')(encoder2)
 decoder = Dense(len(features), activation='sigmoid')(encoder3)
 autoencoder = Model(inputs=input_layer, outputs=decoder)

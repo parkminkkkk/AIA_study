@@ -53,7 +53,7 @@ autoencoder = Model(inputs=input_layer, outputs=decoder)
 autoencoder.compile(optimizer='adam', loss='mean_squared_error', metrics = ['acc'])
 
 # Train Autoencoder model
-es = EarlyStopping(monitor='acc', mode='max', verbose= 1, patience= 60)
+es = EarlyStopping(monitor='val_loss', mode='auto', verbose= 1, patience= 100)
 autoencoder.fit(x_train, x_train, epochs= 5000, batch_size= 20, validation_data=(x_val, x_val), callbacks=[es])
 
 # Predict anomalies in test data
@@ -73,5 +73,10 @@ print(submission['label'].value_counts())
 import datetime 
 date = datetime.datetime.now()  
 date = date.strftime("%m%d_%H%M")  
-
 submission.to_csv(save_path+'submit_air_'+date+ '.csv', index=False)
+
+'''
+Epoch 00694: early stopping
+0    7285
+1     104
+'''
