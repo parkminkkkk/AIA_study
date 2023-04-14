@@ -1,0 +1,9 @@
+import numpy as np
+import pandas as pd
+
+###결측치제거### 
+print(data.isnull().sum())
+
+##data_drop
+train_data = train_data.drop(['motor_current'], axis=1)
+test_data = test_data.drop(['motor_current'], axis=1)
