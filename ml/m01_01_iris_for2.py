@@ -19,7 +19,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import MaxAbsScaler, MinMaxScaler, RobustScaler, StandardScaler
 
 #1. 데이터 
-datasets = [load_iris(return_X_y=True),load_breast_cancer(return_X_y=True),load_wine(return_X_y=True),load_digits(return_X_y=True)]
+datasets = [load_iris,load_breast_cancer,load_wine,load_digits]
             #,fetch_covtype(return_X_y=True)]
 
 #2. 모델구성
@@ -29,15 +29,14 @@ scaler = [MinMaxScaler(),MaxAbsScaler(),RobustScaler(),StandardScaler()]
 
 # Loop through the datasets and models, fit the models, and print the results
 for i in datasets : 
-    x, y = i
+    x, y = i(return_X_y=True)
     for j in scaler:
-        scaler = j 
-        x = scaler.fit_transform(x)
+        x = j.fit_transform(x)
         for k in models : 
             model = k
             model.fit(x,y)
             results = model.score(x,y)
-            print(i.__name__, type(k).__name__, results)
+            print(i.__name__,type(j).__name__, type(k).__name__, results)
 
 
 
