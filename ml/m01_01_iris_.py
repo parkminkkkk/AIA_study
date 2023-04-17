@@ -6,8 +6,6 @@
 # 4. wine
 # 5. fetch_covtype
 # 6. digits
-
-
 import numpy as np
 from sklearn.datasets import load_iris, load_breast_cancer, load_wine, fetch_covtype, load_digits
 
@@ -25,12 +23,6 @@ datasets = fetch_covtype()
 x, y = fetch_covtype(return_X_y=True)
 # x, y = load_digits(return_X_y=True)
 
-
-# for i in [datasets]
-
-# print(x4.shape, y4.shape)  #(581012, 54) (581012,)
-# print(x)
-# print(y)
 
 #2. 모델구성
 # from tensorflow.keras.models import Sequential
@@ -52,7 +44,7 @@ model2 = DecisionTreeRegressor()
 model3 = LogisticRegression()
 model4 = LinearSVC()
 
-
+#DL
 # model = Sequential()
 # model.add(Dense(10, activation='relu', input_shape=(4,)))
 # model.add(Dense(10))
@@ -66,6 +58,7 @@ model2.fit(x,y)
 model3.fit(x,y)
 model4.fit(x,y)
 
+#DL
 # model.compile(loss = 'sparse_categorical_crossentropy',#원핫인코딩안하면 sparse_categorical_crossentropy사용하면 됨 (대신, 0부터 시작하는지 확인해야함!, 아닐 경우 틀어짐)
 #               optimizer='adam',
 #               metrics = ['acc'])
@@ -75,7 +68,6 @@ model4.fit(x,y)
 #4. 평가, 예측 
 ###model.score : 분류모델:acc/ 회귀모델:R2
 # results= model.score(x,y) #evaluate없음. score
-# results = model.evaluate(x, y)
 results1= model1.score(x,y)
 results2= model2.score(x,y)
 results3= model3.score(x,y)
@@ -85,23 +77,9 @@ print("DecisionTreeRegressor:", results2)
 print("LogisticRegression:", results3)
 print("LinearSVC:", results4)
 
+#DL
+# results = model.evaluate(x, y)
 
-'''
-#분류
-1. iris : 
-2. cancer:
-3. dacon_diabets
-4. wine
-5. fetch_covtype
-6. digits
-
-----------------
-#회기
-1. boston
-2. california
-3. ddarang
-4. kaggle_bike
-'''
 
 '''
 #아이리스 

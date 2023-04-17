@@ -2,10 +2,9 @@
 # #분류
 # 1. iris 
 # 2. cancer
-# 3. dacon_diabets
-# 4. wine
-# 5. fetch_covtype
-# 6. digits
+# 3. wine
+# 4. fetch_covtype
+# 5. digits
 
 import warnings
 warnings.filterwarnings('ignore') 
@@ -41,13 +40,6 @@ for i, dataset in enumerate(datasets):
 
 '''
 #분류
-1. iris : 
-2. cancer:
-3. dacon_diabets
-4. wine
-5. fetch_covtype
-6. digits
-
 Results for dataset 1: iris
   Model 1: 0.992
   Model 2: 1.000
