@@ -29,3 +29,8 @@ print('acc:', scores,
       '\n cross_val_score 평균:', round(np.mean(scores),4))
 #acc: [1.         0.96666667 0.93333333 0.96666667 0.96666667]
 #cross_val_score 평균: 0.9667
+
+
+##train_test_split / cross_cal
+#train, test split : 데이터 손실이 있지만, 과적합 되지 않도록 하겠다.
+#과적합 포기하고 전체 데이터 쓰겠다 : train,test 모두 cross_val 

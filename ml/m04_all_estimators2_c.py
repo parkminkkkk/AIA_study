@@ -68,8 +68,6 @@ print('===========================')
 # print("r2_score: ", r2)
 
 
-
-
 '''
 # RandomForestRegressor
 model_score:  0.8150037720889283

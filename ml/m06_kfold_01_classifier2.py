@@ -29,7 +29,7 @@ n_splits = 5
 kfold = KFold(n_splits=n_splits, shuffle=True, random_state=42)
 
 ###
-best_models = {}  # 최고 모델 저장할 딕셔너리
+# best_models = {}  # 최고 모델 저장할 딕셔너리
 #1. 데이터 
 for i, v in enumerate(datasets):
     x, y = v
@@ -63,12 +63,12 @@ for i, v in enumerate(datasets):
         print('최고모델:', max_name, max_score)
         print('================================')  
         # 최고 모델 딕셔너리에 저장
-        best_models[(dataname[i], scalername)] = (max_name, max_score)
+        # best_models[(dataname[i], scalername)] = (max_name, max_score)
 
-# 최고 모델 출력
-print("========== 최고 모델 ==========")
-for key, value in best_models.items():
-    print(key, ":", value)
+# # 최고 모델 출력
+# print("========== 최고 모델 ==========")
+# for key, value in best_models.items():
+#     print(key, ":", value)
 
 '''
 ======== iris ========
@@ -131,6 +131,28 @@ best_scaler: MinMaxScaler
 best_scaler: RobustScaler
 최고모델: ExtraTreesClassifier 0.98
 ================================
+======== digits ========
+best_scaler: StandardScaler
+최고모델: ExtraTreesClassifier 0.9833
+================================
+========== 최고 모델 ==========
+('iris', 'MaxAbsScaler') : ('LinearDiscriminantAnalysis', 0.98)
+('iris', 'MinMaxScaler') : ('LinearDiscriminantAnalysis', 0.98)
+('iris', 'RobustScaler') : ('LinearDiscriminantAnalysis', 0.98)
+('iris', 'StandardScaler') : ('LinearDiscriminantAnalysis', 0.98)
+('cancer', 'MaxAbsScaler') : ('SVC', 0.9789)
+('cancer', 'MinMaxScaler') : ('MLPClassifier', 0.9807)
+('cancer', 'RobustScaler') : ('LogisticRegression', 0.9824)
+('cancer', 'StandardScaler') : ('SVC', 0.9789)
+('wine', 'MaxAbsScaler') : ('RidgeClassifierCV', 1.0)
+('wine', 'MinMaxScaler') : ('RidgeClassifierCV', 1.0)
+('wine', 'RobustScaler') : ('RidgeClassifier', 0.9944)
+('wine', 'StandardScaler') : ('RidgeClassifier', 0.9944)
+('digits', 'MaxAbsScaler') : ('LabelPropagation', 0.9878)
+('digits', 'MinMaxScaler') : ('LabelPropagation', 0.9878)
+('digits', 'RobustScaler') : ('ExtraTreesClassifier', 0.9839)
+('digits', 'StandardScaler') : ('ExtraTreesClassifier', 0.9833)
+
 '''
 
 
