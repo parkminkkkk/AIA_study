@@ -1,4 +1,12 @@
 #실습 
+# #분류
+# 1. iris 
+# 2. cancer
+# 3. dacon_diabets
+# 4. wine
+# 5. fetch_covtype
+# 6. digits
+
 #모델 : RandomForestClassifier
 # parameters = [
 #     {'n_estimators' : [100,200]},
@@ -10,17 +18,17 @@
 ####################################################
 import time
 import numpy as np
-from sklearn.datasets import load_iris, load_diabetes
+from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold, cross_val_score, StratifiedKFold
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.model_selection import GridSearchCV   
-from sklearn.metrics import accuracy_score, r2_score
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV   
+from sklearn.metrics import accuracy_score
 
 #1. 데이터 
-x, y = load_diabetes(return_X_y=True)
+x, y = load_iris(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=42, test_size=0.2
@@ -32,8 +40,7 @@ x_test = scaler.fit_transform(x_test)
 
 
 n_splits = 5
-kfold = KFold(n_splits=n_splits, shuffle=True, random_state=337)
-# kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=337)
+kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=337)
 
 
 parameters = [
@@ -44,7 +51,7 @@ parameters = [
   ]
 
 #2. 모델 
-model = GridSearchCV(RandomForestRegressor(), parameters,
+model = RandomizedSearchCV(RandomForestClassifier(), parameters,
                      cv=kfold, verbose=1, refit=True, n_jobs=-1)
 
 #3. 컴파일, 훈련 
@@ -60,18 +67,31 @@ print("걸린시간 :", round(end_time-start_time,2), "초")
 
 #4. 평가, 예측
 y_predict = model.predict(x_test)
-print("r2_score:", r2_score(y_test, y_predict))
+print("accuracy_score:", accuracy_score(y_test, y_predict))
 
 y_pred_best = model.best_estimator_.predict(x_test)            
-print("최적 튠 r2:", r2_score(y_test, y_pred_best))
+print("최적 튠 ACC:", accuracy_score(y_test, y_pred_best))
 
+
+#RandomizedSearchCV
 '''
-Fitting 5 folds for each of 30 candidates, totalling 150 fits
-최적의 매개변수: RandomForestRegressor(min_samples_leaf=7)
-최적의 파라미터: {'min_samples_leaf': 7}
-best_score: 0.4476214576923686
-model.score: 0.48974147346686603
-걸린시간 : 9.87 초
-r2_score: 0.48974147346686603
-최적 튠 r2: 0.48974147346686603
+Fitting 5 folds for each of 10 candidates, totalling 50 fits
+최적의 매개변수: RandomForestClassifier(max_depth=12, min_samples_leaf=7, n_estimators=200)
+최적의 파라미터: {'n_estimators': 200, 'min_samples_leaf': 7, 'max_depth': 12}
+best_score: 0.9583333333333333
+model.score: 1.0  
+걸린시간 : 5.11 초
+accuracy_score: 1.0
+최적 튠 ACC: 1.0
+'''
+#GridSearchCV
+'''
+Fitting 5 folds for each of 68 candidates, totalling 340 fits
+최적의 매개변수: RandomForestClassifier(max_depth=6, min_samples_leaf=3)
+최적의 파라미터: {'max_depth': 6, 'min_samples_leaf': 3, 'n_estimators': 100}
+best_score: 0.9583333333333333
+model.score: 1.0
+걸린시간 : 17.21 초
+accuracy_score: 1.0
+최적 튠 ACC: 1.0
 '''

@@ -1,12 +1,4 @@
 #실습 
-# #분류
-# 1. iris 
-# 2. cancer
-# 3. dacon_diabets
-# 4. wine
-# 5. fetch_covtype
-# 6. digits
-
 #모델 : RandomForestClassifier
 # parameters = [
 #     {'n_estimators' : [100,200]},
@@ -18,29 +10,23 @@
 ####################################################
 import time
 import numpy as np
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_iris, fetch_california_housing
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold, cross_val_score, StratifiedKFold
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.model_selection import GridSearchCV   
-from sklearn.metrics import accuracy_score
+from sklearn.model_selection import GridSearchCV,RandomizedSearchCV   
+from sklearn.metrics import accuracy_score, r2_score
 
 #1. 데이터 
-x, y = load_iris(return_X_y=True)
+x, y = fetch_california_housing(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=42, test_size=0.2
 )
 
-scaler = MinMaxScaler()
-x_train = scaler.fit_transform(x_train)
-x_test = scaler.fit_transform(x_test)
-
-
 n_splits = 5
-kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=337)
+kfold = KFold(n_splits=n_splits, shuffle=True, random_state=337)
+# kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=337)
 
 
 parameters = [
@@ -51,7 +37,7 @@ parameters = [
   ]
 
 #2. 모델 
-model = GridSearchCV(RandomForestClassifier(), parameters,
+model = RandomizedSearchCV(RandomForestRegressor(), parameters,
                      cv=kfold, verbose=1, refit=True, n_jobs=-1)
 
 #3. 컴파일, 훈련 
@@ -67,7 +53,29 @@ print("걸린시간 :", round(end_time-start_time,2), "초")
 
 #4. 평가, 예측
 y_predict = model.predict(x_test)
-print("accuracy_score:", accuracy_score(y_test, y_predict))
+print("r2_score:", r2_score(y_test, y_predict))
 
 y_pred_best = model.best_estimator_.predict(x_test)            
-print("최적 튠 ACC:", accuracy_score(y_test, y_pred_best))
+print("최적 튠 r2:", r2_score(y_test, y_pred_best))
+
+'''
+Fitting 5 folds for each of 10 candidates, totalling 50 fits
+최적의 매개변수: RandomForestRegressor()
+최적의 파라미터: {'min_samples_split': 2}
+best_score: 0.8060023102907883
+model.score: 0.8057967818003352
+걸린시간 : 99.58 초
+r2_score: 0.8057967818003352
+최적 튠 r2: 0.8057967818003352
+'''
+#
+'''
+Fitting 5 folds for each of 30 candidates, totalling 150 fits
+최적의 매개변수: RandomForestRegressor(n_estimators=200)
+최적의 파라미터: {'n_estimators': 200}
+best_score: 0.8074782265030211
+model.score: 0.8075162283132415
+걸린시간 : 272.99 초
+r2_score: 0.8075162283132415
+최적 튠 r2: 0.8075162283132415
+'''

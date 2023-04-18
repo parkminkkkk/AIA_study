@@ -1,4 +1,12 @@
 #실습 
+# #분류
+# 1. iris 
+# 2. cancer
+# 3. dacon_diabets
+# 4. wine
+# 5. fetch_covtype
+# 6. digits
+
 #모델 : RandomForestClassifier
 # parameters = [
 #     {'n_estimators' : [100,200]},
@@ -10,19 +18,26 @@
 ####################################################
 import time
 import numpy as np
-from sklearn.datasets import load_iris, load_digits
+from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold, cross_val_score, StratifiedKFold
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.model_selection import GridSearchCV   
 from sklearn.metrics import accuracy_score
 
 #1. 데이터 
-x, y = load_digits(return_X_y=True)
+x, y = load_iris(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=42, test_size=0.2
 )
+
+scaler = MinMaxScaler()
+x_train = scaler.fit_transform(x_train)
+x_test = scaler.fit_transform(x_test)
+
 
 n_splits = 5
 kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=337)
@@ -57,13 +72,14 @@ print("accuracy_score:", accuracy_score(y_test, y_predict))
 y_pred_best = model.best_estimator_.predict(x_test)            
 print("최적 튠 ACC:", accuracy_score(y_test, y_pred_best))
 
+
 '''
-Fitting 5 folds for each of 30 candidates, totalling 150 fits
-최적의 매개변수: RandomForestClassifier()
-최적의 파라미터: {'n_estimators': 100}   
-best_score: 0.976335656213705
-model.score: 0.9805555555555555
-걸린시간 : 13.82 초
-accuracy_score: 0.9805555555555555
-최적 튠 ACC: 0.9805555555555555
+Fitting 5 folds for each of 68 candidates, totalling 340 fits
+최적의 매개변수: RandomForestClassifier(max_depth=6, min_samples_leaf=3)
+최적의 파라미터: {'max_depth': 6, 'min_samples_leaf': 3, 'n_estimators': 100}
+best_score: 0.9583333333333333
+model.score: 1.0
+걸린시간 : 17.21 초
+accuracy_score: 1.0
+최적 튠 ACC: 1.0
 '''

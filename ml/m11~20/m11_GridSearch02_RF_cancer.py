@@ -10,8 +10,7 @@
 ####################################################
 import time
 import numpy as np
-import pandas as pd
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_iris, load_breast_cancer
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold, cross_val_score, StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
@@ -19,17 +18,10 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score
 
 #1. 데이터 
-path = './_data/dacon_diabetes/'
-path_save = './_save/dacon_diabetes/'
-
-train_csv= pd.read_csv(path+'train.csv', index_col=0)
-test_csv= pd.read_csv(path+'test.csv', index_col=0)
-x = train_csv.drop(['Outcome'], axis=1)
-y = train_csv['Outcome']
-
+x, y = load_breast_cancer(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, shuffle=True, random_state=42, test_size=0.2, stratify=y
+    x, y, shuffle=True, random_state=42, test_size=0.2
 )
 
 n_splits = 5
@@ -66,12 +58,12 @@ y_pred_best = model.best_estimator_.predict(x_test)
 print("최적 튠 ACC:", accuracy_score(y_test, y_pred_best))
 
 '''
-Fitting 5 folds for each of 30 candidates, totalling 150 fits
-최적의 매개변수: RandomForestClassifier(max_depth=8)
-최적의 파라미터: {'max_depth': 8}
-best_score: 0.7696703296703297
-model.score: 0.7862595419847328
-걸린시간 : 10.38 초
-accuracy_score: 0.7862595419847328
-최적 튠 ACC: 0.7862595419847328
+Fitting 5 folds for each of 68 candidates, totalling 340 fits
+최적의 매개변수: RandomForestClassifier(max_depth=6, min_samples_leaf=5)     
+최적의 파라미터: {'max_depth': 6, 'min_samples_leaf': 5, 'n_estimators': 100}
+best_score: 0.9670329670329672
+model.score: 0.9649122807017544
+걸린시간 : 20.79 초
+accuracy_score: 0.9649122807017544
+최적 튠 ACC: 0.9649122807017544
 '''

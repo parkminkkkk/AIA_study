@@ -38,8 +38,9 @@ model = RandomizedSearchCV(SVC(), parameters,
                      cv=4,      #girdsearch에 cv가 포함되어있음 /즉, 분류모델일때, default가 stratifiedKFold / 회귀일땐, default=kfold
                      verbose=1,  
                      refit=True, #(디폴트)true인 경우 최적의 하이퍼 파라미터를 찾은 후 입력된 개체를 해당 하이퍼 파라미터로 재학습/ false : 최종 파라미터로 출력
-                     n_jobs=-1
-                     ) #전체 cpu다 돌릴거야 
+                     n_jobs=-1, #전체 cpu다 돌릴거야 
+                     n_iter=5,  #디폴트는 10, 디폴트일 경우 [10번*cv]만큼 훈련
+                     )  
 
 #3. 컴파일, 훈련
 start_time = time.time()
@@ -83,3 +84,6 @@ pd.DataFrame(model.cv_results_).sort_values('rank_test_score', ascending=True)\
 
 #Fitting 4 folds for each of 10 candidates, totalling 40 fits
 #cv 1개당 10번씩만 선택해서 돌리겠다. (48개 훈련 중에서 10개만 선택해서 훈련하겠다.)
+
+#n_iter=5일때, (디폴트= n_iter=10)
+#Fitting 4 folds for each of 5 candidates, totalling 20 fits
