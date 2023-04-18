@@ -59,6 +59,17 @@ y_pred_best = model.best_estimator_.predict(x_test)
 print("최적 튠 ACC:", accuracy_score(y_test, y_pred_best))
 
 
+#HalvingRandomSearchCV
+'''
+최적의 매개변수: RandomForestClassifier()
+최적의 파라미터: {'min_samples_split': 2}
+best_score: 0.7284240663551008
+model.score: 0.9554228376203713
+걸린시간 : 185.2 초
+accuracy_score: 0.9554228376203713
+최적 튠 ACC: 0.9554228376203713
+'''
+
 #RandomizedSearchCV
 '''
 Fitting 5 folds for each of 10 candidates, totalling 50 fits
