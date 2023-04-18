@@ -84,12 +84,12 @@ r2_score: 0.3698332799333316
 '''
 #
 '''
-Fitting 5 folds for each of 30 candidates, totalling 150 fits
-최적의 매개변수: RandomForestRegressor(max_depth=10)
-최적의 파라미터: {'max_depth': 10}
-best_score: 0.35059194460571
-model.score: 0.37125646931958367
-걸린시간 : 96.35 초
-r2_score: 0.37125646931958367
-최적 튠 r2: 0.37125646931958367
+Fitting 5 folds for each of 68 candidates, totalling 340 fits
+최적의 매개변수: RandomForestRegressor(max_depth=10, min_samples_leaf=3, n_estimators=200)
+최적의 파라미터: {'max_depth': 10, 'min_samples_leaf': 3, 'n_estimators': 200}
+best_score: 0.3515709060076561
+model.score: 0.36975121058246363
+걸린시간 : 89.02 초
+r2_score: 0.36975121058246363
+최적 튠 r2: 0.36975121058246363
 '''
