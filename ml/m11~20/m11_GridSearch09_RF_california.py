@@ -59,12 +59,12 @@ y_pred_best = model.best_estimator_.predict(x_test)
 print("최적 튠 r2:", r2_score(y_test, y_pred_best))
 
 '''
-Fitting 5 folds for each of 30 candidates, totalling 150 fits
-최적의 매개변수: RandomForestRegressor(n_estimators=200)
-최적의 파라미터: {'n_estimators': 200}
-best_score: 0.8074782265030211
-model.score: 0.8075162283132415
-걸린시간 : 272.99 초
-r2_score: 0.8075162283132415
-최적 튠 r2: 0.8075162283132415
+Fitting 5 folds for each of 68 candidates, totalling 340 fits
+최적의 매개변수: RandomForestRegressor(min_samples_leaf=3, min_samples_split=5)
+최적의 파라미터: {'min_samples_leaf': 3, 'min_samples_split': 5}
+best_score: 0.806335536839718
+model.score: 0.8046344109208888
+걸린시간 : 475.03 초
+r2_score: 0.8046344109208888
+최적 튠 r2: 0.8046344109208888
 '''
