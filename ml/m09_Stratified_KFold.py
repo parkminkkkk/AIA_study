@@ -2,6 +2,8 @@
 # 문제점 1. train, test/ test로 predict한 것이므로 과적합만큼 결과의acc가 안나올 수 있음 
 # 문제점 2. stratify / y값이 편향되는 문제 발생할 수 있음(y의 class의 비율만큼) 
 # => StratifiedKFold #y의 클래스만큼 n빵 
+# 분류모델에서만 StratifiedKFold사용가능!! 회귀에서는 사용xx
+
 
 import numpy as np
 from sklearn.datasets import load_iris
@@ -19,7 +21,8 @@ x_train, x_test, y_train, y_test = train_test_split(
  
 n_splits = 5
 # kfold = KFold(n_splits=n_splits, shuffle=True, random_state=337)
-kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=337) #stratify=y(동일)
+kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=337) #stratify=y(동일) 
+#분류모델에서만 StratifiedKFold사용가능!! 회귀에서는 사용xx
 
 #2. 모델구성
 model = SVC()
