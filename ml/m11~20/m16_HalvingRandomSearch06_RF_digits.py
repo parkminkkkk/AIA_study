@@ -10,25 +10,24 @@
 ####################################################
 import time
 import numpy as np
-from sklearn.datasets import load_iris, fetch_california_housing
+from sklearn.datasets import load_iris, load_digits
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold, cross_val_score, StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.model_selection import GridSearchCV,RandomizedSearchCV   
+from sklearn.model_selection import GridSearchCV,RandomizedSearchCV
 from sklearn.experimental import enable_halving_search_cv
-from sklearn.model_selection import HalvingGridSearchCV
-from sklearn.metrics import accuracy_score, r2_score
+from sklearn.model_selection import HalvingGridSearchCV, HalvingRandomSearchCV
+from sklearn.metrics import accuracy_score
 
 #1. 데이터 
-x, y = fetch_california_housing(return_X_y=True)
+x, y = load_digits(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=42, test_size=0.2
 )
 
 n_splits = 5
-kfold = KFold(n_splits=n_splits, shuffle=True, random_state=337)
-# kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=337)
+kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=337)
 
 
 parameters = [
@@ -39,7 +38,7 @@ parameters = [
   ]
 
 #2. 모델 
-model = HalvingGridSearchCV(RandomForestRegressor(), parameters,
+model = HalvingRandomSearchCV(RandomForestClassifier(), parameters,
                      cv=kfold, verbose=1, refit=True, n_jobs=-1)
 
 #3. 컴파일, 훈련 
@@ -55,40 +54,50 @@ print("걸린시간 :", round(end_time-start_time,2), "초")
 
 #4. 평가, 예측
 y_predict = model.predict(x_test)
-print("r2_score:", r2_score(y_test, y_predict))
+print("accuracy_score:", accuracy_score(y_test, y_predict))
 
 y_pred_best = model.best_estimator_.predict(x_test)            
-print("최적 튠 r2:", r2_score(y_test, y_pred_best))
+print("최적 튠 ACC:", accuracy_score(y_test, y_pred_best))
 
-#
+#HalvingRandomSearchCV
 '''
-최적의 매개변수: RandomForestRegressor(min_samples_split=3)
-최적의 파라미터: {'min_samples_split': 3}
-best_score: 0.8065200249965088
-model.score: 0.8064576887884798
-걸린시간 : 107.03 초
-r2_score: 0.8064576887884798
-최적 튠 r2: 0.8064576887884798
+최적의 매개변수: RandomForestClassifier(min_samples_split=5)
+최적의 파라미터: {'min_samples_split': 5}
+best_score: 0.953153320918684
+model.score: 0.975
+걸린시간 : 7.97 초
+accuracy_score: 0.975
+최적 튠 ACC: 0.975
 '''
-#
+#HalvingGridSearchCV
+'''
+최적의 매개변수: RandomForestClassifier(min_samples_split=5)
+최적의 파라미터: {'min_samples_split': 5}
+best_score: 0.9609931719428927
+model.score: 0.975
+걸린시간 : 28.17 초
+accuracy_score: 0.975
+최적 튠 ACC: 0.975
+'''
+#RandomizedSearchCV
 '''
 Fitting 5 folds for each of 10 candidates, totalling 50 fits
-최적의 매개변수: RandomForestRegressor()
-최적의 파라미터: {'min_samples_split': 2}
-best_score: 0.8060023102907883
-model.score: 0.8057967818003352
-걸린시간 : 99.58 초
-r2_score: 0.8057967818003352
-최적 튠 r2: 0.8057967818003352
+최적의 매개변수: RandomForestClassifier(min_samples_split=3)
+최적의 파라미터: {'min_samples_split': 3}
+best_score: 0.9721544715447153
+model.score: 0.9777777777777777
+걸린시간 : 7.84 초
+accuracy_score: 0.9777777777777777
+최적 튠 ACC: 0.9777777777777777
 '''
-#
+#GridSearchCV
 '''
 Fitting 5 folds for each of 68 candidates, totalling 340 fits
-최적의 매개변수: RandomForestRegressor(min_samples_leaf=3, min_samples_split=5)
-최적의 파라미터: {'min_samples_leaf': 3, 'min_samples_split': 5}
-best_score: 0.806335536839718
-model.score: 0.8046344109208888
-걸린시간 : 475.03 초
-r2_score: 0.8046344109208888
-최적 튠 r2: 0.8046344109208888
+최적의 매개변수: RandomForestClassifier(max_depth=12, min_samples_leaf=3, n_estimators=200)
+최적의 파라미터: {'max_depth': 12, 'min_samples_leaf': 3, 'n_estimators': 200}
+best_score: 0.9728513356562137
+model.score: 0.9666666666666667
+걸린시간 : 29.26 초
+accuracy_score: 0.9666666666666667
+최적 튠 ACC: 0.9666666666666667
 '''

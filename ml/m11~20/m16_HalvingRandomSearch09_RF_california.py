@@ -16,7 +16,7 @@ from sklearn.model_selection import KFold, cross_val_score, StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.model_selection import GridSearchCV,RandomizedSearchCV   
 from sklearn.experimental import enable_halving_search_cv
-from sklearn.model_selection import HalvingGridSearchCV
+from sklearn.model_selection import HalvingGridSearchCV, HalvingRandomSearchCV
 from sklearn.metrics import accuracy_score, r2_score
 
 #1. 데이터 
@@ -39,7 +39,7 @@ parameters = [
   ]
 
 #2. 모델 
-model = HalvingGridSearchCV(RandomForestRegressor(), parameters,
+model = HalvingRandomSearchCV(RandomForestRegressor(), parameters,
                      cv=kfold, verbose=1, refit=True, n_jobs=-1)
 
 #3. 컴파일, 훈련 
@@ -60,7 +60,17 @@ print("r2_score:", r2_score(y_test, y_predict))
 y_pred_best = model.best_estimator_.predict(x_test)            
 print("최적 튠 r2:", r2_score(y_test, y_pred_best))
 
-#
+#HalvingRandomSearchCV
+'''
+최적의 매개변수: RandomForestRegressor(max_depth=12, min_samples_leaf=5)      
+최적의 파라미터: {'n_estimators': 100, 'min_samples_leaf': 5, 'max_depth': 12}
+best_score: 0.6562116584485065
+model.score: 0.789774387163624
+걸린시간 : 31.8 초
+r2_score: 0.789774387163624
+최적 튠 r2: 0.789774387163624
+'''
+#HalvingGridSearchCV
 '''
 최적의 매개변수: RandomForestRegressor(min_samples_split=3)
 최적의 파라미터: {'min_samples_split': 3}
@@ -70,7 +80,8 @@ model.score: 0.8064576887884798
 r2_score: 0.8064576887884798
 최적 튠 r2: 0.8064576887884798
 '''
-#
+
+#RandomizedSearchCV
 '''
 Fitting 5 folds for each of 10 candidates, totalling 50 fits
 최적의 매개변수: RandomForestRegressor()
@@ -81,7 +92,7 @@ model.score: 0.8057967818003352
 r2_score: 0.8057967818003352
 최적 튠 r2: 0.8057967818003352
 '''
-#
+#GridSearchCV
 '''
 Fitting 5 folds for each of 68 candidates, totalling 340 fits
 최적의 매개변수: RandomForestRegressor(min_samples_leaf=3, min_samples_split=5)

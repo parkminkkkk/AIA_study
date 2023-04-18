@@ -67,18 +67,18 @@ print("r2_score:", r2_score(y_test, y_predict))
 y_pred_best = model.best_estimator_.predict(x_test)            
 print("최적 튠 r2:", r2_score(y_test, y_pred_best))
 
-#
+#HalvingRandomSearchCV
 '''
-최적의 매개변수: RandomForestRegressor(min_samples_leaf=3, min_samples_split=3)
-최적의 파라미터: {'min_samples_split': 3, 'min_samples_leaf': 3}
-best_score: 0.4200269138222607
-model.score: 0.4415394722361349
-걸린시간 : 15.61 초
-r2_score: 0.4415394722361349
-최적 튠 r2: 0.4415394722361349
+최적의 매개변수: RandomForestRegressor(min_samples_leaf=5)
+최적의 파라미터: {'min_samples_split': 2, 'min_samples_leaf': 5}
+best_score: 0.41952175831325117
+model.score: 0.45392840102872123
+걸린시간 : 18.18 초
+r2_score: 0.45392840102872123
+최적 튠 r2: 0.45392840102872123
 '''
 
-#
+#HalvingGridSearchCV
 '''
 최적의 매개변수: RandomForestRegressor(max_depth=12, min_samples_leaf=3, n_estimators=200)
 최적의 파라미터: {'max_depth': 12, 'min_samples_leaf': 3, 'n_estimators': 200}
@@ -88,7 +88,7 @@ model.score: 0.45344089709498403
 r2_score: 0.45344089709498403
 최적 튠 r2: 0.45344089709498403
 '''
-#
+#RandomizedSearchCV
 '''
 Fitting 5 folds for each of 10 candidates, totalling 50 fits
 최적의 매개변수: RandomForestRegressor(max_depth=10, min_samples_leaf=10)
@@ -99,7 +99,7 @@ model.score: 0.4610710499286217
 r2_score: 0.4610710499286217
 최적 튠 r2: 0.4610710499286217
 '''
-#
+#GridSearchCV
 '''
 Fitting 5 folds for each of 68 candidates, totalling 340 fits
 최적의 매개변수: RandomForestRegressor(min_samples_leaf=7, min_samples_split=10)
