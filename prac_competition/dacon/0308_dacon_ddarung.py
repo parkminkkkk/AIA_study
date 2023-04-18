@@ -21,7 +21,7 @@ print(test_csv) #(715, 9) count제외
 # print(train_csv.isnull().sum())
 
 ###결측치제거### 
-train_csv = train_csv.dropna() 
+train_csv = train_csv.dropna()   #결측치 삭제함수 .dropna()
 print(train_csv.isnull().sum())
 # print(train_csv.info())
 print(train_csv.shape)  #(1328, 10)
