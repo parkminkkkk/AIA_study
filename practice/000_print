@@ -14,3 +14,11 @@ test_data = test_data.drop(['motor_current'], axis=1)
 print(pd.DataFrame(model.cv_results_).sort_values('rank_test_score', ascending=True)) #값순으로 정렬 : sort_values,ascending=True(오름차순:디폴트)/ false:(내림차순)
 #[48 rows x 17 columns] : 48개 훈련에 대해서 17가지 결과값으로 보여줌
 print(pd.DataFrame(model.cv_results_).columns) #컬럼명 확인
+
+#np
+movies['year'].unique()#컬럼목록 확인
+movies[movies['year'].isnull()] #결측값 확인
+movies['year'] = movies['year'].fillna('2050') #결측값 처리
+
+# dtype 변경
+train_data.iloc[:,2:] = train_data.iloc[:,2:].astype(float)
