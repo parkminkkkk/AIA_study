@@ -10,15 +10,15 @@
 ####################################################
 import time
 import numpy as np
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_iris, fetch_covtype
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold, cross_val_score, StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.model_selection import GridSearchCV   
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import accuracy_score
 
 #1. 데이터 
-x, y = load_iris(return_X_y=True)
+x, y = fetch_covtype(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=42, test_size=0.2
@@ -29,15 +29,14 @@ kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=337)
 
 
 parameters = [
-    {'n_estimators' : [100,200]}, {'max_depth' : [6,8,10,12]}, {'min_samples_leaf' : [3,5,7,10]},
-    {'max_depth' : [6,8,10,12]}, {'min_samples_leaf' : [3,5,7,10]},
-    {'min_samples_leaf' : [3,5,7,10]}, {'min_samples_split' : [2,3,5,10]},
+    {'n_estimators' : [100,200], 'max_depth' : [6,8,10,12], 'min_samples_leaf' : [3,5,7,10]},
+    {'max_depth' : [6,8,10,12], 'min_samples_leaf' : [3,5,7,10]},
+    {'min_samples_leaf' : [3,5,7,10], 'min_samples_split' : [2,3,5,10]},
     {'min_samples_split' : [2,3,5,10]},
   ]
 
 #2. 모델 
-model = GridSearchCV(RandomForestClassifier(), parameters,
-                     cv=kfold, verbose=1, refit=True, n_jobs=-1)
+model = RandomizedSearchCV(RandomForestClassifier(), parameters, cv=kfold, verbose=1, refit=True, n_jobs=-1)
 
 #3. 컴파일, 훈련 
 start_time = time.time()
