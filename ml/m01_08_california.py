@@ -1,8 +1,8 @@
 ###회귀 데이터 모아서 테스트###
 #회기
-# 1. boston
+# 1. diabets
 # 2. california
-# 3. ddarang
+# 3. dacon_ddarang
 # 4. kaggle_bike
 
 import numpy as np
