@@ -13,6 +13,8 @@ import numpy as np
 from sklearn.datasets import load_iris, load_diabetes
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold, cross_val_score, StratifiedKFold
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.model_selection import GridSearchCV   
 from sklearn.metrics import accuracy_score, r2_score
@@ -24,15 +26,20 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=42, test_size=0.2
 )
 
+scaler = MinMaxScaler()
+x_train = scaler.fit_transform(x_train)
+x_test = scaler.fit_transform(x_test)
+
+
 n_splits = 5
 kfold = KFold(n_splits=n_splits, shuffle=True, random_state=337)
 # kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=337)
 
 
 parameters = [
-    {'n_estimators' : [100,200]}, {'max_depth' : [6,8,10,12]}, {'min_samples_leaf' : [3,5,7,10]},
-    {'max_depth' : [6,8,10,12]}, {'min_samples_leaf' : [3,5,7,10]},
-    {'min_samples_leaf' : [3,5,7,10]}, {'min_samples_split' : [2,3,5,10]},
+    {'n_estimators' : [100,200], 'max_depth' : [6,8,10,12], 'min_samples_leaf' : [3,5,7,10]},
+    {'max_depth' : [6,8,10,12], 'min_samples_leaf' : [3,5,7,10]},
+    {'min_samples_leaf' : [3,5,7,10], 'min_samples_split' : [2,3,5,10]},
     {'min_samples_split' : [2,3,5,10]},
   ]
 

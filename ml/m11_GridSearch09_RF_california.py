@@ -30,9 +30,9 @@ kfold = KFold(n_splits=n_splits, shuffle=True, random_state=337)
 
 
 parameters = [
-    {'n_estimators' : [100,200]}, {'max_depth' : [6,8,10,12]}, {'min_samples_leaf' : [3,5,7,10]},
-    {'max_depth' : [6,8,10,12]}, {'min_samples_leaf' : [3,5,7,10]},
-    {'min_samples_leaf' : [3,5,7,10]}, {'min_samples_split' : [2,3,5,10]},
+    {'n_estimators' : [100,200], 'max_depth' : [6,8,10,12], 'min_samples_leaf' : [3,5,7,10]},
+    {'max_depth' : [6,8,10,12], 'min_samples_leaf' : [3,5,7,10]},
+    {'min_samples_leaf' : [3,5,7,10], 'min_samples_split' : [2,3,5,10]},
     {'min_samples_split' : [2,3,5,10]},
   ]
 
@@ -59,5 +59,12 @@ y_pred_best = model.best_estimator_.predict(x_test)
 print("최적 튠 r2:", r2_score(y_test, y_pred_best))
 
 '''
-
+Fitting 5 folds for each of 30 candidates, totalling 150 fits
+최적의 매개변수: RandomForestRegressor(n_estimators=200)
+최적의 파라미터: {'n_estimators': 200}
+best_score: 0.8074782265030211
+model.score: 0.8075162283132415
+걸린시간 : 272.99 초
+r2_score: 0.8075162283132415
+최적 튠 r2: 0.8075162283132415
 '''
