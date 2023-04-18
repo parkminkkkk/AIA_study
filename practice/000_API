@@ -21,10 +21,10 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 # ML
 from sklearn.model_selection import train_test_split
-from sklearn.model_selection import KFold, cross_val_predict #교차검증
+from sklearn.model_selection import KFold, cross_val_score, cross_val_predict #교차검증
+from sklearn.model_selection import GridSearchCV
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import GridSearchCV
 
 # DL
 from tensorflow.python.keras.models import Sequential, Model, load_model

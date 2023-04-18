@@ -7,3 +7,10 @@ print(data.isnull().sum())
 ##data_drop
 train_data = train_data.drop(['motor_current'], axis=1)
 test_data = test_data.drop(['motor_current'], axis=1)
+
+##
+# print(model.cv_results_) : 한 눈에 보기 어려움 
+# pd : 컬럼 하나(1차원)-Seris,벡터 / list형태 - DataFrame
+print(pd.DataFrame(model.cv_results_).sort_values('rank_test_score', ascending=True)) #값순으로 정렬 : sort_values,ascending=True(오름차순:디폴트)/ false:(내림차순)
+#[48 rows x 17 columns] : 48개 훈련에 대해서 17가지 결과값으로 보여줌
+print(pd.DataFrame(model.cv_results_).columns) #컬럼명 확인
