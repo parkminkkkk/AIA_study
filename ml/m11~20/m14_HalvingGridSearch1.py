@@ -37,11 +37,11 @@ parameters = [
 # model = GridSearchCV(SVC(), parameters, #총48 x cv=5 : 240번 돌려라 
 # model = RandomizedSearchCV(SVC(), parameters,  
 model = HalvingGridSearchCV(SVC(), parameters,  
-                    #cv=kfold,  #kfold쓰는 것보다 cv=5하는게 성능 더 좋을 수 있음.(##stratifiedkfold가 디폴트##)
-                     cv=4,      #girdsearch에 cv가 포함되어있음 /즉, 분류모델일때, default가 stratifiedKFold / 회귀일땐, default=kfold
+                    #cv=kfold,   #kfold쓰는 것보다 cv=5하는게 성능 더 좋을 수 있음.(##stratifiedkfold가 디폴트##)
+                     cv=4,       #girdsearch에 cv가 포함되어있음 /즉, 분류모델일때, default가 stratifiedKFold / 회귀일땐, default=kfold
                      verbose=1,  
                      refit=True, #(디폴트)true인 경우 최적의 하이퍼 파라미터를 찾은 후 입력된 개체를 해당 하이퍼 파라미터로 재학습/ false : 최종 파라미터로 출력
-                     n_jobs=-1, #전체 cpu다 돌릴거야 
+                     n_jobs=-1,  #전체 cpu다 돌릴거야 
                     #  n_iter=5,  #디폴트는 10, 디폴트일 경우 [10번*cv]만큼 훈련
                      factor=3     #디폴트 3
                      )  

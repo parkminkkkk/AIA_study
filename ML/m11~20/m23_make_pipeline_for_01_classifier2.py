@@ -16,12 +16,11 @@ from sklearn.pipeline import make_pipeline
 
 
 
-# 1. 데이터 
-datasets = [(load_iris(return_X_y=True), 'Iris'), 
-            (load_breast_cancer(return_X_y=True), 'Breast Cancer'),
-            (load_wine(return_X_y=True), 'Wine'),
-            (load_digits(return_X_y=True), 'Digits')]
-dataname = ['iris', 'cancer', 'wine', 'digits']
+#1. 데이터 
+dataset = [load_iris(return_X_y=True),load_breast_cancer(return_X_y=True),load_wine(return_X_y=True),
+            load_digits(return_X_y=True), fetch_covtype(return_X_y=True)]
+
+datasets_name = ['iris','cancer','wine','digit', 'fetch_cov']
 
 
 # 2. 모델구성
@@ -34,23 +33,31 @@ parameters = [
 #2. 모델구성
 # pipe = Pipeline([('std', StandardScaler()), ('rf', RandomForestClassifier())])   
 pipe = make_pipeline(StandardScaler(), RandomForestClassifier())
-pipe_model = [GridSearchCV(pipe, parameters, cv=5, verbose=1, n_jobs=-1), 
-          RandomizedSearchCV(pipe, parameters, cv=5, verbose=1, n_jobs=-1), 
-          HalvingGridSearchCV(pipe, parameters, cv=5, verbose=1, n_jobs=-1), 
-          HalvingRandomSearchCV(pipe, parameters, cv=5, verbose=1, n_jobs=-1)]
-modelsname = ['그리드서치', '랜덤서치', '할빙그리드서치', '할빙랜덤서치']
-
+pipe_model = [GridSearchCV,HalvingGridSearchCV,RandomizedSearchCV]#, HalvingRandomSearchCV]
+modelsname = ['그리드서치', '랜덤서치', '할빙그리드서치']#, '할빙랜덤서치']
+# best_modelsname = None
 
 # max_score = 0
 
-for data, data_name in datasets: 
-    x, y = data
+for i , v in enumerate(dataset):
+    x,y = v 
     x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size=0.8, shuffle=True, random_state=337, stratify=y)
+    x, y, train_size=0.8, shuffle=True, random_state=337)
     # print(f'Data: {data_name}')
     for j,v in enumerate(pipe_model):
         max_score = 0
-        models=v
+        best_modelsname = None
+
+        if i !=4:
+            if j <2:
+                models=v(pipe, parameters, cv=5, verbose=1, n_jobs=-1)
+            else:
+                models=v(pipe, parameters, cv=2, verbose=1, n_jobs=-1, n_iter=2)
+        if i ==4:
+            if j <2:
+                models=v(pipe, parameters, cv=5, verbose=1, n_jobs=-1)
+            else:
+                models=v(pipe, parameters, cv=2, verbose=1, n_jobs=-1, n_iter=2)
         models.fit(x_train, y_train)
         y_predict = models.predict(x_test)
         acc= accuracy_score(y_test, y_predict)
@@ -60,7 +67,7 @@ for data, data_name in datasets:
             best_modelsname = modelsname[j]
     print('\n')
         #dataset name , 최고모델, 성능
-    print('========', data_name,'========')        
+    print('========', datasets_name[i],'========')        
     print('최고모델:', best_modelsname, max_score)
     print('================================')  
 

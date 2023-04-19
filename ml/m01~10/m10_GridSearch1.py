@@ -1,5 +1,6 @@
 #GridSearch : 파라미터 전체를 다 조사해보겠다. (hyperparameter + cross_validation)
 #파라미터 : model, model.fit 두가지에 파라미터 사용함 
+#m10:GridSearch /m12:RandomSearch/ m14:HalvingGridSearch / m16: HalvingRandomSearch
 
 import numpy as np
 from sklearn.datasets import load_iris

@@ -16,7 +16,9 @@ from sklearn.model_selection import KFold, cross_val_score, StratifiedKFold
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.model_selection import GridSearchCV   
+from sklearn.model_selection import GridSearchCV,RandomizedSearchCV
+from sklearn.experimental import enable_halving_search_cv
+from sklearn.model_selection import HalvingGridSearchCV, HalvingRandomSearchCV
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.metrics import accuracy_score, r2_score
 from sklearn.pipeline import make_pipeline, Pipeline
@@ -39,45 +41,40 @@ kfold = KFold(n_splits=n_splits, shuffle=True, random_state=337)
 
 
 parameters = [
-    {'randomforestclassifier__n_estimators' : [100,200], 'randomforestclassifier__max_depth' : [6,8,10,12], 'randomforestclassifier__min_samples_leaf' : [3,5,7,10]},
-    {'randomforestclassifier__max_depth' : [6,8,10,12], 'randomforestclassifier__min_samples_leaf' : [3,5,7,10]},
-    {'randomforestclassifier__min_samples_leaf' : [3,5,7,10], 'randomforestclassifier__min_samples_split' : [2,3,5,10]},
-    {'randomforestclassifier__min_samples_split' : [2,3,5,10]}]
+    {'randomforestregressor__n_estimators' : [100,200], 'randomforestregressor__max_depth' : [6,8,10,12], 'randomforestregressor__min_samples_leaf' : [3,5,7,10]},
+    {'randomforestregressor__max_depth' : [6,8,10,12], 'randomforestregressor__min_samples_leaf' : [3,5,7,10]},
+    {'randomforestregressor__min_samples_leaf' : [3,5,7,10], 'randomforestregressor__min_samples_split' : [2,3,5,10]},
+    {'randomforestregressor__min_samples_split' : [2,3,5,10]}]
 
 #2. 모델구성
 # pipe = Pipeline([('std', StandardScaler()), ('rf', RandomForestClassifier())])   
-pipe = make_pipeline(StandardScaler(), RandomForestClassifier())
-model = GridSearchCV(pipe, parameters, cv=5, verbose=1, n_jobs=-1)
+pipe = make_pipeline(StandardScaler(), RandomForestRegressor())
+models = [GridSearchCV(pipe, parameters, cv=5, verbose=1, n_jobs=-1), 
+          RandomizedSearchCV(pipe, parameters, cv=5, verbose=1, n_jobs=-1), 
+          HalvingGridSearchCV(pipe, parameters, cv=5, verbose=1, n_jobs=-1), 
+          HalvingRandomSearchCV(pipe, parameters, cv=5, verbose=1, n_jobs=-1)]
+modelsname = ['그리드서치', '랜덤서치', '할빙그리드서치', '할빙랜덤서치']
 
-#3. 컴파일, 훈련 
-start_time = time.time()
-model.fit(x_train, y_train)
-end_time = time.time()
+best_modelsname = 'max_model'
 
-print("최적의 매개변수:", model.best_estimator_) 
-print("최적의 파라미터:", model.best_params_)
-print("best_score:", model.best_score_)
-print("model.score:", model.score(x_test, y_test))
-print("걸린시간 :", round(end_time-start_time,2), "초")
-
-#4. 평가, 예측
-y_predict = model.predict(x_test)
-print("r2_score:", r2_score(y_test, y_predict))
-
-y_pred_best = model.best_estimator_.predict(x_test)            
-print("최적 튠 r2:", r2_score(y_test, y_pred_best))
+for i, v in enumerate(models): 
+    max_score = 0
+    models=v
+    models.fit(x_train, y_train)
+    y_predict = models.predict(x_test)
+    r2= r2_score(y_test, y_predict)
+    print("r2:", r2_score(y_test, y_predict))
+    if max_score< r2:
+        max_score = r2
+        best_modelsname = modelsname[i]
+print("============================")
+print('최고모델:', best_modelsname, max_score)
+print("============================")
 
 
 '''
-Fitting 5 folds for each of 68 candidates, totalling 340 fits
-최적의 매개변수: Pipeline(steps=[('std', StandardScaler()),
-                ('rf',
-                 RandomForestRegressor(max_depth=8, min_samples_leaf=10))])
-최적의 파라미터: {'rf__max_depth': 8, 'rf__min_samples_leaf': 10, 'rf__n_estimators': 100}
-best_score: 0.4275130703687152
-model.score: 0.4547042012246806
-걸린시간 : 19.33 초
-r2_score: 0.4547042012246806
-최적 튠 r2: 0.4547042012246806
-
+r2: 0.4412442742571403
+============================
+최고모델: 할빙랜덤서치 0.4412442742571403
+============================
 '''

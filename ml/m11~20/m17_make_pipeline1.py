@@ -1,3 +1,8 @@
+#make_pipeline : 함수
+#Pipeline : 클래스
+#ml17: make_pipeiline/ ml19:Pipeline
+#ml20: Pipeline_GridSearch / ml22 : make_pipeline_GridSearch
+
 import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
