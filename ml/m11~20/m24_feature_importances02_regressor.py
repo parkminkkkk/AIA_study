@@ -5,51 +5,44 @@
 
 import numpy as np
 from sklearn.datasets import load_iris
+from sklearn.datasets import fetch_california_housing, load_diabetes
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, RandomForestRegressor
 from xgboost import XGBClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, r2_score
 from sklearn.pipeline import make_pipeline
 
 #1. 데이터 
-x,y = load_iris(return_X_y=True)
+datasets = [load_diabetes,
+            fetch_california_housing] 
+dataname = ['diabetes','california']
 
-x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size=0.8, shuffle=True, random_state=337
-)
 
-#2. 모델구성
+model = [DecisionTreeRegressor(), RandomForestRegressor()]
+modelname = ['DTR', 'RFR']
 
-model = [DecisionTreeClassifier(), RandomForestClassifier(), GradientBoostingClassifier(), XGBClassifier()]
-modelname = ['DTC', 'RFC', 'GBC', 'XGB']
-
-for i, v in enumerate(model):
-    model = v
-    model.fit(x_train, y_train)
-    result = model.score(x_test, y_test)
-    y_predict = model.predict(x_test)
-    acc = accuracy_score(y_test, y_predict)
-    print(modelname[i], ":", "ACC:", acc)
-    print(modelname[i], ":", "컬럼별 중요도",model.feature_importances_)
+for j, v1 in enumerate(datasets):
+    x, y = v1(return_X_y=True)
+    x_train, x_test, y_train, y_test = train_test_split(
+    x, y, train_size=0.8, shuffle=True, random_state=337)
+    # print(f'Data: {data_name}')
+    for i, v in enumerate(model):
+        model = v
+        model.fit(x_train, y_train)
+        result = model.score(x_test, y_test)
+        y_predict = model.predict(x_test)
+        r2 = r2_score(y_test, y_predict)
+    print(type(model).__name__, ":", "r2:", r2)
+    print(type(model).__name__, ":", "컬럼별 중요도", model.feature_importances_)
     print('-------------------------------------------')
 
-'''
--------------------------------------------
-DTC : ACC: 0.9333333333333333
-DTC : 컬럼별 중요도 [0.01671193 0.03342386 0.9139125  0.03595171]
--------------------------------------------
-RFC : ACC: 0.9666666666666667
-RFC : 컬럼별 중요도 [0.10296378 0.02734441 0.42848818 0.44120364]
--------------------------------------------
-GBC : ACC: 0.9666666666666667
-GBC : 컬럼별 중요도 [0.00608185 0.01327892 0.68016248 0.30047675]
--------------------------------------------
-XGB : ACC: 0.9666666666666667
-XGB : 컬럼별 중요도 [0.01794496 0.01218657 0.8486943  0.12117416]
--------------------------------------------
-'''
+
+# RFR : r2: 0.40249684276988296
+# RFR : 컬럼별 중요도 [0.06890791 0.00884723 0.27451089 0.08078943 0.04824584 0.05678677
+#  0.04978026 0.02219364 0.32151868 0.06841935]
+# -------------------------------------------
 
 
 #####################################
