@@ -2,6 +2,7 @@
 #삼중for문 : 1. 데이터셋, 2.스케일러, 3.모델 
 import numpy as np
 from sklearn.datasets import load_iris, load_breast_cancer, load_wine, fetch_covtype, load_digits
+from sklearn.datasets import fetch_california_housing, load_diabetes
 from sklearn.preprocessing import MinMaxScaler, StandardScaler, MaxAbsScaler, RobustScaler
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
@@ -11,18 +12,14 @@ from sklearn.model_selection import GridSearchCV,RandomizedSearchCV
 from sklearn.experimental import enable_halving_search_cv
 from sklearn.model_selection import HalvingGridSearchCV, HalvingRandomSearchCV
 from sklearn.pipeline import make_pipeline, Pipeline
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, r2_score
 from sklearn.pipeline import make_pipeline
 
 
-
-# 1. 데이터 
-datasets = [(load_iris(return_X_y=True), 'Iris'), 
-            (load_breast_cancer(return_X_y=True), 'Breast Cancer'),
-            (load_wine(return_X_y=True), 'Wine'),
-            (load_digits(return_X_y=True), 'Digits')]
-dataname = ['iris', 'cancer', 'wine', 'digits']
-
+#1. 데이터 
+datasets = [(load_diabetes(return_X_y=True),'diabetes'),
+            (fetch_california_housing(return_X_y=True), 'california')] 
+dataname = ['diabetes','california']
 
 # 2. 모델구성
 parameters = [
@@ -66,81 +63,31 @@ for data, data_name in datasets:
     print('최고모델:', best_modelsname, max_score)
     print('================================')  
 
+#그리드서치4가지 for문
 '''
-======== Iris ========
-최고모델: 할빙랜덤서치 0.9666666666666667
-================================
-======== Breast Cancer ========
-최고모델: 할빙랜덤서치 0.9385964912280702
-================================
-======== Wine ========
-최고모델: 할빙랜덤서치 0.9722222222222222
-================================
 ======== Digits ========
 최고모델: 할빙랜덤서치 0.9694444444444444
 ================================
 '''
-
-
-
+#
 '''
 #Pipeline([('s', scaler), ('m', model)])
-======== Iris ========
-최고모델: MinMaxScaler + RandomForestClassifier 0.9666666666666667
+======== diabetes ========
+최고모델: StandardScaler + RandomForestRegressor 0.4196470026488168
 ================================
-
-======== Breast Cancer ========
-최고모델: RobustScaler + RandomForestClassifier 0.956140350877193
-================================
-
-======== Wine ========
-최고모델: MinMaxScaler + RandomForestClassifier 1.0
-================================
-
-======== Digits ========
-최고모델: MinMaxScaler + SVC 0.9861111111111112
+======== california ========
+최고모델: MaxAbsScaler + RandomForestRegressor 0.8002539926507792
 ================================
 '''
+
 
 '''
 #make_pipeline(scaler, model)
-======== Iris ========
-최고모델: MaxAbsScaler + SVC 1.0
+======== diabetes ========
+최고모델: MaxAbsScaler + RandomForestRegressor 0.4089204563402471
 ================================
 
-======== Breast Cancer ========
-최고모델: MinMaxScaler + SVC 0.9736842105263158
-================================
-
-======== Wine ========
-최고모델: MinMaxScaler + RandomForestClassifier 0.9722222222222222
-================================
-
-======== Digits ========
-최고모델: MinMaxScaler + SVC 0.975
-================================
-'''
-        
-
-'''
-#make_pipeline(scaler, model)
-#stratify=y
-======== Iris ========
-최고모델: MinMaxScaler + RandomForestClassifier 0.9666666666666667
-================================
-
-
-======== Breast Cancer ========
-최고모델: MinMaxScaler + RandomForestClassifier 0.9649122807017544
-================================
-
-
-======== Wine ========
-최고모델: MinMaxScaler + RandomForestClassifier 1.0
-================================
-
-
-======== Digits ========
-최고모델: MinMaxScaler + SVC 0.9861111111111112
+======== california ========
+최고모델: StandardScaler + RandomForestRegressor 0.8003097181740427
 ================================
 '''
