@@ -62,6 +62,7 @@ print("최적 튠 ACC:", accuracy_score(y_test, y_pred_best))
 
 
 '''
+
 Fitting 5 folds for each of 68 candidates, totalling 340 fits
 최적의 매개변수: Pipeline(steps=[('std', StandardScaler()),
                 ('rf',
