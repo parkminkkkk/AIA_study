@@ -85,7 +85,7 @@ y_test = np.argmax(y_test, axis=1)
 acc = accuracy_score(y_test, y_pred)
 print('acc :', acc)
 
-f1_score = f1_score(y_test, y_pred, average='macro')
+f1 = f1_score(y_test, y_pred, average='macro')
 print('f1', f1_score)
 
 precision = precision_score(y_test, y_pred, average='macro')

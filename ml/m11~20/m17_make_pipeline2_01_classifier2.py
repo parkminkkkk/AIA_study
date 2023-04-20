@@ -52,6 +52,7 @@ for data, data_name in datasets:
     print('================================')  
 
 
+
 '''
 ======== Iris ========
 최고모델: MaxAbsScaler + SVC 1.0
