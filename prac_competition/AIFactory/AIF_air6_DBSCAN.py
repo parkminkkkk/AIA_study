@@ -29,7 +29,7 @@ x_train = scaler.fit_transform(train_data)
 x_test = scaler.transform(test_data)
 
 # Define DBSCAN model
-dbscan = DBSCAN(eps=0.017, min_samples=13)
+dbscan = DBSCAN(eps=0.039, min_samples=33)
 
 # Fit DBSCAN model to training data
 dbscan.fit(x_train)
