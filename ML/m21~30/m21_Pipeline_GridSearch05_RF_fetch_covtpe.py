@@ -60,5 +60,4 @@ y_pred_best = model.best_estimator_.predict(x_test)
 print("최적 튠 ACC:", accuracy_score(y_test, y_pred_best))
 
 '''
-
 '''

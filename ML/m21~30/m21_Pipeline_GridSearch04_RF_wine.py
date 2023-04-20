@@ -1,4 +1,4 @@
-#실습 
+# 실습 
 #모델 : RandomForestClassifier
 # parameters = [
 #     {'n_estimators' : [100,200]},

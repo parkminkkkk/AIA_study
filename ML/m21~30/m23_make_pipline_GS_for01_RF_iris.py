@@ -61,6 +61,3 @@ for i, v in enumerate(models):
 print("============================")
 print('최고모델:', best_modelsname, max_score)
 print("============================")
-
-
-
