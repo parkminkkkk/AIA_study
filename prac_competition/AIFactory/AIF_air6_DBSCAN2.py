@@ -53,7 +53,7 @@ test_data_normalized = scaler.transform(test_data.iloc[:, :-1])
 
 
 # Model Definition
-eps = 0.03
+eps = 0.02
 min_samples = 50
 dbscan = DBSCAN(eps=eps,
                 min_samples=min_samples,

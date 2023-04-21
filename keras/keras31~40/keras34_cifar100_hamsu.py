@@ -60,7 +60,7 @@ es = EarlyStopping(monitor='val_acc', patience=10, mode='max',
                    restore_best_weights=True
                    )
 
-model.fit(x_train, y_train, epochs=10, batch_size=128, validation_split=0.2, 
+model.fit(x_train, y_train, epochs=10, batch_size=32, validation_split=0.2, 
           callbacks=[es])
 
 end_time = time.time()

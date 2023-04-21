@@ -93,14 +93,15 @@ print(x.shape, y.shape) #(9852, 8) (9852,)
 # )
 
 #2. 모델구성
-model = XGBClassifier(n_estimators = 100,
-                        max_depth = 6,
-                        learning_rate = 0.3,
-                        subsample = 0.5,
-                        colsample_bytree = 0.5,
-                        objective = 'binary:logistic',
-                        random_state = 42,
-                        use_label_encoder=False)
+model = XGBClassifier()
+# model = XGBClassifier(n_estimators = 100,
+#                         max_depth = 6,
+#                         learning_rate = 0.3,
+#                         subsample = 0.5,
+#                         colsample_bytree = 0.5,
+#                         objective = 'binary:logistic',
+#                         random_state = 42,
+#                         use_label_encoder=False)
 
 #3. 컴파일, 훈련
 model.fit(x, y)
