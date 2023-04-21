@@ -20,6 +20,9 @@ movies['year'].unique()#컬럼목록 확인
 movies[movies['year'].isnull()] #결측값 확인
 movies['year'] = movies['year'].fillna('2050') #결측값 처리
 
+#pd-<np
+data.to_numpy()
+
 # dtype 변경
 train_data.iloc[:,2:] = train_data.iloc[:,2:].astype(float)
 

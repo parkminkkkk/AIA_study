@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 from tensorflow.python.keras.models import Sequential, Model
+from xgboost import XGBRegressor
 from tensorflow.python.keras.layers import Dense, Input, Dropout, BatchNormalization
 from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.metrics import r2_score, mean_squared_error
@@ -27,10 +28,11 @@ print(train_csv.info())
 
 #라벨인코더
 le1 = LabelEncoder()
+le2 = LabelEncoder()
 train_csv['Weight_Status'] = le1.fit_transform(train_csv['Weight_Status'])
-train_csv['Gender'] = le1.fit_transform(train_csv['Gender'])
+train_csv['Gender'] = le2.fit_transform(train_csv['Gender'])
 test_csv['Weight_Status'] = le1.fit_transform(test_csv['Weight_Status'])
-test_csv['Gender'] = le1.fit_transform(test_csv['Gender'])
+test_csv['Gender'] = le2.fit_transform(test_csv['Gender'])
 # print(train_csv['Weight_Status'].value_counts())
 # print(train_csv['Gender'].value_counts())
 
@@ -48,30 +50,17 @@ x_test = scaler.transform(x_test)
 # test_csv = scaler.fit_transform(test_csv)
 
 #2. 모델구성 
-model = Sequential()
-model.add(Dense(64, activation='selu', input_dim=9))
-model.add(Dense(32, activation='selu'))
-model.add(BatchNormalization())
-model.add(Dense(32, activation='selu'))
-model.add(Dense(32, activation='selu'))
-model.add(Dropout(0.2))
-model.add(Dense(32, activation='selu'))
-model.add(BatchNormalization())
-model.add(Dense(32, activation='selu'))
-model.add(Dense(1))
+model = XGBRegressor()
 
-#3. 컴파일, 훈련 
-model.compile(loss = 'mse', optimizer = 'adam', metrics=['acc'])
-es = EarlyStopping(monitor='val_loss', mode = 'min', patience=30, 
-                   verbose=1, restore_best_weights=True)
-model.fit(x_train, y_train, validation_split=0.2,
-          epochs= 500, batch_size=16, verbose=1,
-          callbacks=[es]
-          )
+# #3. 컴파일, 훈련 
+# model.compile(loss = 'mse', optimizer = 'adam', metrics=['acc'])
+# es = EarlyStopping(monitor='val_loss', mode = 'min', patience=30, 
+#                    verbose=1, restore_best_weights=True)
+model.fit(x_train, y_train)
 
 #4. 평가, 예측
-loss = model.evaluate(x_test, y_test)
-print('loss:', loss)
+# loss = model.evaluate(x_test, y_test)
+# print('loss:', loss)
 
 y_predict = model.predict(x_test)
 r2 = r2_score(y_test, y_predict)
@@ -93,4 +82,4 @@ submission['Calories_Burned'] = y_submit
 import datetime 
 date = datetime.datetime.now()  
 date = date.strftime("%m%d_%H%M")  
-submission.to_csv(path_save + 'submit_dacon_cal_' + date + '.csv')
+submission.to_csv(path_save + 'submit_dacon_cal_xgb' + date + '.csv')
