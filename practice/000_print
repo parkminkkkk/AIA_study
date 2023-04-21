@@ -22,3 +22,9 @@ movies['year'] = movies['year'].fillna('2050') #결측값 처리
 
 # dtype 변경
 train_data.iloc[:,2:] = train_data.iloc[:,2:].astype(float)
+
+#데이터확인 
+# print(train_csv.columns)
+# print(train_csv.info())
+# print(train_csv.describe())
+# print(train_csv.describe())

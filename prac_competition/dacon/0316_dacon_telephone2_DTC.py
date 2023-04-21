@@ -50,7 +50,7 @@ scaler = MaxAbsScaler()
 # scaler = StandardScaler() 
 x_train = scaler.fit_transform(x_train) 
 x_test = scaler.transform(x_test) 
-test_csv = scaler.transform(test_csv) 
+test_csv = scaler.fit_transform(test_csv) 
 
 #2. 모델구성 
 model = DecisionTreeClassifier(random_state=42)
