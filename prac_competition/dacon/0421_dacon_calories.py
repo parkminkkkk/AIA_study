@@ -16,7 +16,7 @@ path_save = './_save/dacon_calories/'
 train_csv = pd.read_csv(path +'train.csv', index_col=0)
 test_csv = pd.read_csv(path + 'test.csv', index_col=0)
 print(train_csv.shape, test_csv.shape) 
-print(train_csv.info())
+# print(train_csv.info())
 
 
 #결측치 확인 
@@ -42,9 +42,9 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=640874, test_size=0.2)
 
 #스케일링 
-scaler = MinMaxScaler()
-x_train = scaler.fit_transform(x_train)
-x_test = scaler.transform(x_test)
+# scaler = MinMaxScaler()
+# x_train = scaler.fit_transform(x_train)
+# x_test = scaler.transform(x_test)
 # test_csv = scaler.fit_transform(test_csv)
 
 #2. 모델구성 
@@ -52,9 +52,9 @@ model = Sequential()
 model.add(Dense(64, activation='selu', input_dim=9))
 model.add(Dense(32, activation='selu'))
 model.add(BatchNormalization())
+model.add(Dense(64, activation='selu'))
 model.add(Dense(32, activation='selu'))
-model.add(Dense(32, activation='selu'))
-model.add(Dropout(0.2))
+model.add(BatchNormalization())
 model.add(Dense(32, activation='selu'))
 model.add(BatchNormalization())
 model.add(Dense(32, activation='selu'))
@@ -62,10 +62,10 @@ model.add(Dense(1))
 
 #3. 컴파일, 훈련 
 model.compile(loss = 'mse', optimizer = 'adam', metrics=['acc'])
-es = EarlyStopping(monitor='val_loss', mode = 'min', patience=30, 
+es = EarlyStopping(monitor='val_loss', mode = 'min', patience=50, 
                    verbose=1, restore_best_weights=True)
 model.fit(x_train, y_train, validation_split=0.2,
-          epochs= 500, batch_size=16, verbose=1,
+          epochs=1000, batch_size=8, verbose=1,
           callbacks=[es]
           )
 
