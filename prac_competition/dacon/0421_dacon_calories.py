@@ -23,21 +23,30 @@ print(train_csv.shape, test_csv.shape)
 # print(train_csv.isnull().sum()) #결측치 없음
 # train_csv = train_csv.dropna()
 # print(train_csv.shape, test_csv.shape)  #(7500, 10) (7500, 9)
+x = train_csv.drop(['Calories_Burned'], axis=1)
+y = train_csv['Calories_Burned']
+x['Height(Feet)'] = 12*x['Height(Feet)']+x['Height(Remainder_Inches)']
+x['Height(Remainder_Inches)'] = 703*x['Weight(lb)']/x['Height(Feet)']**2
 
+test_csv['Height(Feet)'] = 12*test_csv['Height(Feet)']+test_csv['Height(Remainder_Inches)']
+test_csv['Height(Remainder_Inches)'] = 703*test_csv['Weight(lb)']/test_csv['Height(Feet)']**2
 
 #라벨인코더
 le1 = LabelEncoder()
-train_csv['Weight_Status'] = le1.fit_transform(train_csv['Weight_Status'])
-train_csv['Gender'] = le1.fit_transform(train_csv['Gender'])
+le = LabelEncoder()
+x['Gender'] = le.fit_transform(x['Gender'])
+test_csv['Gender'] = le.transform(test_csv['Gender'])
+x['Weight_Status'] = le1.fit_transform(x['Weight_Status'])
+# train_csv['Gender'] = le1.fit_transform(train_csv['Gender'])
 test_csv['Weight_Status'] = le1.fit_transform(test_csv['Weight_Status'])
-test_csv['Gender'] = le1.fit_transform(test_csv['Gender'])
+# test_csv['Gender'] = le1.fit_transform(test_csv['Gender'])
 # print(train_csv['Weight_Status'].value_counts())
 # print(train_csv['Gender'].value_counts())
 
 
 #데이터 분리 
-x = train_csv.drop(['Calories_Burned'], axis=1)
-y = train_csv['Calories_Burned']
+# x = train_csv.drop(['Calories_Burned'], axis=1)
+# y = train_csv['Calories_Burned']
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=640874, test_size=0.2)
 
@@ -50,9 +59,11 @@ x_train, x_test, y_train, y_test = train_test_split(
 #2. 모델구성 
 model = Sequential()
 model.add(Dense(64, activation='selu', input_dim=9))
+model.add(BatchNormalization())
 model.add(Dense(32, activation='selu'))
 model.add(BatchNormalization())
 model.add(Dense(64, activation='selu'))
+model.add(BatchNormalization())
 model.add(Dense(32, activation='selu'))
 model.add(BatchNormalization())
 model.add(Dense(32, activation='selu'))
