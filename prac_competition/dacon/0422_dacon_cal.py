@@ -47,14 +47,14 @@ X = poly.fit_transform(train_df.drop('Calories_Burned', axis=1))
 y = train_df['Calories_Burned']
 
 # SCALER
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+# scaler = StandardScaler()
+# X_scaled = scaler.fit_transform(X)
 
 # train, valid SPLIT
-X_train, X_valid, y_train, y_valid = train_test_split(X_scaled, y, test_size=0.3, random_state=42)
+X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.3, random_state=42)
 
 # model 13
-mod_lgbm = lgbm(n_estimators=450, num_leaves=17, max_depth=9, reg_sqrt=True,
+mod_lgbm = lgbm(n_estimators=300, num_leaves=10, max_depth=10, reg_sqrt=True,
                 class_weight='balanced', reg_alpha=.15,
                 objective='root_mean_squared_error', random_state=42)
 mod_lgbm.fit(X_train, y_train)
@@ -67,8 +67,8 @@ print(f"Valid 데이터 RMSE: {rmse_valid:.3f}")
 # test PREDICT
 X_test = test_df.values
 X_poly_test = poly.transform(X_test)
-X_test_scaled = scaler.transform(X_poly_test)
-y_pred_test = mod_lgbm.predict(X_test_scaled)
+# X_test_scaled = scaler.transform(X_poly_test)
+y_pred_test = mod_lgbm.predict(X_poly_test)
 
 date = datetime.datetime.now()
 date = date.strftime("%m%d-%H%M")
