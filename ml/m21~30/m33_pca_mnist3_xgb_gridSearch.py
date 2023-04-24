@@ -20,8 +20,6 @@ pca = PCA()
 x_train = pca.fit_transform(x_train)
 x_test = pca.fit_transform(x_test)
 
-
-
 scaler = MinMaxScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.fit_transform(x_test)
@@ -53,3 +51,13 @@ print("accuracy_score:", accuracy_score(y_test, y_predict))
 
 y_pred_best = model.best_estimator_.predict(x_test)            
 print("최적 튠 ACC:", accuracy_score(y_test, y_pred_best))
+
+
+'''
+최적의 파라미터: {'n_estimators': 300, 'max_depth': 6, 'learning_rate': 0.1}
+best_score: 0.9523666666666666
+model.score: 0.1342
+걸린시간 : 34004.61 초
+accuracy_score: 0.1342
+최적 튠 ACC: 0.1342
+'''

@@ -150,19 +150,19 @@ for i in n_components:
     model.fit(x_train_pca, y_train_one_hot, epochs=2, batch_size=32)
 
     # Evaluate DNN model
-#     _, accuracy = model.evaluate(x_test_pca, y_test_one_hot, verbose=0)
-#     accuracys.append(accuracy)
-#     print(f'PCA n_components={i}, Accuracy: {accuracy:.3f}')
-# print(accuracys)  
+    _, accuracy = model.evaluate(x_test_pca, y_test_one_hot, verbose=0)
+    accuracys.append(accuracy)
+    print(f'PCA n_components={i}, Accuracy: {accuracy:.3f}')
+print(accuracys)  
     
-    result = model.evaluate(x_test,y_test)
-    y_pred = model.predict(x_test)
-    y_pred = np.argmax(y_pred, axis=1)
-    y_test = np.argmax(y_test, axis=1)
-    acc = accuracy_score(y_pred,y_test)
+    # result = model.evaluate(x_test,y_test)
+    # y_pred = model.predict(x_test)
+    # y_pred = np.argmax(y_pred, axis=1)
+    # y_test = np.argmax(y_test, axis=1)
+    # acc = accuracy_score(y_pred,y_test)
     
-    accuracys.append(acc)
-    print('PCA 가',i,'acc :',acc)
+    # accuracys.append(acc)
+    # print('PCA 가',i,'acc :',acc)
     
 
 #     result_list.append(result)
