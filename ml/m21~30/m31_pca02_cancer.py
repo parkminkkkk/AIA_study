@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from sklearn.datasets import load_breast_cancer, load_diabetes
 from sklearn.decomposition import PCA
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
 # [실습]
@@ -26,7 +26,7 @@ for i in range(30, 0, -3):
     x = pca.fit_transform(x)
     x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.8, random_state=123, shuffle=True,)
-    model = RandomForestRegressor(random_state=123)
+    model = RandomForestClassifier(random_state=123)
     model.fit(x_train, y_train)
     result = model.score(x_test, y_test)
     print(f"n_coponets={i},  결과: {result} ")

@@ -9,7 +9,7 @@ from sklearn.decomposition import PCA
 # print(__.shape) #(60000,)
 # print(_.shape)  #(10000,)
 
-#이미지 데이터를 쭉 핀다면(dnn사용한다면)=? 
+###이미지 데이터를 쭉 핀다면(dnn사용한다면)=? ###
 #=>>(70000, 784) 7만개 데이터, 784컬럼이라고 생각할 수 있음
 #초반에 0이 몰려있음 => 압축시켜서 0을 줄여주는 것이 성능이 더 잘 나올 가능성 높음 
 
@@ -47,7 +47,7 @@ print(np.argmax(cumsum >= 1.0) +1) #712나옴 -> 보통0부터 시작하므로 +
 d95 = np.argmax(cumsum >= 0.95) +1
 d99 = np.argmax(cumsum >= 0.99) +1
 d999 = np.argmax(cumsum >= 0.999) +1
-d100 = np.argmax(cumsum == 1.0) +1
+d100 = np.argmax(cumsum >= 1.0) +1
 
 print(f"0.95이상의 n_components 개수: {d95}")
 print(f"0.99이상의 n_components 개수: {d99}")

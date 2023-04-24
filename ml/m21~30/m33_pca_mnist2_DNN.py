@@ -1,8 +1,10 @@
 from tensorflow.keras.datasets import mnist
 import numpy as np
+import pandas as pd
 from sklearn.decomposition import PCA
+from tensorflow.keras.utils import to_categorical
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, LSTM, Conv1D,Conv2D, Flatten, Dropout
+from tensorflow.python.keras.layers import Dense, Input, LSTM, Conv1D,Conv2D, Flatten, Dropout
 from sklearn.metrics import accuracy_score 
 
 
@@ -61,24 +63,111 @@ x = pca.fit_transform(x)
 #3. PCA 1.0       :
 ########################################################################################
 
+# # 1. 데이터 전처리
+# (x_train, y_train), (x_test, y_test) = mnist.load_data()
+# x_train = x_train.reshape(60000, -1)
+# x_test = x_test.reshape(10000, -1)
 
-# 1. 데이터
-(x_train, __), (x_test, _) = mnist.load_data()
-#x_train, x_test 합치기 (방법2가지)
-# x = np.concatenate((x_train,x_test), axis=0)  #(70000, 28, 28)
-# x = np.append(x_train, x_test, axis=0)      #(70000, 28, 28)
+# y_train = np.array(pd.get_dummies(y_train))
+# y_test = np.array(pd.get_dummies(y_test))
 
-#reshape (pca는 2차원만 받으므로)
-# x = x.reshape(x.shape[0], x.shape[1]*x.shape[2]) 
+# cum_list = ['154', '331', '486', '713']
+# cum_name_list = ['pca 0.95', 'pca 0.99', 'pca 0.999', 'pca 1.0']
 
-#데이터x 컬럼 축소
-n_componets = [154,331,486,713]
-# pca = PCA(n_components=n_componets)  #[154,331,486,713]
-# x = pca.fit_transform(x)
+# result_list = []
+# acc_list = []
+# for i in range(len(cum_list)):
+#     pca = PCA(n_components=int(cum_list[i]))
+#     x_train_pca = pca.fit_transform(x_train)
+#     x_test_pca = pca.transform(x_test)
 
-for i in n_componets: 
-    x = np.concatenate((x_train,x_test), axis=0)
-    x = x.reshape(x.shape[0], x.shape[1]*x.shape[2]) 
+#     # 모델 구성
+#     model = Sequential()
+#     model.add(Dense(64, input_shape=(int(cum_list[i]),)))
+#     model.add(Dense(64, activation='relu'))
+#     model.add(Dense(32, activation='relu'))
+#     model.add(Dense(16, activation='relu'))
+#     model.add(Dense(10, activation='softmax'))
+
+#     # 모델 컴파일
+#     model.compile(optimizer='adam', loss='categorical_crossentropy')
+
+#     # 모델 훈련
+#     hist = model.fit(x_train_pca, y_train, 
+#                      epochs=50, 
+#                      batch_size=5000, 
+#                      verbose=1,
+#                      validation_split=0.2)
+
+#     # 모델 평가
+#     result = model.evaluate(x_test_pca, y_test)
+#     y_predict = model.predict(x_test_pca)
+#     acc = accuracy_score(np.argmax(y_test, axis=1), np.argmax(y_predict, axis=1))
+    
+#     result_list.append(result)
+#     acc_list.append(acc)
+
+# for i in range(len(cum_list)):
+#     print(f"{cum_name_list[i]}: loss={result_list[i]:.4f}, acc={acc_list[i]:.4f}")
+'''
+# pca 0.95: loss=0.7511, acc=0.8642
+# pca 0.99: loss=0.7648, acc=0.8483
+# pca 0.999: loss=0.7956, acc=0.8545
+# pca 1.0: loss=0.8523, acc=0.8754
+'''
+
+# Load MNIST dataset
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+# Reshape input data
+x_train = x_train.reshape(-1, 28*28)
+x_test = x_test.reshape(-1, 28*28)
+
+# Normalize input data
+x_train = x_train / 255.0
+x_test = x_test / 255.0
+
+n_components = [154, 331, 486, 713]
+accuracys =[]
+for i in n_components:
+    # Apply PCA
     pca = PCA(n_components=i)
-    x =  pca.fit_transform(x)
-    print(x.shape)
+    x_train_pca = pca.fit_transform(x_train)
+    x_test_pca = pca.transform(x_test)
+
+    # Convert labels to one-hot encoding
+    y_train_one_hot = to_categorical(y_train)
+    y_test_one_hot = to_categorical(y_test)
+
+    # Define DNN model
+    model = Sequential()
+    model.add(Dense(128, input_shape=(i,), activation='relu'))
+    model.add(Dense(64, activation='relu'))
+    model.add(Dense(10, activation='softmax'))
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+    # Train DNN model
+    model.fit(x_train_pca, y_train_one_hot, epochs=2, batch_size=32)
+
+    # Evaluate DNN model
+#     _, accuracy = model.evaluate(x_test_pca, y_test_one_hot, verbose=0)
+#     accuracys.append(accuracy)
+#     print(f'PCA n_components={i}, Accuracy: {accuracy:.3f}')
+# print(accuracys)  
+    
+    result = model.evaluate(x_test,y_test)
+    y_pred = model.predict(x_test)
+    y_pred = np.argmax(y_pred, axis=1)
+    y_test = np.argmax(y_test, axis=1)
+    acc = accuracy_score(y_pred,y_test)
+    
+    accuracys.append(acc)
+    print('PCA 가',i,'acc :',acc)
+    
+
+#     result_list.append(result)
+#     acc_list.append(acc)
+
+# for i in range(len(cum_list)):
+#     print(f"{cum_name_list[i]}: loss={result_list[i]:.4f}, acc={acc_list[i]:.4f}")
+
