@@ -27,12 +27,12 @@ x_train, x_test, y_train, y_test = train_test_split(
 #2. 모델구성
 models = [DecisionTreeClassifier(),RandomForestClassifier(),
           GradientBoostingClassifier(),XGBClassifier() ]
-modelname = ['DTC', 'RFC', 'GBC', 'XGB']
+# modelname = ['DTC', 'RFC', 'GBC', 'XGB']
+# num= [1,2,3,4]
 
-num= [1,2,3,4]
-
-for i, model in enumerate(models):
-    # 모델 훈련
+for i, v in enumerate(models):
+    # 모델
+    model = v
     model.fit(x_train, y_train)
     
     # feature importance 그래프 그리기
@@ -70,7 +70,7 @@ plt.show()
 # plt.show()
 
 
-
+##XXX##########################################################
 # for i, v in enumerate(models):
 #     model = v
 #     modelname[i] = type(model).__name__
