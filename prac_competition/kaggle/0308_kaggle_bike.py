@@ -24,7 +24,6 @@ print(test_csv) #(6493, 8)  /casual(비회원)  registered(회원) count 3개 �
 
 ###결측치제거### 
 print(train_csv.isnull().sum()) #isnull이 True인것의 합계 : 각 컬럼별로 결측치 몇개인지 알수 있음
-#결측치 없음
 # print(train_csv.info())
 #print(train_csv.shape)  #(10886, 11)
 
