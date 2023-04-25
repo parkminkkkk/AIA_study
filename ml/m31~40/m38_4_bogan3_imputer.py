@@ -28,11 +28,11 @@ from xgboost import XGBRegressor
 # imputer = SimpleImputer(strategy='constant',fill_value=7777)     #일반값 넣을때 사용가능 #0들어감(디폴트) #fill_value=7777 : 7777들어감 
 # imputer = IterativeImputer()       #(선형회귀선 값과 비슷)
 imputer = IterativeImputer(estimator=XGBRegressor())  #트리계열 모델을 파라미터로 사용가능 / XGBRegressor, DecisionTreeRegressor 등등.. 
- 
 data2 = imputer.fit_transform(data)
 print(data2)
 
-
+#numpy 입력 받고 numpy로 반환 함 
+#pd로 불러올 경우, 다시 DataFrame으로 반환해줘야함 
 
 '''
 #print(data)
