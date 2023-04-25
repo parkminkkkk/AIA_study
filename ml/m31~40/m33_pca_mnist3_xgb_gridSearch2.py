@@ -3,15 +3,17 @@
 
 # m33_2 결과 뛰어넘기
 
-parameters = [
-    {'n_estimators':[100, 200, 300], 'learning_rate':[0.1, 0.3, 0.001, 0.01],
-     'max_depth':[4, 5, 6]},
-    {'n_estimators':[90, 100, 110], 'learning_rate':[0.1, 0.001, 0.01],
-     'max_depth':[4, 5, 6], 'colsample_bytree':[0.6, 0.9, 1]},
-    {'n_estimators':[90, 110], 'learning_rate':[0.1, 0.001, 0.01],
-     'max_depth':[4, 5, 6], 'colsample_bytree':[0.6, 0.9, 1],
-     'colsample_bylevel':[0.6, 0.7, 0.9]},
-]
+parameters = [{'n_estimators':[1, 2, 3], 'learning_rate':[0.1],'max_depth':[4, 5]}]
+
+# parameters = [
+#     {'n_estimators':[100, 200, 300], 'learning_rate':[0.1, 0.3, 0.001, 0.01],
+#      'max_depth':[4, 5, 6]},
+#     {'n_estimators':[90, 100, 110], 'learning_rate':[0.1, 0.001, 0.01],
+#      'max_depth':[4, 5, 6], 'colsample_bytree':[0.6, 0.9, 1]},
+#     {'n_estimators':[90, 110], 'learning_rate':[0.1, 0.001, 0.01],
+#      'max_depth':[4, 5, 6], 'colsample_bytree':[0.6, 0.9, 1],
+#      'colsample_bylevel':[0.6, 0.7, 0.9]},
+# ]
 
 # n_jobs = -1
 #     tree_method = 'gpu_hist'
@@ -35,6 +37,7 @@ x = np.append(x_train, x_test, axis=0)
 y = np.append(y_train, y_test, axis=0)
 # y = to_categorical(y)
 x = x.reshape(x.shape[0], -1)
+print(x.shape)
 
 for i in range(len(n_c_list)):
     pca = PCA(n_components=n_c_list[i])
@@ -44,7 +47,7 @@ for i in range(len(n_c_list)):
     model = GridSearchCV(XGBClassifier(tree_method='gpu_hist', predictor='gpu_predictor', gpu_id=0), parameters, cv=5, refit=True, n_jobs=-1)
     model.fit(x_train, y_train)
     
-    acc = model.evaluate(x_test, y_test)
+    acc = model.score(x_test, y_test)
     print(f'PCA {pca_list[i]} test acc : {acc}')
     
     y_pred = np.argmax(model.predict(x_test), axis=1)

@@ -16,7 +16,10 @@ from sklearn.metrics import accuracy_score
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-pca = PCA()
+x_train = x_train.reshape(-1, 28*28)
+x_test = x_test.reshape(-1, 28*28)
+
+pca = PCA(n_components=154)
 x_train = pca.fit_transform(x_train)
 x_test = pca.fit_transform(x_test)
 
@@ -25,10 +28,13 @@ x_train = scaler.fit_transform(x_train)
 x_test = scaler.fit_transform(x_test)
 
 parameters = [
-{"n_estimators":[100,200,300], "learning_rate": [0.1, 0.3, 0.001, 0.01], "max_depth":[4,5,6]},
-{"n_estimators": [90,100,110], "learning_rate": [0.1, 0.001, 0.01], "max_depth":[4,5,6], "colsample_bytree": [0.6, 0.9, 1]},
-{"n_estimators": [90,110], "learning_rate": [0.1, 0.001, 0.5], "max_depth":[4,5,6], "colsample_bytree": [0.6, 0.9, 1], 
- "colsample_bylevel": [0.6,0.7,0.9]}]
+    {'n_estimators':[1, 2, 3], 'learning_rate':[0.1],'max_depth':[4, 5]}]
+
+# parameters = [
+# {"n_estimators":[100,200,300], "learning_rate": [0.1, 0.3, 0.001, 0.01], "max_depth":[4,5,6]},
+# {"n_estimators": [90,100,110], "learning_rate": [0.1, 0.001, 0.01], "max_depth":[4,5,6], "colsample_bytree": [0.6, 0.9, 1]},
+# {"n_estimators": [90,110], "learning_rate": [0.1, 0.001, 0.5], "max_depth":[4,5,6], "colsample_bytree": [0.6, 0.9, 1], 
+#  "colsample_bylevel": [0.6,0.7,0.9]}]
 
 #2. 모델 
 model = RandomizedSearchCV(XGBClassifier(tree_method='gpu_hist', predictor='gpu_predictor', gpu_id=0), parameters,
@@ -60,4 +66,12 @@ model.score: 0.1342
 걸린시간 : 34004.61 초
 accuracy_score: 0.1342
 최적 튠 ACC: 0.1342
+'''
+'''
+최적의 파라미터: {'n_estimators': 3, 'max_depth': 5, 'learning_rate': 0.1}
+best_score: 0.8237166666666667
+model.score: 0.131
+걸린시간 : 11.58 초
+accuracy_score: 0.131
+최적 튠 ACC: 0.131
 '''

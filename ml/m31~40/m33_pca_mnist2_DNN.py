@@ -58,9 +58,9 @@ x = pca.fit_transform(x)
 #1. 나의 최고의 CNN:  가장 좋음
 #2. 나의 최고의 DNN:  dnn과 비교(pca 몇 일때 가장 좋은지 )
 #3. PCA 0.95      :
-#3. PCA 0.99      :
-#3. PCA 0.999     :
-#3. PCA 1.0       :
+#4. PCA 0.99      :
+#5. PCA 0.999     :
+#6. PCA 1.0       :
 ########################################################################################
 
 # # 1. 데이터 전처리
@@ -110,6 +110,8 @@ x = pca.fit_transform(x)
 # for i in range(len(cum_list)):
 #     print(f"{cum_name_list[i]}: loss={result_list[i]:.4f}, acc={acc_list[i]:.4f}")
 '''
+# Conv2D 최고성능 : acc= 0.9896
+# DNN 최고성능 : acc= 0.9314
 # pca 0.95: loss=0.7511, acc=0.8642
 # pca 0.99: loss=0.7648, acc=0.8483
 # pca 0.999: loss=0.7956, acc=0.8545
