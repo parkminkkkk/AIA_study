@@ -14,9 +14,16 @@ Reshape your data either using array.reshape(-1, 1) if your data has a single fe
 
 
 from sklearn.covariance import EllipticEnvelope
-outliers = EllipticEnvelope(contamination=.3,) #contamination : 전체의 몇프로를 이상치로 할 것인가 (.1 = 10%)
+outliers = EllipticEnvelope(contamination=.2,) #contamination : 전체의 몇프로를 이상치로 할 것인가 (.1 = 10%)
 
 outliers.fit(aaa)
 results = outliers.predict(aaa)
 print(results)
-#[ 1  1  1  1  1  1 -1  1  1  1  1  1 -1]  -1 이상치의 위치 
+'''
+#contamination=.1
+[ 1  1  1  1  1  1 -1  1  1  1  1  1 -1] -1 이상치의 위치 
+#contamination=.2
+[-1  1  1  1  1  1 -1  1  1  1  1  1 -1]
+#contamination=.3
+[-1 -1  1  1  1  1 -1  1  1  1  1 -1 -1]
+'''
