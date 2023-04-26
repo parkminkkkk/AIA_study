@@ -7,7 +7,7 @@ from tensorflow.python.keras.callbacks import EarlyStopping
 
 # 1. 데이터
 # 1.1 경로, 가져오기
-path = './_data/kaggle_house/'
+path = 'd:/study/_data/kaggle_house/'
 path_save = './_save/kaggle_house/'
 
 train_csv = pd.read_csv(path + 'train.csv', index_col=0)

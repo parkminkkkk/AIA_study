@@ -17,7 +17,7 @@ import matplotlib
 matplotlib.rcParams['font.family']='Malgun Gothic'
 matplotlib.rcParams['axes.unicode_minus']=False
 #1. 데이터
-path = './_data/kaggle_house/'
+path = 'd:/study/_data/kaggle_house/'
 # path_save = './_save/kaggle_house/'
 
 train_set = pd.read_csv(path + 'train.csv',

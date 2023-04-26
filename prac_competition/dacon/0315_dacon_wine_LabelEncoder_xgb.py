@@ -14,7 +14,7 @@ import xgboost as xgb
 from xgboost import XGBClassifier
 
 #1. 데이터 
-path = './_data/dacon_wine/'
+path = 'd:/study/_data/dacon_wine/'
 path_save = './_save/dacon_wine/'
 
 train_csv = pd.read_csv(path + 'train.csv', index_col=0)

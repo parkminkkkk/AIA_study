@@ -21,7 +21,7 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 
 #1. 데이터 
-path = './_data/kaggle_jena/'
+path = 'd:/study/_data/kaggle_jena/'
 path_save = './_save/kaggle_jena/'
 
 dataset = pd.read_csv(path + 'jena_climate_2009_2016.csv', index_col = 0)

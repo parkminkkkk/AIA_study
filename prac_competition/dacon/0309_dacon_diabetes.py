@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 
 #1. 데이터 
-path = './_data/dacon_diabetes/'
+path = 'd:/study/_data/dacon_diabetes/'
 path_save = './_save/dacon_diabetes/'
 
 train_csv= pd.read_csv(path+'train.csv', index_col=0)

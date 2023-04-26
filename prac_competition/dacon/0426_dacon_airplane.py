@@ -4,6 +4,11 @@ from sklearn.datasets import make_classification
 from sklearn.linear_model import LogisticRegression
 from sklearn.semi_supervised import SelfTrainingClassifier
 
+#1. 데이터
+path = 'd:/study/_data/dacon_airplane/'
+path_save = './_save/dacon_airplane/'
+
+
 # Generate a random binary classification dataset
 X, y = make_classification(n_samples=1000, n_features=10, n_informative=5,
                            n_redundant=0, n_clusters_per_class=2, random_state=42)

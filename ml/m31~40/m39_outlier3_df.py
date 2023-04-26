@@ -7,20 +7,20 @@ aaa= np.transpose(aaa) #(13,2)
 print(aaa)
 
 #이상치 찾는 함수(df)
-def outilers(data_out):
-    quartile_1, q2, quartile_3 = np.percentile(data_out,[25,50,75], axis=0)
-    print("1사분위 : ", quartile_1) 
-    print("q2 :", q2)               
-    print("3사분위 : ", quartile_3)
-    iqr = quartile_3 - quartile_1
-    print("iqr : ", iqr)
-    lower_bound = quartile_1 - (iqr * 1.5)  
-    upper_bound = quartile_3 + (iqr * 1.5)  
-    outliers = np.where((data_out > upper_bound) | (data_out < lower_bound))
-    return list(zip(outliers[0], outliers[1])) #outliers[0],outliers[1]-> 1차원 배열
+def outliers(a):
+    b = []
+    for i in range(a.shape[1]):
+        q1, q2, q3 = np.percentile(a[:, i], [25, 50, 75], axis=0)
+        print(f'q1 :  {q1}\n q2 : {q2}\n q3 : {q3}')
+        iqr = q3 - q1
+        print('iqr : ', iqr)
+        lower_bound, upper_bound = q1 - (iqr * 1.5), q3 + (iqr * 1.5)
+        b.append(np.where((a[:,i]>upper_bound)|(a[:,i]<lower_bound)))
+    return b
 
-outilers_loc = outilers(aaa)
-print("이상치의 위치 : ", outilers_loc)
+outliers_loc = outliers(aaa)
+print('location of outliers : ', outliers_loc)
+
 
 #df_각 컬런에 대한 이상치 값과 위치 찾는 함수
 # def outliers(data_out):
@@ -87,5 +87,7 @@ outliers_loc = outliers(aaa)
 print("이상치의 위치 :", outliers_loc)
 '''
 
+    # outliers = np.where((data_out > upper_bound) | (data_out < lower_bound))
+    # return list(zip(outliers[0], outliers[1])) #outliers[0],outliers[1]-> 1차원 배열
 
 

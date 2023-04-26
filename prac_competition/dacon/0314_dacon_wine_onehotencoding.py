@@ -10,7 +10,7 @@ from sklearn.metrics import r2_score, mean_squared_error, accuracy_score
 #1. 데이터 
 
 #1-1 데이터 가져오기
-path = './_data/dacon_wine/'
+path = 'd:/study/_data/dacon_wine/'
 path_save = './_save/dacon_wine/'
 
 

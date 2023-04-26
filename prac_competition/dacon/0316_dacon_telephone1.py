@@ -10,7 +10,7 @@ from sklearn.metrics import r2_score, accuracy_score, f1_score, precision_score
 #1. 데이터 
 
 #1-1 데이터 가져오기
-path = './_data/dacon_telephone/'
+path = 'd:/study/_data/dacon_telephone/'
 path_save = './_save/dacon_telephone/'
 
 train_csv = pd.read_csv(path + 'train.csv', index_col=0)
