@@ -1,7 +1,6 @@
-#save_model : 가중치 save
-
 import numpy as np
-from sklearn.datasets import load_breast_cancer, load_diabetes
+import pandas as pd
+from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
@@ -12,11 +11,28 @@ import warnings
 warnings.filterwarnings(action='ignore')
 import sklearn as sk 
 print(sk.__version__) #1.2.2
-#1. 데이터 
-x, y = load_diabetes(return_X_y=True)
 
 
-# features =['age', 'sex', 'bmi', 'bp', 's1', 's2', 's3', 's4', 's5', 's6']
+#1. 데이터
+path = 'd:/study/_data/dacon_ddarung/'
+path_save = './_save/dacon_ddarung/'
+
+train_csv = pd.read_csv(path + 'train.csv', index_col=0)
+print(train_csv) #(1459, 10)
+
+test_csv = pd.read_csv(path + 'test.csv', index_col=0)
+print(test_csv) #(715, 9) count제외
+
+###결측치제거### 
+train_csv = train_csv.dropna()   #결측치 삭제함수 .dropna()
+print(train_csv.isnull().sum())
+# print(train_csv.info())
+print(train_csv.shape)  #(1328, 10)
+
+###데이터분리(train_set)###
+x = train_csv.drop(['count'], axis=1)
+y = train_csv['count']
+
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, random_state=337, train_size=0.8, #stratify=y
@@ -62,11 +78,10 @@ print(f"RMSE: {rmse}")
 print("======================================")
 
 ##################################################
-print(model.feature_importances_)
-# [0.06504052 0.02900812 0.20614523 0.10602617 0.06462499 0.06759115 0.10111099 0.08934037 0.16957761 0.10153492]
+print("컬럼 중요도:",model.feature_importances_)
 thresholds = np.sort(model.feature_importances_)        #list형태로 들어가있음. #np.sort오름차순 정렬
-print(thresholds)
-# [0.02900812 0.06462499 0.06504052 0.06759115 0.08934037 0.10111099 0.10153492 0.10602617 0.16957761 0.20614523]
+print("컬럼 중요도(오름차순):", thresholds)
+print("======================================")
 
 from sklearn.feature_selection import SelectFromModel 
 for i in thresholds:
@@ -97,38 +112,21 @@ for i in thresholds:
 # 처음엔 10개 다 돌아감, 두번쨰엔 9개, 8개, 7개 ,,,  (SelectFromModel 내부에 컬럼을 한개씩 삭제하는 기능 포함되어 있음)
 
 '''
-#Tresh : model.feature_importances_의 값 
-#n : 컬럼의 수 
-------------------------------------------------------
-변형된 x_train: (353, 10) 변형된 x_test: (89, 10)
-Tresh=0.029, n=10, R2: 47.94%
-변형된 x_train: (353, 9) 변형된 x_test: (89, 9)
-Tresh=0.065, n=9, R2: 44.46%
-변형된 x_train: (353, 8) 변형된 x_test: (89, 8)
-Tresh=0.065, n=8, R2: 46.38%
-변형된 x_train: (353, 7) 변형된 x_test: (89, 7)
-Tresh=0.068, n=7, R2: 46.65%
-변형된 x_train: (353, 6) 변형된 x_test: (89, 6)
-Tresh=0.089, n=6, R2: 49.06%
-변형된 x_train: (353, 5) 변형된 x_test: (89, 5)
-Tresh=0.101, n=5, R2: 48.66%
-변형된 x_train: (353, 4) 변형된 x_test: (89, 4)
-Tresh=0.102, n=4, R2: 46.23%
-변형된 x_train: (353, 3) 변형된 x_test: (89, 3)
-Tresh=0.106, n=3, R2: 46.33%
-변형된 x_train: (353, 2) 변형된 x_test: (89, 2)
-Tresh=0.170, n=2, R2: 43.38%
-변형된 x_train: (353, 1) 변형된 x_test: (89, 1)
-Tresh=0.206, n=1, R2: 27.46%
-------------------------------------------------------
-Tresh=0.029, n=10, R2: 47.94%
-Tresh=0.065, n=9, R2: 44.46%
-Tresh=0.065, n=8, R2: 46.38%
-Tresh=0.068, n=7, R2: 46.65%
-Tresh=0.089, n=6, R2: 49.06%
-Tresh=0.101, n=5, R2: 48.66%
-Tresh=0.102, n=4, R2: 46.23%
-Tresh=0.106, n=3, R2: 46.33%
-Tresh=0.170, n=2, R2: 43.38%
-Tresh=0.206, n=1, R2: 27.46%
+R2 score: 0.7796776274728929
+RMSE: 40.038887874461786
+======================================
+컬럼 중요도: [0.28963265 0.186187   0.02545782 0.11789604 0.0732818  0.07376595
+ 0.12475219 0.05483592 0.05419059]
+컬럼 중요도(오름차순): [0.02545782 0.05419059 0.05483592 0.0732818  0.07376595 0.11789604
+ 0.12475219 0.186187   0.28963265]
+======================================
+Tresh=0.025, n=9, R2: 74.37%  ***
+Tresh=0.054, n=8, R2: 72.47%
+Tresh=0.055, n=7, R2: 72.61%
+Tresh=0.073, n=6, R2: 74.29%  
+Tresh=0.074, n=5, R2: 72.83%
+Tresh=0.118, n=4, R2: 72.85%
+Tresh=0.125, n=3, R2: 73.90%
+Tresh=0.186, n=2, R2: 72.04%
+Tresh=0.290, n=1, R2: 61.53%
 '''
