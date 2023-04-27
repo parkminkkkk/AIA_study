@@ -42,6 +42,7 @@ Index(['hour', 'hour_bef_temperature', 'hour_bef_precipitation',
 ###이상치 처리### 
 x = train_csv.drop(['count'], axis = 1)
 y = train_csv['count']
+#결측치 선 처리
 imputer = IterativeImputer(estimator=XGBRegressor())
 x = imputer.fit_transform(x)
 
@@ -73,13 +74,14 @@ plt.show()
 # print(train_csv.isnull().sum())
 # # print(train_csv.info())
 # print(train_csv.shape)  #(1328, 10)
+imputer = IterativeImputer(estimator=XGBRegressor())
+x = imputer.fit_transform(x)
 
 train_csv =x
-
 train_csv = pd.DataFrame(train_csv)
 test_csv = pd.DataFrame(test_csv)
 train_csv.columns = ['hour', 'hour_bef_temperature', 'hour_bef_precipitation','hour_bef_windspeed', 'hour_bef_humidity', 'hour_bef_visibility',
-                    'hour_bef_ozone', 'hour_bef_pm10', 'hour_bef_pm2.5', 'count']
+                    'hour_bef_ozone', 'hour_bef_pm10', 'hour_bef_pm2.5']
 test_csv.columns = ['hour', 'hour_bef_temperature', 'hour_bef_precipitation','hour_bef_windspeed', 'hour_bef_humidity', 'hour_bef_visibility',
                     'hour_bef_ozone', 'hour_bef_pm10', 'hour_bef_pm2.5']
 print(train_csv)  
