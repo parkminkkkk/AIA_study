@@ -73,7 +73,7 @@ for i in thresholds:
 
     select_x_train = selection.transform(x_train)
     select_x_test = selection.transform(x_test)
-    print("변형된 x_train:", select_x_train.shape, "변형된 x_test:", select_x_test.shape)
+    # print("변형된 x_train:", select_x_train.shape, "변형된 x_test:", select_x_test.shape)
 
     selection_model = XGBRegressor()
 
@@ -96,6 +96,9 @@ for i in thresholds:
 # 처음엔 10개 다 돌아감, 두번쨰엔 9개, 8개, 7개 ,,,  (SelectFromModel 내부에 컬럼을 한개씩 삭제하는 기능 포함되어 있음)
 
 '''
+#Tresh : model.feature_importances_의 값 
+#n : 컬럼의 수 
+------------------------------------------------------
 변형된 x_train: (353, 10) 변형된 x_test: (89, 10)
 Tresh=0.029, n=10, R2: 47.94%
 변형된 x_train: (353, 9) 변형된 x_test: (89, 9)
@@ -115,5 +118,16 @@ Tresh=0.106, n=3, R2: 46.33%
 변형된 x_train: (353, 2) 변형된 x_test: (89, 2)
 Tresh=0.170, n=2, R2: 43.38%
 변형된 x_train: (353, 1) 변형된 x_test: (89, 1)
+Tresh=0.206, n=1, R2: 27.46%
+------------------------------------------------------
+Tresh=0.029, n=10, R2: 47.94%
+Tresh=0.065, n=9, R2: 44.46%
+Tresh=0.065, n=8, R2: 46.38%
+Tresh=0.068, n=7, R2: 46.65%
+Tresh=0.089, n=6, R2: 49.06%
+Tresh=0.101, n=5, R2: 48.66%
+Tresh=0.102, n=4, R2: 46.23%
+Tresh=0.106, n=3, R2: 46.33%
+Tresh=0.170, n=2, R2: 43.38%
 Tresh=0.206, n=1, R2: 27.46%
 '''
