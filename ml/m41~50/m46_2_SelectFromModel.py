@@ -69,7 +69,7 @@ print(thresholds)
 
 from sklearn.feature_selection import SelectFromModel 
 for i in thresholds:
-    selection = SelectFromModel(model, threshold=i, prefit=True)    # prefit = False면 다시 훈련 / True :사전훈련 
+    selection = SelectFromModel(model, threshold=i, prefit=False)    # prefit = False면 다시 훈련 / True :사전훈련 
 
     select_x_train = selection.transform(x_train)
     select_x_test = selection.transform(x_test)
