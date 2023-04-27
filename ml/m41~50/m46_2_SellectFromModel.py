@@ -48,7 +48,6 @@ model.set_params(early_stopping_rounds =100, eval_metric = 'rmse', **parameters)
 # train the model
 model.fit(x_train, y_train,
           eval_set = [(x_train, y_train), (x_test, y_test)],
-          early_stopping_rounds = 100,
           verbose =0
           )
 
@@ -60,6 +59,7 @@ rmse = np.sqrt(mse)
 print(f"R2 score: {r2}")
 print(f"RMSE: {rmse}")
 print("======================================")
+
 ##################################################
 print(model.feature_importances_)
 # [0.06504052 0.02900812 0.20614523 0.10602617 0.06462499 0.06759115 0.10111099 0.08934037 0.16957761 0.10153492]
@@ -69,18 +69,19 @@ print(thresholds)
 
 from sklearn.feature_selection import SelectFromModel 
 for i in thresholds:
-    selection = SelectFromModel(model, threshold=i, prefit=True,  )    # prefit = False면 다시 훈련 / True :사전훈련 
+    selection = SelectFromModel(model, threshold=i, prefit=True)    # prefit = False면 다시 훈련 / True :사전훈련 
 
     select_x_train = selection.transform(x_train)
     select_x_test = selection.transform(x_test)
     print("변형된 x_train:", select_x_train.shape, "변형된 x_test:", select_x_test.shape)
 
     selection_model = XGBRegressor()
+
     selection_model.set_params(early_stopping_rounds =10, eval_metric = 'rmse', **parameters)
-    selection_model.fit(select_x_train, x_test,
+
+    selection_model.fit(select_x_train, y_train,
                         eval_set = [(select_x_train, y_train), (select_x_test, y_test)],
-                        early_stopping_rounds = 100,
-                        verbose =1)
+                        verbose =0)
     
     select_y_predict = selection_model.predict(select_x_test)
     score = r2_score(y_test, select_y_predict)
@@ -93,3 +94,26 @@ for i in thresholds:
 # prefit = False면 다시 훈련 / True :사전훈련 
 # #threshold : 특정 값 이상만 선택을 하겠다. (list형식 안받음, list개수만큼 넣어줌)
 # 처음엔 10개 다 돌아감, 두번쨰엔 9개, 8개, 7개 ,,,  (SelectFromModel 내부에 컬럼을 한개씩 삭제하는 기능 포함되어 있음)
+
+'''
+변형된 x_train: (353, 10) 변형된 x_test: (89, 10)
+Tresh=0.029, n=10, R2: 47.94%
+변형된 x_train: (353, 9) 변형된 x_test: (89, 9)
+Tresh=0.065, n=9, R2: 44.46%
+변형된 x_train: (353, 8) 변형된 x_test: (89, 8)
+Tresh=0.065, n=8, R2: 46.38%
+변형된 x_train: (353, 7) 변형된 x_test: (89, 7)
+Tresh=0.068, n=7, R2: 46.65%
+변형된 x_train: (353, 6) 변형된 x_test: (89, 6)
+Tresh=0.089, n=6, R2: 49.06%
+변형된 x_train: (353, 5) 변형된 x_test: (89, 5)
+Tresh=0.101, n=5, R2: 48.66%
+변형된 x_train: (353, 4) 변형된 x_test: (89, 4)
+Tresh=0.102, n=4, R2: 46.23%
+변형된 x_train: (353, 3) 변형된 x_test: (89, 3)
+Tresh=0.106, n=3, R2: 46.33%
+변형된 x_train: (353, 2) 변형된 x_test: (89, 2)
+Tresh=0.170, n=2, R2: 43.38%
+변형된 x_train: (353, 1) 변형된 x_test: (89, 1)
+Tresh=0.206, n=1, R2: 27.46%
+'''
