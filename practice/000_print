@@ -1,6 +1,20 @@
 import numpy as np
 import pandas as pd
 
+#pd->np 변경
+data.to_numpy()
+data.values
+
+#np->pd 변경
+pd.DataFrame()
+
+#list->numpy 변경
+
+#list->pandas 변경
+
+# dtype 변경
+train_data.iloc[:,2:] = train_data.iloc[:,2:].astype(float)
+=================================================================
 ###결측치제거### 
 print(data.isnull().sum())
 
@@ -21,20 +35,6 @@ movies['year'].unique()#컬럼목록 확인
 movies[movies['year'].isnull()] #결측값 확인
 movies['year'] = movies['year'].fillna('2050') #결측값 처리
 
-#pd->np 변경
-data.to_numpy()
-data.values
-
-#np->pd 변경
-pd.DataFrame()
-
-#list->numpy 변경
-
-#list->pandas 변경
-
-# dtype 변경
-train_data.iloc[:,2:] = train_data.iloc[:,2:].astype(float)
-
 # data 합치기 
 x = np.concatenate((x_train,x_test), axis=0)  #(70000, 28, 28)
 x = np.append(x_train, x_test, axis=0)      #(70000, 28, 28)
@@ -44,3 +44,27 @@ x = np.append(x_train, x_test, axis=0)      #(70000, 28, 28)
 # print(train_csv.info())
 # print(train_csv.describe())
 # print(train_csv.describe())
+
+
+####################################################################
+#ml 
+#1.피클 저장 
+import pickle
+path = './_save/pickle_test/'
+pickle.dump(model, open(path + 'm43_pickle1_save.dat', 'wb'))
+
+#2.피클 불러오기 
+import pickle
+path = './_save/pickle_test/'
+model = pickle.load(open(path + 'm43_pickle1_save.dat', 'rb'))
+==================================================================
+#1.피클 저장 
+import joblib
+path = './_save/pickle_test/'
+joblib.dump(model, path + 'm44_joblib1_save.dat')
+
+#2. 모델 - 잡립 불러오기 
+import joblib
+path = './_save/pickle_test/'
+model = joblib.load(path + 'm43_pickle1_save.dat')
+####################################################################
