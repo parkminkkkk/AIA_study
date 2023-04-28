@@ -59,7 +59,7 @@ scaler = RobustScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
 
-parameters = {'n_estimators' : 10000,
+parameters = {'n_estimators' : 1000,
               'learning_rate' : 0.01,
               'max_depth': 3,
               'gamma': 0,
@@ -111,7 +111,7 @@ for i in thresholds:
 
     selection_model = XGBClassifier()
 
-    selection_model.set_params(early_stopping_rounds =10, eval_metric = 'error', **parameters)
+    selection_model.set_params(early_stopping_rounds =100, eval_metric = 'error', **parameters)
 
     selection_model.fit(select_x_train, y_train,
                         eval_set = [(select_x_train, y_train), (select_x_test, y_test)],

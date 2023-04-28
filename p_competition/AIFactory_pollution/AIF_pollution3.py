@@ -16,7 +16,9 @@ path='d:/study/_data/AIFac_air/'
 save_path= './_save/AIFac_air/'
 
 train_data = pd.read_csv(path + 'train_all.csv')
+train_data2 = pd.read_csv(path + 'train_aws_all.csv')
 test_data = pd.read_csv(path + 'test_all.csv')
+test_data2 = pd.read_csv(path + 'test_aws_all.csv')
 submission = pd.read_csv(path + 'answer_sample.csv')
 
 # Combine train and test data for preprocessing

@@ -17,6 +17,7 @@ test_csv = pd.read_csv(path + 'test.csv', index_col=0)
 x = train_csv.drop(['count'], axis = 1)
 y = train_csv['count']
 
+print(type(x))
 x = x.values
 
 def outliers(data_out):
@@ -46,7 +47,6 @@ xgb.fit(x, y)
 results = xgb.score(x,y)
 y_submit = xgb.predict(test_csv)
 print(results)
-
 
 
 submission = pd.read_csv(path + 'sampleSubmission.csv', index_col=0)
