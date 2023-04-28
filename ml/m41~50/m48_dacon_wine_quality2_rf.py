@@ -85,7 +85,6 @@ results = model.score(x_test, y_test)
 print("최종점수 :", results)
 
 y_predict = model.predict(x_test)
-
 acc = accuracy_score(y_test, y_predict)
 print("acc 는", acc)
 

@@ -30,12 +30,13 @@ print(pd.DataFrame(model.cv_results_).sort_values('rank_test_score', ascending=T
 print(pd.DataFrame(model.cv_results_).columns) #pd컬럼명 확인
 print(datasets.feature_names)                  #sklearn컬럼명확인
 
-##
+##pd
 print(data.value_counts()) #컬럼별 개수확인 
 print(data.value_counts().sort_index()) #컬럼별 개수확인 , idex 오름차순
-
-#np
+##np
+print(np.unique(y, return_counts=True))  #컬럼별 개수확인
 data.unique()#컬럼목록 확인
+##
 movies[movies['year'].isnull()] #결측값 확인
 movies['year'] = movies['year'].fillna('2050') #결측값 처리
 

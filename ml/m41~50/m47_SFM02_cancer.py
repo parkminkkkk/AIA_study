@@ -8,9 +8,6 @@ from xgboost import XGBClassifier, XGBRegressor
 from sklearn.metrics import accuracy_score, mean_squared_error,r2_score
 import warnings
 warnings.filterwarnings(action='ignore')
-import sklearn as sk 
-print(sk.__version__) #1.2.2
-
 
 #1. 데이터 
 x, y = load_breast_cancer(return_X_y=True)

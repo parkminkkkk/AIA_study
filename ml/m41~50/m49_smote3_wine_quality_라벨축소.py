@@ -1,14 +1,9 @@
-#[실습]Dancon_wine : ML활용 acc올리기
-# - 그래프그리기 (x축 : y클래스 / y축 : 데이터 개수 )
-# 1) pd의 value_counts => 사용x
-# 2) np.unique의 return_counts => 사용x
-# 3) pd의 groupby, count() 사용!!***
-# 4) plt.bar로 그리기 (quality컬럼)
-# Hint : 데이터개수(y축) = 데이터개수.주저리주저리(groupby)
-#결측치/ 원핫인코딩, 데이터분리, 스케일링/ 함수형,dropout
-#다중분류 - softmax, categorical
+# [실습] y클래스를 3개까지 줄이고 그것을 smote해서 성능비교하기 
+# y클래스 3개 / y클래스 3개+smote 증폭한 것 비교
 
-#######[실습] pd의 groupby, count이용해서 bar차트 만들기#####
+
+
+# [실습] smote 적용
 
 import numpy as np
 import pandas as pd
@@ -23,6 +18,9 @@ from xgboost import XGBRegressor, XGBClassifier
 import lightgbm as lgbm
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
+from imblearn.over_sampling import SMOTE
+from sklearn.metrics import accuracy_score, f1_score
+
 
 #1. 데이터 
 path = './_data/dacon_wine/'
@@ -58,17 +56,29 @@ print(le.transform(['red', 'white'])) #[0 1]
 x = train_csv.drop(['quality'], axis=1)
 print(x.shape)                       #(5497, 12)
 y = train_csv['quality']
-y = y-3
+# y = y-3
 print(type(y))
 print(y)
 print("y_shape:", y.shape)           #(5497,)
-print('y의 라벨값 :', np.unique(y))  #[3 4 5 6 7 8 9]
+print('y의 라벨값 :', np.unique(y, return_counts=True))  #[3 4 5 6 7 8 9]
+# y의 라벨값 : (array([0, 1, 2, 3, 4, 5, 6], dtype=int64), array([  26,  186, 1788, 2416,  924,  152,    5], dtype=int64))
 # test_csv = test_csv.drop(['type'], axis=1)
 
+print(y.value_counts().sort_index())
+y = y.copy()
+for i, v in enumerate(y):
+    if v <=5:
+        y[i] = 0
+    elif v ==6:
+        y[i] = 1
+    else:
+        y[i] = 2
+
+print(y.value_counts().sort_index())
 
 #1-3 데이터분리 
 x_train, x_test, y_train, y_test = train_test_split(
-    x,y, train_size=0.8, random_state=640874)
+    x,y, train_size=0.8, random_state=640874, stratify=y)
 
 #1-4 스케일링 
 # scaler = MinMaxScaler() 
@@ -82,56 +92,55 @@ test_csv = scaler.transform(test_csv)
 
 #2. 모델구성 
 # model = XGBClassifier()
-model = RandomForestClassifier()
-# model = lgbm.LGBMClassifier()
-# model = lgbm.LGBMRegressor()
+model = RandomForestClassifier(random_state=3377)
+
 #3. 컴파일, 훈련 
-model.fit(x_train, y_train,
-          )  
+model.fit(x_train, y_train)  
+
   
 #4. 평가예측 
 results = model.score(x_test, y_test)
-print("최종점수 :", results)
 y_predict = model.predict(x_test)
 acc = accuracy_score(y_test, y_predict)
-print("acc 는", acc)
+f1 = f1_score(y_test, y_predict, average='macro')
 
+print("==============SMOTE 적용 전=======================")
+print("최종점수 :", results)
+print("acc:", acc)
+print("f1(macro):", f1)
 
-#submission.csv 만들기 
-submission = pd.read_csv(path + 'sample_submission.csv', index_col=0)
+smote = SMOTE(random_state=321,k_neighbors=2) #k_neighbors 디폴트5
+x_train, y_train= smote.fit_resample(x_train, y_train)
+# print(x_train.shape, y_train.shape) 
+# print(np.unique(y_train, return_counts=True)) 
 
-y_submit = model.predict(test_csv)
-submission['quality'] = y_submit
-y_submit += 3
-# print(y_submit)
+#2. 모델구성 
+# model = XGBClassifier()
+model = RandomForestClassifier(random_state=3377)
 
-# import datetime 
-# date = datetime.datetime.now()  
-# date = date.strftime("%m%d_%H%M") 
-# submission.to_csv(path_save + 'submit_wine_' + date + '.csv') 
+#3. 컴파일, 훈련 
+model.fit(x_train, y_train)  
 
+  
+#4. 평가예측 
+results = model.score(x_test, y_test)
+y_predict = model.predict(x_test)
+acc = accuracy_score(y_test, y_predict)
+f1 = f1_score(y_test, y_predict, average='macro')
+
+print("==============SMOTE 적용 후=======================")
+print("최종점수 :", results)
+print("acc:", acc)
+print("f1(macro):", f1)
 
 
 '''
-최종점수 : 0.6536363636363637
-acc 는 0.6536363636363637
+==============SMOTE 적용 전=======================
+최종점수 : 0.7109090909090909
+acc: 0.7109090909090909
+f1(macro): 0.706028190870516
+==============SMOTE 적용 후=======================
+최종점수 : 0.7045454545454546
+acc: 0.7045454545454546
+f1(macro): 0.7029681765368944
 '''
-##########################################################################################################
-print("========[실습]=================")
-count_data = train_csv.groupby("quality")['quality'].count() #'quality'그룹으로 묶겠다. #'quality'열을 count하겠다
-print(count_data.index, count_data)
-'''
-Int64Index([3, 4, 5, 6, 7, 8, 9], dtype='int64', name='quality') quality
-3      26
-4     186
-5    1788
-6    2416
-7     924
-8     152
-9       5
-Name: quality, dtype: int64
-'''
-import matplotlib.pyplot as plt 
-plt.bar(count_data.index, count_data)
-plt.show()
-print("===============================")

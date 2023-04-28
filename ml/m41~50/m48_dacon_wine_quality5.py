@@ -56,7 +56,6 @@ print(y)
 print("y_shape:", y.shape)           #(5497,)
 print('y의 라벨값 :', np.unique(y))  #[3 4 5 6 7 8 9]
 # test_csv = test_csv.drop(['type'], axis=1)
-print(y.value_counts().sort_index())
 '''
 3      26
 4     186
@@ -81,11 +80,12 @@ Name: quality, dtype: int64
 # print(np.unique(y, return_counts=True))
 
 # SettingWithCopyWarning: A Value is trying to be set on a copy of a slice from a DataFrame 
+print(y.value_counts().sort_index())
 y = y.copy()
 for i, v in enumerate(y):
-    if v <=2:
+    if v <=5:
         y[i] = 0
-    elif v == 5 | v ==6 | v == 7:
+    elif v ==6 | v == 9:
         y[i] = 1
     else:
         y[i] = 2
