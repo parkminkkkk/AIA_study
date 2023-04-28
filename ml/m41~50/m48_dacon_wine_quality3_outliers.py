@@ -58,7 +58,9 @@ print("y_shape:", y.shape)           #(5497,)
 print('y의 라벨값 :', np.unique(y))  #[3 4 5 6 7 8 9]
 # test_csv = test_csv.drop(['type'], axis=1)
 
+
 x = x.to_numpy()
+print(x.shape, y.shape)
 #이상치 찾는 함수(df)
 def outliers(data_out):
     quartile_1, q2, quartile_3 = np.percentile(data_out, [25, 50, 75], axis=0)
@@ -80,6 +82,15 @@ x[outliers_loc] = np.nan
 import matplotlib.pyplot as plt
 plt.boxplot(x)
 plt.show()
+
+# print(x.isnull().sum())
+# print(x.shape, y.shape)
+# x = x.dropna()
+# print(x.shape, y.shape)
+
+# train_csv = train_csv.dropna()   #결측치 삭제함수 .dropna()
+# print(train_csv.isnull().sum())
+
 
 imputer = IterativeImputer(estimator=XGBRegressor())
 x = imputer.fit_transform(x)
@@ -109,14 +120,14 @@ test_csv = scaler.transform(test_csv)
 
 #2. 모델구성 
 # model = XGBClassifier()
-model = RandomForestClassifier()
+model = RandomForestClassifier(random_state=3377)
 # model = lgbm.LGBMClassifier()
 # model = lgbm.LGBMRegressor()
-model.set_params(early_stopping_rounds =100) 
+# model.set_params(early_stopping_rounds =100) 
 #3. 컴파일, 훈련 
 model.fit(x_train, y_train,
-          eval_set = [(x_train, y_train), (x_test, y_test)],
-          verbose =0
+        #   eval_set = [(x_train, y_train), (x_test, y_test)],
+        #   verbose =0
           )  
 
   
@@ -137,20 +148,13 @@ y_submit = model.predict(test_csv)
 submission['quality'] = y_submit
 y_submit += 3
 
-import datetime 
-date = datetime.datetime.now()  
-date = date.strftime("%m%d_%H%M") 
-submission.to_csv(path_save + 'submit_wine_' + date + '.csv') 
-# 파일생성 # 날짜 
-'''
-#시간저장
-import datetime 
-date = datetime.datetime.now()  
-date = date.strftime("%m%d_%H%M")  #'%'특수한 경우에 반환하라 -> month,day_Hour,Minute
-#시간을 문자데이터로 바꿈 : 문자로 바꿔야 파일명에 넣을 수 있음 
-'''
+# import datetime 
+# date = datetime.datetime.now()  
+# date = date.strftime("%m%d_%H%M") 
+# submission.to_csv(path_save + 'submit_wine_' + date + '.csv') 
+
 
 '''
-최종점수 : 0.6536363636363637
-acc 는 0.6536363636363637
+최종점수 : 0.6845454545454546
+acc 는 0.6845454545454546
 '''

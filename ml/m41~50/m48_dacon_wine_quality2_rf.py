@@ -58,41 +58,6 @@ print("y_shape:", y.shape)           #(5497,)
 print('y의 라벨값 :', np.unique(y))  #[3 4 5 6 7 8 9]
 # test_csv = test_csv.drop(['type'], axis=1)
 
-x = x.to_numpy()
-#이상치 찾는 함수(df)
-def outliers(data_out):
-    quartile_1, q2, quartile_3 = np.percentile(data_out, [25, 50, 75], axis=0)
-    print('1사분위 : ', quartile_1) 
-    print('q2 : ', q2) 
-    print('3사분위 : ', quartile_3) 
-    iqr = quartile_3 - quartile_1 
-    print('iqr : ', iqr)
-    lower_bound = quartile_1 - (iqr * 1.5)
-    upper_bound = quartile_3 + (iqr * 1.5) 
-    return np.where((data_out>upper_bound) | (data_out<lower_bound))
-outliers_loc = outliers(x) 
-
-print(outliers_loc)
-print('이상치의 위치 : ', list(outliers_loc))
-
-# outliers_loc = 9999
-x[outliers_loc] = np.nan
-import matplotlib.pyplot as plt
-plt.boxplot(x)
-plt.show()
-
-imputer = IterativeImputer(estimator=XGBRegressor())
-x = imputer.fit_transform(x)
-
-# #1-2 one-hot-encoding
-# print('y의 라벨값 :', np.unique(y))  #[3 4 5 6 7 8 9]
-# print(np.unique(y, return_counts=True)) # array([  26,  186, 1788, 2416,  924,  152, 5]
-
-# import pandas as pd
-# y=pd.get_dummies(y)
-# y = np.array(y)
-# print(y.shape)                       #(5497, 7)
-
 #1-3 데이터분리 
 x_train, x_test, y_train, y_test = train_test_split(
     x,y, train_size=0.8, random_state=640874)
@@ -109,7 +74,7 @@ test_csv = scaler.transform(test_csv)
 
 #2. 모델구성 
 # model = XGBClassifier()
-model = RandomForestClassifier(random_state=337)
+model = RandomForestClassifier(random_state=3377)
 
 #3. 컴파일, 훈련 
 model.fit(x_train, y_train)  
@@ -139,6 +104,6 @@ submission.to_csv(path_save + 'submit_wine_' + date + '.csv')
 
 '''
 #rf
-최종점수 : 0.6863636363636364
-acc 는 0.6863636363636364
+최종점수 : 0.6909090909090909
+acc 는 0.6909090909090909
 '''
