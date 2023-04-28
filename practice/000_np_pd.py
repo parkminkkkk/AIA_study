@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 
-
 #pd->np 변경
 datapd = pd.DataFrame([[1,2], [3,4]])
 
@@ -65,4 +64,12 @@ print(datalist)
 [[1, 2], [3, 4]]
 '''
 
-#np -> list 
+#np -> list 변경
+datanp = np.array([[0,0],[0,1],[1,0],[1,1]])
+
+datalist = datanp.tolist()
+print(type(datalist)) #<class 'list'>
+print(datalist)
+'''
+[[0, 0], [0, 1], [1, 0], [1, 1]]
+'''
