@@ -108,12 +108,12 @@ model = XGBClassifier(random_state=424,tree_method='gpu_hist', gpu_id=0, predict
 
 
 
-param_grid = {'n_estimators' : [50,100,150,200],
-               'learning_rate': [0.02, 0.2, 0.002],
-               'max_depth': [6, 5],
-               'gamma': [0,1,2,3],
-               'min_child_weight': [0, 0.01, 0.001, 0.1, 0.5],
-               'colsample_bylevel': [0, 0.1, 0.2, 0.3]
+param_grid = {'n_estimators' : [20,30],
+               'learning_rate': [0.01, 0.1, 0.001],
+               'max_depth': [6, 5, 10],
+            #    'gamma': [0,1,2,3],
+            #    'min_child_weight': [0, 0.01, 0.001, 0.1, 0.5],
+            #    'colsample_bylevel': [0, 0.1, 0.2, 0.3]
             }
 
 grid = GridSearchCV(model,
