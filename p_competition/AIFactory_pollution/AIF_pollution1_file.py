@@ -57,3 +57,4 @@ test_datas=Imputation(split_month_day_hour(test_datas))
 PM25=test_datas['PM2.5']
 answer_sample['PM2.5']=PM25[missing_indices].values
 answer_sample.to_csv('./03.AI_finedust/sample_sub.csv',index=False)
+
