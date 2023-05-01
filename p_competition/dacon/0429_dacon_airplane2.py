@@ -1,4 +1,3 @@
-
 import random
 import os
 import numpy as np
@@ -9,6 +8,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, make_scorer, log_loss
 from xgboost import XGBClassifier
+# import lightgbm as lgbm
+
 
 def seed_everything(seed):
     random.seed(seed)
@@ -42,6 +43,7 @@ for col in NaN_col:
     if col in test.columns:
         test[col] = test[col].fillna(mode)
 print('Done.')
+NaN_col = ['Origin_State','Destination_State','Airline','Estimated_Departure_Time', 'Estimated_Arrival_Time','Carrier_Code(IATA)','Carrier_ID(DOT)']
 
 # Quantify qualitative variables
 # 정성적 변수는 LabelEncoder를 사용하여 숫자로 인코딩됩니다.
@@ -82,16 +84,17 @@ test_x = test.drop(columns=['ID'])
 train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.2, random_state=3377, stratify=train_y)
 
 # Normalize numerical features
-scaler = StandardScaler()
+scaler = RobustScaler()
 train_x = scaler.fit_transform(train_x)
 val_x = scaler.transform(val_x)
 test_x = scaler.transform(test_x)
 
 # Cross-validation with StratifiedKFold
-cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=3377)
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=640)
 
 # Model and hyperparameter tuning using GridSearchCV
-model = XGBClassifier(random_state=3377,tree_method='gpu_hist', gpu_id=0, predictor = 'gpu_predictor')
+model = XGBClassifier(random_state=640,tree_method='gpu_hist', gpu_id=0, predictor = 'gpu_predictor')
+# model = lgbm.LGBMClassifier(random_state=42, n_jobs=-1)
 
 
 # 'n_estimators' : [100, 200, 300, 400, 500, 1000] 디폴트 100 / 1~inf / 정수
@@ -108,12 +111,12 @@ model = XGBClassifier(random_state=3377,tree_method='gpu_hist', gpu_id=0, predic
 
 
 
-param_grid = {'n_estimators' : [100],
-               'learning_rate': [0.01, 0.1, 0.001],
-               'max_depth': [6, 5, 10],
+param_grid = {'n_estimators' : [3],
+               'learning_rate': [0.001],
+               'max_depth': [2, 5, 10],
                'gamma': [0,1,2,3],
-            #    'min_child_weight': [0, 0.01, 0.001, 0.1, 0.5],
-            #    'colsample_bylevel': [0, 0.1, 0.2, 0.3]
+               'min_child_weight': [0, 0.01, 0.001, 0.1, 0.5],
+               'colsample_bylevel': [0, 0.1, 0.2, 0.3]
             }
 
 grid = GridSearchCV(model,
@@ -147,6 +150,6 @@ print(f'logloss: {logloss}')
 y_pred = best_model.predict_proba(test_x)
 y_pred = np.round(y_pred, 6)
 submission = pd.DataFrame(data=y_pred, columns=sample_submission.columns, index=sample_submission.index)
-submission.to_csv('./_save/dacon_airplane/sub_sample.csv', index=True)
+submission.to_csv('./_save/dacon_airplane/xgb_비행기.csv', index=True)
 
 # print(best_model)
