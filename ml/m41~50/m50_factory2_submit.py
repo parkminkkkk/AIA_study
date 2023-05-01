@@ -142,7 +142,7 @@ x = train_data.drop(['PM2.5'], axis=1)
 # print("x데이터", x, '\n', "y데이터", y) 
 
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size=0.8, random_state=640874, shuffle=True
+    x, y, train_size=0.8, random_state=1235, shuffle=True
 ) 
 
 #[데이터 전처리]
@@ -153,18 +153,18 @@ x_train, x_test, y_train, y_test = train_test_split(
 ## 월, 시간데이터 : 주기함수에다 넣어서 수정(sin,cos함수...)
 #한쪽으로 치우친 데이터 : log변환.. 
 
-parameters = {'n_estimators' : 100000,
-              'learning_rate' : 0.01,
+parameters = {'n_estimators' : 20000,
+              'learning_rate' : 0.05,
               'max_depth': 10,
-            #   'gamma': 0,
-            #   'min_child_weight': 1,
-            #   'subsample': 1,
-            #   'colsample_bytree': 1,
-            #   'colsample_bylevel': 1,
-            #   'colsample_bynode': 1,
-            #   'reg_alpha': 0,
-            #   'reg_lambda': 1,
-              'random_state' : 640,
+              'gamma': 0,
+              'min_child_weight': 1,
+              'subsample': 1,
+              'colsample_bytree': 1,
+              'colsample_bylevel': 1,
+              'colsample_bynode': 1,
+              'reg_alpha': 0,
+              'reg_lambda': 1,
+              'random_state' : 1235,
               'n_jobs' : -1
               }
 
@@ -212,7 +212,7 @@ date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
 path_save = './_save/AIFac_pollution/'
-submission.to_csv(path_save + date+ ': mae_' +str(round(mae, 3)) +'.csv',index = None) # 파일생성
+submission.to_csv(path_save + date+ ' mae_' + str(round(mae, 3)) + '.csv', index = None) # 파일생성
 
 
 
