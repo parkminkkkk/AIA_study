@@ -25,6 +25,8 @@ import glob
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from xgboost import XGBRegressor
+from sklearn.metrics import mean_absolute_error, r2_score
+import time
 
 #// \\ / \ 모두 동일함 
 #\n : 줄바꿈 , \a : 띄어쓰기 , \t: tab 등 예약어로 인식함(노란색으로 색바뀜) : 따라서 경로에서 하위디렉토리 명시할때에는 \\ 두개로 사용
@@ -143,7 +145,7 @@ dtypes: float64(1), int32(1), int64(1), int8(2)
 #주말, 공휴일 등 만들 수 있음 (여러가지 조합으로 생성하는 파생피처) : 피처엔지니어링 작업에서 굉장히 중요함
 #계절(봄/여름/가을/겨울) 시즌을 만들어서 피처 하나 만들어 줄 수 있음. (여름<겨울 : 미세먼지 더 많으므로)
 
-
+#########################################################################################################################
 #########################################################################################################################
 #모델 훈련방식 : dense형태로 훈련시켜줌(모델 xgboost사용) / x데이터에 대해서 -> y데이터야 훈련시키고 이후 test를 통해 평가,예측 
 
@@ -151,15 +153,21 @@ dtypes: float64(1), int32(1), int64(1), int8(2)
 y = train_data['PM2.5']
 x = train_data.drop(['PM2.5'], axis=1)
 
-print("x데이터", x, '\n', "y데이터", y) 
+# print("x데이터", x, '\n', "y데이터", y) 
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size=0.8, random_state=640874, shuffle=True
 ) 
 
+#[데이터 전처리]
 #scale : 트레인,테스트 스플릿 한 이후에 적용/ 트리계열 모델에서는 이상치,결측치 유연하므로 안해줘도 되지만 해서 좋아질 수도 있다!
+#라벨링한 데이터 scale을 한다/안한다? : 굳이 할 필요는 없다. (원핫:데이터 컬럼수 늘어남-> 다시 차원축소)
+#->(카테고리형 데이터일 경우, 원핫해준다-> 한개 컬럼 원핫해주면(17개+5개 늘어남)=> 지역데이터로 결과값이 좌지우지 될 수 있음 -> 다시 축소해주기(PCA, LDA..))
+## 월, 시간데이터 또한, 원핫(12개로 늘어남) / (왜냐하면, 1월이랑 12월이 12배가 차이나는 것이 아니므로..)
+## 월, 시간데이터 : 주기함수에다 넣어서 수정(sin,cos함수...)
+#한쪽으로 치우친 데이터 : log변환.. 
 
-parameters = {'n_estimators' : 10000,
+parameters = {'n_estimators' : 2,
               'learning_rate' : 0.3,
               'max_depth': 6,
               'gamma': 0,
@@ -171,6 +179,7 @@ parameters = {'n_estimators' : 10000,
               'reg_alpha': 0,
               'reg_lambda': 1,
               'random_state' : 640,
+              'n_jobs' : -1
               }
 
 
@@ -182,6 +191,36 @@ model.set_params(**parameters,                   #컴파일과 비슷하다고 �
                  eval_metric = 'mae', 
                  early_stopping_rounds = 200,
                  ) 
-model.fit(
 
+start = time.time()
+model.fit(x_train, y_train,
+          eval_set = [(x_train, y_train), (x_test, y_test)],
+          verbose = 1
 ) 
+end = time.time()
+print("걸린시간:", round(end-start, 2),"초")
+#4. 평가, 예측 
+
+y_predict = model.predict(x_test)
+
+results = model.score(x_test, y_test)
+print("model.score:", results)
+r2 = r2_score(y_test, y_predict)
+print("r2.score:", r2)
+mae = mean_absolute_error(y_test, y_predict)
+print("mae.score:", mae)
+
+
+#test_data의 결측치만 뽑아서 predict  => 나오는 값을 submit파일에 넣어서 제출 
+
+y_submit = model.predict(test_data)
+submission = pd.read_csv(path + 'submission.csv', index_col=0)
+submission['PM2.5'] = y_submit
+
+
+#test_data의 결측치만 뽑아서 predict  => 나오는 값을 submit파일에 넣어서 제출 
+# Select rows with missing values
+missing_values = test_data[test_data.isnull().any(axis=1)]
+
+# Print the selected rows
+print(missing_values)
