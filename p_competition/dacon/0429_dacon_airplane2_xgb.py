@@ -16,7 +16,7 @@ def seed_everything(seed):
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
 
-seed_everything(42) # Fixed Seed
+seed_everything(1235) # Fixed Seed
 
 def csv_to_parquet(csv_path, save_name):
     df = pd.read_csv(csv_path)
@@ -84,16 +84,16 @@ test_x = test.drop(columns=['ID'])
 train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.2, random_state=3377, stratify=train_y)
 
 # Normalize numerical features
-scaler = RobustScaler()
+scaler = MinMaxScaler()
 train_x = scaler.fit_transform(train_x)
 val_x = scaler.transform(val_x)
 test_x = scaler.transform(test_x)
 
 # Cross-validation with StratifiedKFold
-cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=640)
+cv = StratifiedKFold(n_splits=7, shuffle=True, random_state=1234)
 
 # Model and hyperparameter tuning using GridSearchCV
-model = XGBClassifier(random_state=640,tree_method='gpu_hist', gpu_id=0, predictor = 'gpu_predictor')
+model = XGBClassifier(random_state=1234,tree_method='gpu_hist', gpu_id=0, predictor = 'gpu_predictor')
 # model = lgbm.LGBMClassifier(random_state=42, n_jobs=-1)
 
 
@@ -111,12 +111,13 @@ model = XGBClassifier(random_state=640,tree_method='gpu_hist', gpu_id=0, predict
 
 
 
-param_grid = {'n_estimators' : [3],
-               'learning_rate': [0.001],
-               'max_depth': [2, 5, 10],
-               'gamma': [0,1,2,3],
-               'min_child_weight': [0, 0.01, 0.001, 0.1, 0.5],
-               'colsample_bylevel': [0, 0.1, 0.2, 0.3]
+param_grid = {'n_estimators' : [7],#,50,5],
+               'learning_rate': [0.1, 0.2, 0.3, 0.5],#, 1, 0.01, 0.001],
+               'max_depth': [None, 2, 5],#, 10, 100],
+            #    'gamma': [0,1],#2,3],
+            #    'min_child_weight': [0, 0.01, 0.001],#, 0.1, 0.5],
+            #    'colsample_bylevel': [0, 0.1, 0.2, 0.3],
+               'reg_alpha': [0.1, 0.01, 10]
             }
 
 grid = GridSearchCV(model,
@@ -126,7 +127,7 @@ grid = GridSearchCV(model,
                     n_jobs=-1,
                     verbose=1)
 
-grid.fit(train_x, train_y)
+grid.fit(train_x, train_y,)
 
 best_model = grid.best_estimator_
 

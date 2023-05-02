@@ -94,31 +94,42 @@ test_x = scaler.transform(test_x)
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=640)
 
 # Model and hyperparameter tuning using GridSearchCV
-model = CatBoostClassifier(random_state=640)
+model = CatBoostClassifier(random_state=3377)
+#, task_type='GPU', devices='0')
 # model = lgbm.LGBMClassifier(random_state=42, n_jobs=-1)
 
+param = {'n_estimators' : 10000, 
+         'learning_rate' : 0.3,
+         'max_depth' : 7,
+         'l2_leaf_reg' : 2,
+         'loss_funtion' : 'Logloss', 
+         'rsm' : 1,
+        'num_boost_round' : 500}
+# param_grid = {'n_estimators' : [100],
+#                'learning_rate': [0.1, 0.01],
+#                'max_depth': [2,10],
+#                'l2_leaf_reg': [0,2,5],
+#             #    'colsample_bylevel': ['None'],
+#             #    ' num_boost_round' : [500],
+#                'loss_function' : ['Logloss'], 
+#                'rsm': [0.8]
+#             }
 
-param_grid = {'iterations' : [10,30],
-               'learning_rate': [0.1, 0.01],
-               'depth': [2, 5, 10],
-               'l2_leaf_reg': [0,2,3,5],
-               'bagging_temperature': [0, 1, 4, 5],
-               'od_wait ': [30,50,80]
-            }
+# grid = GridSearchCV(model,
+#                     param_grid,
+#                     cv=cv,
+#                     scoring='accuracy',
+#                     n_jobs=-1,
+#                     verbose=0)
 
-grid = GridSearchCV(model,
-                    param_grid,
-                    cv=cv,
-                    scoring='accuracy',
-                    n_jobs=-1,
-                    verbose=1)
+model.set_params(early_stopping_rounds =50)
+model.fit(train_x, train_y, 
+          eval_set= [(train_x, train_y), (val_x, val_y)])
 
-grid.fit(train_x, train_y)
-
-best_model = grid.best_estimator_
+# best_model = grid.best_estimator_
 
 # Model evaluation
-val_y_pred = best_model.predict(val_x)
+val_y_pred = model.predict(val_x)
 accuracy = accuracy_score(val_y, val_y_pred)
 f1 = f1_score(val_y, val_y_pred, average='weighted')
 precision = precision_score(val_y, val_y_pred, average='weighted')
@@ -134,9 +145,13 @@ print(f'logloss: {logloss}')
 
 # 하이퍼파라미터 튜닝 결과를 바탕으로 최적의 모델을 선택하고 테스트 세트의 목표 변수를 예측하는 데 사용합니다.
 # Model prediction
-y_pred = best_model.predict_proba(test_x)
-y_pred = np.round(y_pred, 6)
+y_pred = model.predict_proba(test_x)
+y_pred = np.round(y_pred, 4)
 submission = pd.DataFrame(data=y_pred, columns=sample_submission.columns, index=sample_submission.index)
-submission.to_csv('./_save/dacon_airplane/cat_비행기.csv', index=True)
+
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M")
+submission.to_csv('./_save/dacon_airplane/' + date + '_catboost'+ str(round(logloss, 3)) +'.csv', index=True)
 
 # print(best_model)
