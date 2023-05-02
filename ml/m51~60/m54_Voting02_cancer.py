@@ -1,0 +1,86 @@
+import numpy as np 
+import pandas as pd
+from sklearn.datasets import load_breast_cancer, load_iris
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+#1. 데이터
+x, y = load_iris(return_X_y=True)
+
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y, random_state=123, train_size=0.8, shuffle=True, stratify=y
+)
+
+scaler = StandardScaler()
+x_train = scaler.fit_transform(x_train)
+x_test = scaler.transform(x_test)
+
+print(x_train.shape) #(455, 30) #(120, 4)
+
+# x_train = x_train.reshape(-1,30)
+# x_test = x_test.reshape(-1,30)
+# print(x_train.shape) #(455, 30)
+
+
+#2. 모델 
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import VotingRegressor, VotingClassifier 
+from xgboost import XGBRegressor, XGBClassifier        
+from lightgbm import LGBMRegressor, LGBMClassifier         
+from catboost import CatBoostRegressor, CatBoostClassifier     
+
+xgb = XGBClassifier()
+lg = LGBMClassifier()
+cat = CatBoostClassifier(verbose=0)
+
+model = VotingClassifier(estimators=[('XGB', xgb), ('LG', lg), ('CAT', cat)],   #보팅 평가자 모델
+                        #   voting='soft',  #디폴트 'hard'
+
+                          )               
+
+
+#3. 훈련 
+model.fit(x_train, y_train)
+
+#4. 평가
+y_pred = model.predict(x_test)
+print("model.score:", model.score(x_test, y_test))
+print("Voting ACC:", accuracy_score(y_test, y_pred))
+
+classifiers = [xgb, lg, cat]
+for model2 in classifiers :
+    model2.fit(x_train, y_train)
+    y_predict = model2.predict(x_test)
+    score2 = accuracy_score(y_test, y_predict)
+    class_name = model2.__class__.__name__
+    print("{0} 정확도 : {1:.4f}".format(class_name, score2))
+
+
+#ValueError: could not broadcast input array from shape (30,1) into shape (30,)
+
+'''
+#hard
+model.score: 0.9
+Voting ACC: 0.9
+LogisticRegression 정확도 : 0.9333
+KNeighborsClassifier 정확도 : 0.9333
+DecisionTreeClassifier 정확도 : 0.8333
+
+#soft
+model.score: 0.8333333333333334
+Voting ACC: 0.8333333333333334
+LogisticRegression 정확도 : 0.9333
+KNeighborsClassifier 정확도 : 0.9333
+DecisionTreeClassifier 정확도 : 0.8333
+-----------------------------------------------
+#xgb,lgbm,catboost
+(455, 30)
+model.score: 0.9912280701754386
+Voting ACC: 0.9912280701754386
+XGBClassifier 정확도 : 0.9912
+LGBMClassifier 정확도 : 0.9825
+CatBoostClassifier 정확도 : 0.9912
+'''

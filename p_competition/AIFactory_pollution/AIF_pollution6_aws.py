@@ -16,9 +16,9 @@ path = 'd:/study/_data/AIFac_pollution/'
 save_path = './_save/AIFac_pollution/'
 
 train_data = pd.read_csv(path + 'train_all.csv')
-train_awsdata = pd.read_csv(path + 'train_aws_all.csv')
+train_aws = pd.read_csv(path + 'train_aws_all.csv')
 test_data = pd.read_csv(path + 'test_all.csv')
-test_awsdata = pd.read_csv(path + 'test_aws_all.csv')
+test_aws = pd.read_csv(path + 'test_aws_all.csv')
 submission = pd.read_csv(path + 'answer_sample.csv')
 
 # Combine train and test data for preprocessing

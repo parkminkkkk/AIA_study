@@ -8,6 +8,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, make_scorer, log_loss
 from xgboost import XGBClassifier
+from sklearn.preprocessing import PolynomialFeatures
+
 # import lightgbm as lgbm
 
 
@@ -81,13 +83,19 @@ test_x = test.drop(columns=['ID'])
 # 교육 데이터는 교육 및 검증 세트로 분할되고 수치 기능은 StandardScaler를 사용하여 정규화됩니다.
 # 모델은 GridSearchCV와 5겹 교차 검증을 사용하여 수행되는 하이퍼파라미터 튜닝과 함께 XGBClassifier를 사용하여 훈련됩니다.
 # Split the training dataset into a training set and a validation set
-train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.2, random_state=3377, stratify=train_y)
+
+pf = PolynomialFeatures(degree=2)
+train_xpf = pf.fit_transform(train_x)
+
+
+train_x, val_x, train_y, val_y = train_test_split(train_xpf, train_y, test_size=0.2, random_state=3377, stratify=train_y)
 
 # Normalize numerical features
 scaler = MinMaxScaler()
+scaler2 = MinMaxScaler()
 train_x = scaler.fit_transform(train_x)
 val_x = scaler.transform(val_x)
-test_x = scaler.transform(test_x)
+test_x = scaler2.fit_transform(test_x)
 
 # Cross-validation with StratifiedKFold
 cv = StratifiedKFold(n_splits=7, shuffle=True, random_state=1234)
@@ -111,7 +119,7 @@ model = XGBClassifier(random_state=1234,tree_method='gpu_hist', gpu_id=0, predic
 
 
 
-param_grid = {'n_estimators' : [7],#,50,5],
+param_grid = {'n_estimators' : [7, 5, 30],#,50,5],
                'learning_rate': [0.1, 0.2, 0.3, 0.5],#, 1, 0.01, 0.001],
                'max_depth': [None, 2, 5],#, 10, 100],
             #    'gamma': [0,1],#2,3],
@@ -151,6 +159,13 @@ print(f'logloss: {logloss}')
 y_pred = best_model.predict_proba(test_x)
 y_pred = np.round(y_pred, 6)
 submission = pd.DataFrame(data=y_pred, columns=sample_submission.columns, index=sample_submission.index)
-submission.to_csv('./_save/dacon_airplane/xgb_비행기.csv', index=True)
+submission.to_csv('./_save/dacon_airplane/xgb_pfscaler_비행기.csv', index=True)
 
 # print(best_model)
+
+
+
+
+
+
+
