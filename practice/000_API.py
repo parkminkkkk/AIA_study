@@ -28,6 +28,7 @@ from sklearn.model_selection import KFold, cross_val_score, cross_val_predict #�
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.experimental import enable_halving_search_cv
 from sklearn.model_selection import HalvingGridSearchCV, HalvingRandomSearchCV   
+from bayes_opt import BayesianOptimization     #최댓값 찾기
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.feature_extraction.text import CountVectorizer
 #차원축소
