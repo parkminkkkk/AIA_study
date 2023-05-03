@@ -3,7 +3,6 @@
 # pip install hyperopt
 # print(hyperopt.__version__) #0.2.7 // 버전별로 import되는게 조금씩 다름
 import numpy as np
-import pandas as pd
 import hyperopt
 from hyperopt import hp
 
@@ -11,10 +10,15 @@ from hyperopt import hp
 search_space = {
     'x1' : hp.quniform('x1', -10, 10, 1),  #-10부터 10까지 1단위로 찾아라  
     'x2' : hp.quniform('x2', -15, 15, 1)
-           #hp.quniform(label, low, high, q) #hp.quniform : 정규분포에서 q분포로 search를 하겠다
+           #hp.quniform(label, low, high, q) #hp.quniform : q분포로 search를 하겠다 (정수형태일때)
 }
 # print(search_space)
 
+# hp.uniform(label, low, high) : 최소부터 최대까지 정규분포 간격
+# hp.quniform(label, low, high, q) : 최소부터 최대까지 q간격
+# hp.randint(label, upper) : 0부터 최댓값upper(지정)까지 random한 정수값
+# hp.loguniform(label, low, high) : exp(uniform(low, high))값 반환  /이것 또한 정규분포 /  log변환 한것을 다시 지수로 변환한다(exp)
+# *x : 독립변수 (x의 값이 너무 크거나 치우쳐져있는 경우에도 log변환) / y : 종속변수( 주로 y값 log변환) 
 
 #2. 목적함수 정의
 def objective_func(search_space):
@@ -22,10 +26,10 @@ def objective_func(search_space):
     x2 = search_space['x2']
     return_value = x1**2 -20*x2
     
-    return return_value
+    return return_value             #권장리턴방식 : return {'loss':return_value, 'status': STATUS_OK}
 
 #3. 최솟값 찾기
-from hyperopt import fmin, tpe, Trials  
+from hyperopt import fmin, tpe, Trials, STATUS_OK
 #fmin : 최솟값 찾는 함수/ #tpe : 알고리즘 정의 /#Trials : 결과값 저장 (history와 비슷)
 
 trial_val = Trials()
@@ -40,13 +44,47 @@ best = fmin(
 )
 
 print("best:", best)
+# best: {'x1': 0.0, 'x2': 15.0}
 print(trial_val.results)
+# [{'loss': -216.0, 'status': 'ok'},..., {'loss': 0.0, 'status': 'ok'}]
 print(trial_val.vals)
+# {'x1': [-2.0, -5.0, 7.0, 10.0, 10.0, 5.0, 7.0, -2.0, -7.0, 7.0, 4.0, -7.0, -8.0, 9.0, -7.0, 0.0, -0.0, 4.0, 3.0, -0.0], 
+# 'x2': [11.0, 10.0, -4.0, -5.0, -7.0, 4.0, -8.0, 9.0, 3.0, 5.0, -6.0, 5.0, -5.0, -12.0, 0.0, 15.0, -8.0, 7.0, 1.0, 0.0]}
 
-#[실습]trial_val.vals를 pd.DataFrame에 넣기
-df_trial = pd.DataFrame(trial_val.vals, columns = ['x1', 'x2'])
-print(df_trial)
 
+#####[실습]trial_val.vals를 pd.DataFrame에 넣기#############
+# df_trial = pd.DataFrame(trial_val.vals, columns = ['x1', 'x2'])
+# print(df_trial)
+
+#####[yys]trial_val.vals를 pd.DataFrame에 넣기#############
+import pandas as pd
+# 동일 코드
+# for aaa in trial_val.results:
+#     losses.append(aaa['loss'])
+
+results = [aaa['loss'] for aaa in trial_val.results]   #trial_val.results의 값을 aaa반복해라 / aaa의 ['loss']만 반복해라 
+
+df = pd.DataFrame({'x1': trial_val.vals['x1'],
+                   'x2': trial_val.vals['x2'],
+                   'results': results})
+print(df)
+'''
+      x1    x2  results
+0   -2.0  11.0   -216.0
+1   -5.0  10.0   -175.0
+2    7.0  -4.0    129.0
+3   10.0  -5.0    200.0
+...
+13   9.0 -12.0    321.0
+14  -7.0   0.0     49.0
+15   0.0  15.0   -300.0  ***best***
+16  -0.0  -8.0    160.0
+17   4.0   7.0   -124.0
+18   3.0   1.0    -11.0
+19  -0.0   0.0      0.0
+'''
+
+#====================================================================#
 ###best###
 #seed = 37
 #max_evals=10 : best: {'x1': 5.0, 'x2': 8.0}
@@ -77,6 +115,7 @@ print(df_trial)
 {'x1': [-2.0, -5.0, 7.0, 10.0, 10.0, 5.0, 7.0, -2.0, -7.0, 7.0, 4.0, -7.0, -8.0, 9.0, -7.0, 0.0, -0.0, 4.0, 3.0, -0.0], 
 'x2': [11.0, 10.0, -4.0, -5.0, -7.0, 4.0, -8.0, 9.0, 3.0, 5.0, -6.0, 5.0, -5.0, -12.0, 0.0, 15.0, -8.0, 7.0, 1.0, 0.0]}
 '''
+
 ###df_trial###
 '''
       x1    x2
