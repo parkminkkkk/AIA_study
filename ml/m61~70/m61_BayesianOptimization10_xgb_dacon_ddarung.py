@@ -18,8 +18,18 @@ warnings.filterwarnings('ignore')
 # *UserWarning: 'early_stopping_rounds' argument is deprecated and will be removed in a future release of LightGBM. 
 # Pass 'early_stopping()' callback via 'callbacks' argument instead.
 
-#1. 데이터 
-x, y = load_diabetes(return_X_y=True)
+#1. 데이터
+path = 'd:/study/_data/dacon_ddarung/'
+path_save = './_save/dacon_ddarung/'
+train_csv = pd.read_csv(path + 'train.csv', index_col=0)
+test_csv = pd.read_csv(path + 'test.csv', index_col=0)
+
+###결측치제거### 
+train_csv = train_csv.dropna() 
+
+###데이터분리(train_set)###
+x = train_csv.drop(['count'], axis=1)
+y = train_csv['count']
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, random_state=337, train_size=0.8

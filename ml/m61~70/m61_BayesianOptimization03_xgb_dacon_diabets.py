@@ -73,7 +73,7 @@ def lgbm_hamsu(learning_rate, max_depth, gamma,min_child_weight,subsample,colsam
     model = XGBClassifier(**params)
     model.fit(x_train, y_train,
               eval_set=[(x_train, y_train), (x_test, y_test)],
-              eval_metric='merror',
+              eval_metric='error',
               verbose=0,
               early_stopping_rounds=50
               )
@@ -98,7 +98,8 @@ print(lgbm_bo.max)
 print(n_iter, "번 걸린시간:", end_time-start_time)
 
 '''
-
+{'target': 0.816793893129771, 'params': {'colsample_bylevel': 0.0, 'colsample_bynode': 0.0, 'colsample_bytree': 1.0, 'gamma': 0.0, 'learning_rate': 1.0, 'max_depth': 8.058767090752786, 'min_child_weight': 15.090604099030983, 'reg_alpha': 0.01, 'reg_lambda': -0.001, 'subsample': 1.0}}
+100 번 걸린시간: 57.69915556907654
 '''
 
 

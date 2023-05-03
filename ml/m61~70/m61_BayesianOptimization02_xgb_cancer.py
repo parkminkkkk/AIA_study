@@ -91,7 +91,8 @@ print(lgbm_bo.max)
 print(n_iter, "번 걸린시간:", end_time-start_time)
 
 '''
-
+{'target': 0.956140350877193, 'params': {'colsample_bylevel': 0.0, 'colsample_bynode': 0.0, 'colsample_bytree': 0.5, 'gamma': 0.0, 'learning_rate': 0.01, 'max_depth': 6.619805816702983, 'min_child_weight': 1.0, 'reg_alpha': 5.748494685639255, 'reg_lambda': 10.0, 'subsample': 1.0}}
+100 번 걸린시간: 57.9503116607666
 '''
 
 

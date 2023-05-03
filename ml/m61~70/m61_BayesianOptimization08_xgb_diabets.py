@@ -10,7 +10,7 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 from xgboost import XGBClassifier, XGBRegressor
 from lightgbm import LGBMRegressor
 from bayes_opt import BayesianOptimization
-from sklearn.metrics import r2_score
+from sklearn.metrics import r2_score, mean_squared_error
 import time
 import warnings
 warnings.filterwarnings('ignore')
@@ -71,9 +71,10 @@ def lgbm_hamsu(learning_rate, max_depth, gamma,min_child_weight,subsample,colsam
               early_stopping_rounds=50
               )
     y_predict = model.predict(x_test)
-    results = r2_score(y_test, y_predict)
-    return results
-
+    RMSE = -1*np.sqrt(mean_squared_error(y_test, y_predict))
+    return RMSE
+    # results = r2_score(y_test, y_predict)
+    # return results
 
 #BayesianOptimization 정의
 lgbm_bo = BayesianOptimization(f = lgbm_hamsu, 
@@ -91,8 +92,13 @@ print(lgbm_bo.max)
 print(n_iter, "번 걸린시간:", end_time-start_time)
 
 '''
+#R2
 {'target': 0.5404238485690576, 'params': {'colsample_bylevel': 0.16409096185873373, 'colsample_bynode': 0.8733710282845721, 'colsample_bytree': 0.7421694414367045, 'gamma': 3.5141961593936912, 'learning_rate': 0.8062091674852756, 'max_depth': 9.052343280922972, 'min_child_weight': 13.448838103781368, 'reg_alpha': 25.382313459360017, 'reg_lambda': 8.594736982644713, 'subsample': 0.7049012629653089}}
 100 번 걸린시간: 14.439294576644897
+
+#RMSE
+{'target': -48.918987982266636, 'params': {'colsample_bylevel': 0.16409096185873373, 'colsample_bynode': 0.8733710282845721, 'colsample_bytree': 0.7421694414367045, 'gamma': 3.5141961593936912, 'learning_rate': 0.8062091674852756, 'max_depth': 9.052343280922972, 'min_child_weight': 13.448838103781368, 'reg_alpha': 25.382313459360017, 'reg_lambda': 8.594736982644713, 'subsample': 0.7049012629653089}}
+100 번 걸린시간: 14.859205722808838
 '''
 
 
