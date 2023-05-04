@@ -17,7 +17,39 @@ warnings.filterwarnings('ignore')
 # Pass 'early_stopping()' callback via 'callbacks' argument instead.
 
 #1. 데이터 
-x, y = load_iris(return_X_y=True)
+path = './_data/dacon_wine/'
+path_save = './_save/dacon_wine/'
+
+train_csv = pd.read_csv(path + 'train.csv', index_col=0)
+print(train_csv) #[5497 rows x 13 columns]
+print(train_csv.shape) #(5497,13)
+ 
+test_csv = pd.read_csv(path + 'test.csv', index_col=0)
+print(test_csv) #[1000 rows x 12 columns] / quality 제외 (1열)
+
+#labelencoding
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+le.fit(train_csv['type'])
+aaa = le.transform(train_csv['type'])
+print(aaa)   #[1 0 1 ... 1 1 1]
+print(type(aaa))  #<class 'numpy.ndarray'>
+print(aaa.shape)
+print(np.unique(aaa, return_counts=True))
+
+train_csv['type'] = aaa
+print(train_csv)
+test_csv['type'] = le.transform(test_csv['type'])
+
+print(le.transform(['red', 'white'])) #[0 1]
+
+
+#1-1 결측치 제거 
+# print(train_csv.isnull().sum()) #결측치없음 
+
+x = train_csv.drop(['quality'], axis=1)
+# print(x.shape)                       #(5497, 12)
+y = train_csv['quality']
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, random_state=337, train_size=0.8

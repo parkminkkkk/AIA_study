@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.datasets import load_breast_cancer, load_diabetes, load_iris
+from sklearn.datasets import load_breast_cancer, load_diabetes, load_iris, fetch_california_housing
 from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
@@ -17,7 +17,7 @@ warnings.filterwarnings('ignore')
 # Pass 'early_stopping()' callback via 'callbacks' argument instead.
 
 #1. 데이터 
-x, y = load_diabetes(return_X_y=True)
+x, y = fetch_california_housing(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, random_state=337, train_size=0.8

@@ -17,7 +17,7 @@ warnings.filterwarnings('ignore')
 # Pass 'early_stopping()' callback via 'callbacks' argument instead.
 
 #1. 데이터 
-x, y = load_iris(return_X_y=True)
+x, y = load_breast_cancer(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, random_state=337, train_size=0.8
@@ -108,3 +108,13 @@ print("최소 행",'\n' , min_row)
 ### results칼럼에 최솟값이 있는 행에서 results만 출력 ###
 min_results = df.loc[df['results'] == df['results'].min(), 'results']
 print(min_results.values)  
+
+'''
+최소 행
+     learning_rate  depth  l2_leaf_reg  bagging_temperature  random_strength  one_hot_max_size  min_data_in_leaf   results
+18       0.672632    6.0    26.520557             0.749736         0.767545              50.0              96.0 -0.973684
+26       0.871116    7.0    25.408503             0.953265         0.790288              55.0              94.0 -0.973684
+30       0.695840   11.0    27.750519             0.657177         0.945654              40.0              40.0 -0.973684
+31       0.888559   11.0    27.667148             0.643915         0.968370              37.0              40.0 -0.973684
+[-0.97368421 -0.97368421 -0.97368421 -0.97368421]
+'''

@@ -119,3 +119,9 @@ min_results = df.loc[df['results'] == df['results'].min(), 'results']
 print(min_results.values)  
 
 
+'''
+최소 행
+     learning_rate  depth  l2_leaf_reg  bagging_temperature  random_strength  one_hot_max_size  min_data_in_leaf  results
+42       0.095923   10.0    15.839931             0.684168         0.931246              61.0             138.0     -1.0
+[-1.]
+'''

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.datasets import load_breast_cancer, load_diabetes, load_iris
+from sklearn.datasets import load_breast_cancer, load_diabetes, load_iris, load_wine
 from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
@@ -17,7 +17,7 @@ warnings.filterwarnings('ignore')
 # Pass 'early_stopping()' callback via 'callbacks' argument instead.
 
 #1. 데이터 
-x, y = load_iris(return_X_y=True)
+x, y = load_wine(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, random_state=337, train_size=0.8
@@ -56,7 +56,6 @@ def cat_hamsu(search_space):
         'min_data_in_leaf' : int(search_space['min_data_in_leaf']),
         'task_type' : 'CPU',
         'logging_level' : 'Silent',
-        
     }
 
     model = CatBoostClassifier(**params)
@@ -108,3 +107,11 @@ print("최소 행",'\n' , min_row)
 ### results칼럼에 최솟값이 있는 행에서 results만 출력 ###
 min_results = df.loc[df['results'] == df['results'].min(), 'results']
 print(min_results.values)  
+
+
+'''
+최소 행
+     learning_rate  depth  l2_leaf_reg  bagging_temperature  random_strength  one_hot_max_size  min_data_in_leaf  results
+45       0.942443    3.0     9.436237             0.860235         0.953114              26.0             194.0     -1.0
+[-1.]
+'''

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.datasets import load_breast_cancer, load_diabetes, load_iris
+from sklearn.datasets import load_breast_cancer, load_diabetes, load_iris, load_digits
 from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
@@ -17,7 +17,7 @@ warnings.filterwarnings('ignore')
 # Pass 'early_stopping()' callback via 'callbacks' argument instead.
 
 #1. 데이터 
-x, y = load_iris(return_X_y=True)
+x, y = load_digits(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, random_state=337, train_size=0.8
@@ -108,3 +108,10 @@ print("최소 행",'\n' , min_row)
 ### results칼럼에 최솟값이 있는 행에서 results만 출력 ###
 min_results = df.loc[df['results'] == df['results'].min(), 'results']
 print(min_results.values)  
+
+'''
+최소 행 
+     learning_rate  depth  l2_leaf_reg  bagging_temperature  random_strength  one_hot_max_size  min_data_in_leaf   results
+19       0.528163   14.0    20.170177             0.789974         0.754167              43.0              64.0 -0.944444
+[-0.94444444]
+'''

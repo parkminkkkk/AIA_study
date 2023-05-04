@@ -17,7 +17,13 @@ warnings.filterwarnings('ignore')
 # Pass 'early_stopping()' callback via 'callbacks' argument instead.
 
 #1. 데이터 
-x, y = load_iris(return_X_y=True)
+path = 'd:/study/_data/dacon_diabetes/'
+path_save = './_save/dacon_diabetes/'
+
+train_csv= pd.read_csv(path+'train.csv', index_col=0)
+test_csv= pd.read_csv(path+'test.csv', index_col=0)
+x = train_csv.drop(['Outcome'], axis=1)
+y = train_csv['Outcome']
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, random_state=337, train_size=0.8
@@ -109,3 +115,12 @@ print("최소 행",'\n' , min_row)
 ### results칼럼에 최솟값이 있는 행에서 results만 출력 ###
 min_results = df.loc[df['results'] == df['results'].min(), 'results']
 print(min_results.values)  
+
+'''
+최소 행
+     learning_rate  depth  l2_leaf_reg  bagging_temperature  random_strength  one_hot_max_size  min_data_in_leaf   results
+21       0.045901    6.0    22.881620             0.643974         0.943422              48.0              54.0 -0.793893
+23       0.051862    5.0    29.829355             0.587386         0.720404              48.0              82.0 -0.793893
+24       0.014471    4.0    29.562892             0.591168         0.732889              48.0              78.0 -0.793893
+[-0.79389313 -0.79389313 -0.79389313]
+'''

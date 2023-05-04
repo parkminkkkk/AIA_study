@@ -16,8 +16,20 @@ warnings.filterwarnings('ignore')
 # *UserWarning: 'early_stopping_rounds' argument is deprecated and will be removed in a future release of LightGBM. 
 # Pass 'early_stopping()' callback via 'callbacks' argument instead.
 
-#1. 데이터 
-x, y = load_diabetes(return_X_y=True)
+#1. 데이터
+path = 'd:/study/_data/kaggle_bike/'
+path_save = './_save/kaggle_bike/'
+
+train_csv = pd.read_csv(path + 'train.csv', index_col=0)
+test_csv = pd.read_csv(path + 'test.csv', index_col=0)
+
+###결측치제거### 
+# print(train_csv.isnull().sum()) 
+#결측치 없음
+
+###데이터분리(train_set)###
+x = train_csv.drop(['casual', 'registered', 'count'], axis=1)
+y = train_csv['count']
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, random_state=337, train_size=0.8
@@ -112,7 +124,7 @@ print(min_results.values)
 
 '''
 최소 행
-     learning_rate  depth  l2_leaf_reg  bagging_temperature  random_strength  one_hot_max_size  min_data_in_leaf      results
-35       0.403947    5.0    25.062506             0.554991         0.875381              61.0              10.0  2637.022749
-[2637.02274913]
+     learning_rate  depth  l2_leaf_reg  bagging_temperature  random_strength  one_hot_max_size  min_data_in_leaf       results
+43       0.567475   13.0    11.353208             0.505973         0.659627              62.0              34.0  21754.681867
+[21754.68186734]
 '''

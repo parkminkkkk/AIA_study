@@ -74,6 +74,8 @@ scaler = MaxAbsScaler()
 x = pd.DataFrame(scaler.fit_transform(x))
 test_csv = pd.DataFrame(scaler.transform(test_csv))
 
+
+
 for i in range(10000):
     kf = KFold(n_splits=5, shuffle=True, random_state=i)
 

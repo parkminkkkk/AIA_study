@@ -38,6 +38,7 @@ Index(['hour', 'hour_bef_temperature', 'hour_bef_precipitation',
 # print(train_csv.shape)  #(1328, 10)
 
 ###결측치처리###
+from sklearn.impute import IterativeImputer
 imputer = IterativeImputer(estimator=XGBRegressor())
 train_csv = imputer.fit_transform(train_csv)
 test_csv = imputer.fit_transform(test_csv)

@@ -16,6 +16,7 @@ from nltk.tokenize import word_tokenize
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 from sklearn.preprocessing import PowerTransformer
+from sklearn.preprocessing import QuantileTransformer    #standard+MinMaxScaler
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import PolynomialFeatures
 from tensorflow.keras.utils import to_categorical
@@ -33,6 +34,8 @@ from sklearn.model_selection import HalvingGridSearchCV, HalvingRandomSearchCV
 from bayes_opt import BayesianOptimization     #최댓값 찾기
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.feature_extraction.text import CountVectorizer
+#불균형데이터 처리(증폭)
+from imblearn.over_sampling import SMOTE 
 #차원축소
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis #LDA
@@ -44,6 +47,9 @@ from sklearn.impute import KNNImputer    #최근접이웃값 대체
 from impyute.imputation.cs import mice   #pd=>numpy로 변경 (mice에서는 numpy형태로 넣어주기)
 #이상치 확인
 from sklearn.covariance import EllipticEnvelope
+
+#상관관계 확인
+from statsmodels.stats.outliers_influence import variance_inflation_factor  #통계적 기법에서 사용
 
 
 # ML model
