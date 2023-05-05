@@ -53,20 +53,19 @@ closest_places = {
 # aws의 지점과 train/test의 측정소와 이름을 같게한다.
 train_aws = train_aws.rename(columns={"지점": "측정소"})
 test_aws = test_aws.rename(columns={"지점": "측정소"})
-print(train_aws)
 
 # train과 train_aws 데이터셋을 지점(station)을 기준으로 merge
-merged_train = pd.merge(train, train_aws, on=['연도', '일시'], how='outer', axis =1)
+merged_train = pd.merge(train, train_aws, on=['연도', '일시'], how='outer')
 print(merged_train.head())   #[70128 rows x 9 columns]
-print(merged_train.columns)
+# print(merged_train.columns)
 # print(merged_train.isnull().sum())
-'''                    
+'''
 ['연도', '일시', '측정소_x', 'PM2.5', '측정소_y', '기온(°C)', '풍향(deg)', '풍속(m/s)','강수량(mm)', '습도(%)']
 '''
 # test와 test_aws와 merge
-merged_test = pd.merge(test, test_aws, on=['연도', '일시'], how='outer', axis =1)  #outer : nan값 포함// inner : nan값 제거
-print(merged_test.head())   
-print(merged_test.columns)
+merged_test = pd.merge(test, test_aws, on=['연도', '일시'], how='outer')  #outer : nan값 포함// inner : nan값 제거
+# print(merged_test.head())   
+# print(merged_test.columns)
 # print(merged_test.isnull().sum())
 '''
 ['연도', '일시', '측정소_x', 'PM2.5', '측정소_y', '기온(°C)', '풍향(deg)', '풍속(m/s)','강수량(mm)', '습도(%)']
@@ -77,20 +76,12 @@ print(merged_test.columns)
 # print(merged_test.columns)
 ##############################################################################################################################################################
 
-# train_aws['측정소'] = train['측정소']
+merged_train['측정소'] = merged_train['측정소_x']
 for k, v in closest_places.items():
-    mask = (train_aws['측정소'] == k) & (train['측정소'].isin(v))
-    train.loc[mask, '측정소'] = k
-
-# print(merged_train.info()) 
-print(merged_train.head())   
-print(merged_test.head()) 
-print(train) 
-print(train_aws)
-
-
-# train_aws.drop(['측정소_y', '측정소_x'], axis=1, inplace=True)
-# train_aws.rename(columns={'측정소_x': '측정소'}, inplace=True)
+    mask = (merged_train['측정소_y'] == k) & (merged_train['측정소_x'].isin(v))
+    merged_train.loc[mask, '측정소'] = k
+merged_train.drop(['측정소_y', '측정소_x'], axis=1, inplace=True)
+merged_train.rename(columns={'측정소_x': '측정소'}, inplace=True)
 
 merged_test['측정소'] = merged_test['측정소_x']
 for k, v in closest_places.items():
@@ -181,6 +172,25 @@ train_data = train_data.dropna()
  4   hour      580546 non-null  int8
 dtypes: float64(1), int32(1), int64(1), int8(2)
 '''
+############################# 결측치 처리 #########################################
+imputer = IterativeImputer(estimator=XGBRegressor(
+        n_jobs = -1,                        
+        tree_method='gpu_hist',
+        predictor='gpu_predictor',
+        gpu_id=0,
+    )) 
+
+train_data = imputer.fit_transform(train_data)
+test_data = imputer.transform(test_data)
+print('test_all_dataset : ',test_data)
+print('train_all_dataset : ',train_data)
+data_col = ['PM2.5', '연도', '기온(°C)', '풍향(deg)', '풍속(m/s)', '강수량(mm)', '습도(%)',
+       'month', 'day', 'hour', 'locate']
+train_all_dataset = pd.DataFrame(train_data,columns=data_col)
+test_all_dataset= pd.DataFrame(test_data,columns=data_col)
+
+
+
 #############################################5. 파생피처(중요) ###########################################################
 #주말, 공휴일 등 만들 수 있음 (여러가지 조합으로 생성하는 파생피처) : 피처엔지니어링 작업에서 굉장히 중요함
 #계절(봄/여름/가을/겨울) 시즌을 만들어서 피처 하나 만들어 줄 수 있음. (여름<겨울 : 미세먼지 더 많으므로)
@@ -250,7 +260,6 @@ print("r2.score:", r2)
 mae = mean_absolute_error(y_test, y_predict)
 print("mae.score:", mae)
 
-
 #############################################5. 제출용 x_submit ###########################################################
 
 # true_test 모으기 
@@ -266,7 +275,7 @@ print('true_test.head(200) : ',true_test.head(200))
 print('true_test.shape : ',true_test.shape) # (78264, 11)
 print('len(true_test) : ',len(true_test)) # 78264
 
-############ 제출파일 만들기################################################################################################
+############ 제출파일 만들기########################
 true_test = true_test.drop(['PM2.5'],axis=1).copy()
 
 
@@ -288,5 +297,4 @@ date = date.strftime("%m%d_%H%M")
 
 path_save = './_save/AIFac_pollution/'
 submission.to_csv(path_save + date+ ' mae_aws_' + str(round(mae, 3)) + '.csv', index = None) # 파일생성
-
 
