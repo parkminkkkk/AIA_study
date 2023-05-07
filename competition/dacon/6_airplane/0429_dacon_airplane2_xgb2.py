@@ -69,7 +69,7 @@ pf = PolynomialFeatures(degree=2)
 train_x = pf.fit_transform(train_x)
 
 # Split the training dataset into a training set and a validation set
-train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.2, random_state=42)
+train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.2, random_state=52)
 
 # Normalize numerical features
 scaler = MinMaxScaler()
@@ -120,5 +120,5 @@ print(f'logloss: {logloss}')
 
 y_pred = best_model.predict_proba(test_x)
 submission = pd.DataFrame(data=y_pred, columns=sample_submission.columns, index=sample_submission.index)
-submission.to_csv('./_save/dacon_airplane/xgbs__.비행기.csv', index=True)
+submission.to_csv('./_save/dacon_airplane/xgbs52__.비행기.csv', float_format='%.3f', index=True)
 # submission.to_csv('c:/study/_save/dacon_airplane/1708submission.csv', float_format='%.3f')
