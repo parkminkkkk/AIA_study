@@ -25,7 +25,6 @@ train = pd.read_parquet('./train.parquet')
 test = pd.read_parquet('./test.parquet')
 sample_submission = pd.read_csv('d:/study/_data/dacon_airplane/sample_submission.csv', index_col = 0)
 
-
 #print(train)
 # Replace variables with missing values except for the label (Delay) with the most frequent values of the training data
 NaN = ['Origin_State', 'Destination_State', 'Airline', 'Estimated_Departure_Time', 'Estimated_Arrival_Time', 'Carrier_Code(IATA)', 'Carrier_ID(DOT)']
@@ -52,10 +51,26 @@ for i in qual_col:
     test[i] = le.transform(test[i])
 print('Done.')
 
-# Remove unlabeled data
-train = train.np.nan
+train.fillna(value=np.nan, inplace=True)
+train = np.array(train)
+
+value = train
+try:
+    float_value = float(value)
+except ValueError:
+    print(f"Error: {value} is not a valid float")
+
 imputer = IterativeImputer(estimator=XGBRegressor())
 train = imputer.fit_transform(train)
+
+train = pd.DataFrame(train)
+
+train.columns = ['ID', 'Month', 'Day_of_Month', 'Estimated_Departure_Time',
+       'Estimated_Arrival_Time', 'Cancelled', 'Diverted', 'Origin_Airport',
+       'Origin_Airport_ID', 'Origin_State', 'Destination_Airport',
+       'Destination_Airport_ID', 'Destination_State', 'Distance', 'Airline',
+       'Carrier_Code(IATA)', 'Carrier_ID(DOT)', 'Tail_Number', 'Delay']
+
 
 column4 = {}
 for i, column in enumerate(sample_submission.columns):
