@@ -69,7 +69,7 @@ test_x = test.drop(columns=['ID'])
 pf = PolynomialFeatures(degree=2)
 train_x = pf.fit_transform(train_x)
 
-for r in range(330, 400):
+for r in range(360, 400):
     # Split the training dataset into a training set and a validation set
     train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.2, random_state=r)
 
