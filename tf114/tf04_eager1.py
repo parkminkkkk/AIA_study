@@ -24,3 +24,8 @@ print(aaa)                     #텐서플로2 즉시실행
 
 
 
+# print(tf.executing_eagerly())
+# tf.compat.v1.disable_eager_execution()
+# tf.compat.v1.enable_eager_execution()      
+# sess = tf.compat.v1.Session() 
+# print(sess.run(aaa))

@@ -1,6 +1,8 @@
 # tf1 : sess.run부분을 추가해줘야함 (세션 생성한 후 run에서 aaa를 집어넣어줘야 hello world 출력됨)
 # sess.run : 그래프 연산 방식(tf1)
 ## 'tensorflow mechanics' 이미지 참고
+# 텐서1의 기본모드 = 그래프 방식**// 텐서2의 기본모드 = 즉시 실행
+
 
 import tensorflow as tf
 print(tf.__version__)
