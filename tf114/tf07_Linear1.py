@@ -28,6 +28,7 @@ train = optimizer.minimize(loss)
 sess = tf.compat.v1.Session()
 sess.run(tf.global_variables_initializer())  #sess명시 후 변수 초기화하고 시작하기!**
 
+# model.fit
 epochs = 2001
 for step in range(epochs):
     sess.run(train)
