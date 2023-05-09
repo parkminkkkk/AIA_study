@@ -1,3 +1,9 @@
+import numpy as np
+import pandas as pd
+from keras.models import Sequential
+from keras.layers import Dense, LSTM, Dropout
+from sklearn.preprocessing import MinMaxScaler
+
 import pandas as pd
 import numpy as np
 import glob
@@ -7,56 +13,95 @@ from xgboost import XGBRegressor
 from sklearn.metrics import mean_absolute_error, r2_score
 import time
 
-#// \\ / \ 모두 동일함 
-#\n : 줄바꿈 , \a : 띄어쓰기 , \t: tab 등 예약어로 인식함(노란색으로 색바뀜) : 따라서 경로에서 하위디렉토리 명시할때에는 \\ 두개로 사용
 
-# Load the data
+# 데이터 불러오기
 path = 'D:/study/_data/AIFac_pollution/'   
-save_path = './_save/AIFac_pollution/'
+save_path= './_save/AIFac_pollution/'
 
-# train_data = pd.read_csv(path + 'TRAIN.csv', index_col=0)
-# train_awsdata = pd.read_csv(path + 'TRAIN_AWS.csv')
-# test_data = pd.read_csv(path + 'TEST_INPUT.csv')
-# test_awsdata = pd.read_csv(path + 'TEST_AWS.csv')
-# meta_data = pd.read_csv(path + 'META.csv')
-# submission = pd.read_csv(path + 'answer_sample.csv')
+train = pd.read_csv('d:/study/_data/AIFac_pollution/train_all.csv')  # PM2.5 파일
+train_aws = pd.read_csv('d:/study/_data/AIFac_pollution/train_aws_all.csv')  # AWS 파일
+test = pd.read_csv('d:/study/_data/AIFac_pollution/test_all.csv')  # PM2.5 파일
+test_aws = pd.read_csv('d:/study/_data/AIFac_pollution/test_aws_all.csv')  # AWS 파일
+meta = pd.read_csv('d:/study/_data/AIFac_pollution/meta_all.csv') # meta 파일
+submission = pd.read_csv('d:/study/_data/AIFac_pollution/answer_sample.csv')
 
-train_files = glob.glob(path + "TRAIN/*.csv") #이 폴더 안에 있는 모든 데이터를 가져와서 텍스트화 시켜줌
-# print(train_files)
-test_files = glob.glob(path + "test_input/*.csv") #경로에서는 대소문자 상관x
-# print(test_files) #리스트형태 -> for문 
+# 가장 가까운 위치 구하기
+closest_places = {
+    '아름동': ['세종금남', '세종고운', '세종연서'],
+    '신흥동': ['세종고운', '세종전의', '세종연서'],
+    '노은동': ['오월드', '세종금남', '계룡'],
+    '문창동': ['오월드', '세천', '장동'],
+    '읍내동': ['오월드', '세천', '장동'],
+    '정림동': ['오월드', '세천', '계룡'],
+    '공주': ['세종금남', '정안', '공주'],
+    '논산': ['계룡', '양화', '논산'],
+    '대천2동': ['춘장대', '대천항', '청양'],
+    '독곶리': ['안도', '당진', '대산'],
+    '동문동': ['홍북', '태안', '당진'],
+    '모종동': ['아산', '성거', '예산'],
+    '신방동': ['성거', '세종전의', '아산'],
+    '예산군': ['유구', '예산', '아산'],
+    '이원면': ['대산', '태안', '안도'],
+    '홍성읍': ['홍성죽도', '홍북', '예산'],
+    '성성동': ['성거', '세종전의', '아산']}
 
-########################################1. 데이터 파일 합치기#################################################
-###train files###
-dflist = []
-for filename in train_files:
-    df = pd.read_csv(filename, index_col=None, header=0, #인덱스 칼럼 없으니까 None, 헤더는 0번째 칼럼
-                     encoding='utf-8-sig') 
-    dflist.append(df)
-# print(dflist)       #[35064 rows x 4 columns] X17개 
-# print(len(dflist))  #17 : list형태로 묶여진 것일 뿐 데이터프레임 형태로 된 것은 아님 -> concat 해줘야함
-train_data = pd.concat(dflist, axis=0, ignore_index=True) #행단위로 합침 #리스트로 합치면서 index가 동일해졌으므로 무시하고 새로운 index생성해줌
-# print(train_data)   #[596088 rows x 4 columns]
-#--------------------------------------------------------------------------------------------------------------------------------------------#
-###test files###
-dflist = []
-for filename in test_files:
-    df = pd.read_csv(filename, index_col=None, header=0, #인덱스 칼럼 없으니까 None, 헤더는 0번째 칼럼
-                     encoding='utf-8-sig') 
-    dflist.append(df)
-# print(dflist)       #[7728 rows x 4 columns] X17개 
-# print(len(dflist))  #17 : list형태로 묶여진 것일 뿐 데이터프레임 형태로 된 것은 아님 -> concat 해줘야함
-test_data = pd.concat(dflist, axis=0, ignore_index=True) #행단위로 합침 #리스트로 합치면서 index가 동일해졌으므로 무시하고 새로운 index생성해줌
-# print(test_data)   #[131376 rows x 4 columns]
+# print(train.shape)     #(596088, 4)
+# print(train_aws.shape) #(1051920, 8)
+# print(test.shape)      #(131376, 4)    #연도,일시,측정소,PM2.5
+# print(test_aws.shape)  #(231840, 8)    #연도,일시,지점,기온(°C),풍향(deg),풍속(m/s),강수량(mm),습도(%)
+
+# aws의 지점과 train/test의 측정소와 이름을 같게한다.
+train_aws = train_aws.rename(columns={"지점": "측정소"})
+test_aws = test_aws.rename(columns={"지점": "측정소"})
+
+# train과 train_aws 데이터셋을 지점(station)을 기준으로 merge
+merged_train = pd.merge(train, train_aws, on=['연도', '일시'], how='outer')
+# print(merged_train.head())   #[70128 rows x 9 columns]
+# print(merged_train.columns)
+# print(merged_train.isnull().sum())
+'''
+['연도', '일시', '측정소_x', 'PM2.5', '측정소_y', '기온(°C)', '풍향(deg)', '풍속(m/s)','강수량(mm)', '습도(%)']
+'''
+# test와 test_aws와 merge
+merged_test = pd.merge(test, test_aws, on=['연도', '일시'], how='outer')  #outer : nan값 포함// inner : nan값 제거
+print(merged_test.head())   
+print(merged_test.columns)
+print(merged_test.isnull().sum())
+'''
+['연도', '일시', '측정소_x', 'PM2.5', '측정소_y', '기온(°C)', '풍향(deg)', '풍속(m/s)','강수량(mm)', '습도(%)']
+'''
+# merged_train = merged_train.drop(['측정소_y'], axis=1)
+# merged_test = merged_test.drop(['측정소_y'], axis=1)
+# print(merged_train.columns)
+# print(merged_test.columns)
+##############################################################################################################################################################
+
+merged_train['측정소'] = merged_train['측정소_y']
+for k, v in closest_places.items():
+    mask = (merged_train['측정소_x'] == k) & (merged_train['측정소_y'].isin(v))
+    merged_train.loc[mask, '측정소'] = k
+merged_train.drop('측정소_y', axis=1, inplace=True)
+merged_train.rename(columns={'측정소_x': '측정소'}, inplace=True)
+
+print(merged_train.info())   
+print(merged_train.head()) 
 
 #######################################2. 측정소 위치 라벨인코더 #################################################
 le = LabelEncoder()
-train_data['location'] = le.fit_transform(train_data['측정소'])   #copy개념으로 새로운 공간(location)에 le만들어줌  (바로 (측정소)해줘도 되긴 함..)
-test_data['location'] = le.transform(test_data['측정소'])         #데이터의 위치나 개수에 따라서 바뀔 수 있기때문에, train의 fit한거에 맞춰서 test transform해줘야함**
+merged_train['location'] = le.fit_transform(merged_train['측정소_x'])   #copy개념으로 새로운 공간(location)에 le만들어줌  (바로 (측정소)해줘도 되긴 함..)
+merged_test['location'] = le.transform(merged_test['측정소_x'])         #데이터의 위치나 개수에 따라서 바뀔 수 있기때문에, train의 fit한거에 맞춰서 test transform해줘야함**
 # print(train_data) #[596088 rows x 5 columns]
 # print(test_data)  #[131376 rows x 5 columns]
-train_data = train_data.drop(['측정소'], axis=1)
-test_data = test_data.drop(['측정소'], axis=1)
+train_data = merged_train.drop(['측정소_x'], axis=1)
+test_data = merged_test.drop(['측정소_x'], axis=1)
+
+print(train_data.info())   
+print(train_data.head())   
+
+
+train_data['location'] = pd.to_numeric(train_data['location']).astype('int8')
+train_data['location'] = pd.to_numeric(train_data['location']).astype('int8')
+
 # print(train_data) #[596088 rows x 4 columns]
 # print(test_data)  #[131376 rows x 4 columns]
 
@@ -153,9 +198,9 @@ x_train, x_test, y_train, y_test = train_test_split(
 ## 월, 시간데이터 : 주기함수에다 넣어서 수정(sin,cos함수...)
 #한쪽으로 치우친 데이터 : log변환.. 
 
-parameters = {'n_estimators' : 200,
+parameters = {'n_estimators' : 20,
               'learning_rate' : 0.08,
-              'max_depth': 10,
+              'max_depth': 3,
               'gamma': 0,
               'min_child_weight': 1,
               'subsample': 1,
@@ -175,7 +220,7 @@ model = XGBRegressor()
 #3. 컴파일, 훈련 
 model.set_params(**parameters,                   #컴파일과 비슷하다고 생각
                  eval_metric = 'mae', 
-                 early_stopping_rounds = 30,
+                 early_stopping_rounds = 20,
                  ) 
 
 start = time.time()
@@ -212,12 +257,6 @@ date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
 path_save = './_save/AIFac_pollution/'
-submission.to_csv(path_save + date+ ' mae_' + str(round(mae, 3)) + '.csv', index = None) # 파일생성
-
-
-
-
-
-
+submission.to_csv(path_save + date+ ' mae_aws_' + str(round(mae, 3)) + '.csv', index = None) # 파일생성
 
 
