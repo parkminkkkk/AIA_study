@@ -25,46 +25,41 @@ test_aws = pd.read_csv('d:/study/_data/AIFac_pollution/test_aws_all.csv')  # AWS
 meta = pd.read_csv('d:/study/_data/AIFac_pollution/meta_all.csv') # meta 파일
 submission = pd.read_csv('d:/study/_data/AIFac_pollution/answer_sample.csv')
 
-# 가장 가까운 위치 구하기
-closest_places = {
-    '아름동': ['세종금남', '세종고운', '세종연서'],
-    '신흥동': ['세종고운', '세종전의', '세종연서'],
-    '노은동': ['오월드', '세종금남', '계룡'],
-    '문창동': ['오월드', '세천', '장동'],
-    '읍내동': ['오월드', '세천', '장동'],
-    '정림동': ['오월드', '세천', '계룡'],
-    '공주': ['세종금남', '정안', '공주'],
-    '논산': ['계룡', '양화', '논산'],
-    '대천2동': ['춘장대', '대천항', '청양'],
-    '독곶리': ['안도', '당진', '대산'],
-    '동문동': ['홍북', '태안', '당진'],
-    '모종동': ['아산', '성거', '예산'],
-    '신방동': ['성거', '세종전의', '아산'],
-    '예산군': ['유구', '예산', '아산'],
-    '이원면': ['대산', '태안', '안도'],
-    '홍성읍': ['홍성죽도', '홍북', '예산'],
-    '성성동': ['성거', '세종전의', '아산']}
+import os
+import pandas as pd
 
-# print(train.shape)     #(596088, 4)
-# print(train_aws.shape) #(1051920, 8)
-# print(test.shape)      #(131376, 4)    #연도,일시,측정소,PM2.5
-# print(test_aws.shape)  #(231840, 8)    #연도,일시,지점,기온(°C),풍향(deg),풍속(m/s),강수량(mm),습도(%)
+path_train_AWS = "path/to/train/AWS/folder"
+
+train_aws_li = ['세종고운.csv', '세종연서.csv', '계룡.csv', '오월드.csv', '장동.csv', '오월드.csv', 
+                '공주.csv', '논산.csv', '대천항.csv', '대산.csv', '태안.csv', '아산.csv', '성거.csv',
+                '예산.csv', '태안.csv', '홍북.csv', '성거.csv']
+
+train_aws_dataset = pd.DataFrame()
+
+for file in train_aws_li:
+    file_path = os.path.join(path_train_AWS, file)
+    df = pd.read_csv(file_path, encoding='utf-8', index_col=False)
+    train_aws_dataset = pd.concat([train_aws_dataset, df], axis=0, ignore_index=True)
+
+print()
+
+
+
 
 # aws의 지점과 train/test의 측정소와 이름을 같게한다.
 train_aws = train_aws.rename(columns={"지점": "측정소"})
 test_aws = test_aws.rename(columns={"지점": "측정소"})
-print(train_aws)
 
 # train과 train_aws 데이터셋을 지점(station)을 기준으로 merge
-# merged_train = pd.merge(train, train_aws, on=['연도', '일시'], how='outer')
-# print(merged_train.head())   #[70128 rows x 9 columns]
+merged_train = pd.merge(train, train_aws, on=['연도', '일시'], how='outer')
+print(merged_train.head())   #[70128 rows x 9 columns]
 # print(merged_train.columns)
 # print(merged_train.isnull().sum())
 '''
 ['연도', '일시', '측정소_x', 'PM2.5', '측정소_y', '기온(°C)', '풍향(deg)', '풍속(m/s)','강수량(mm)', '습도(%)']
 '''
 # test와 test_aws와 merge
-# merged_test = pd.merge(test, test_aws, on=['연도', '일시'], how='outer')  #outer : nan값 포함// inner : nan값 제거
+merged_test = pd.merge(test, test_aws, on=['연도', '일시'], how='outer')  #outer : nan값 포함// inner : nan값 제거
 # print(merged_test.head())   
 # print(merged_test.columns)
 # print(merged_test.isnull().sum())
@@ -77,26 +72,12 @@ print(train_aws)
 # print(merged_test.columns)
 ##############################################################################################################################################################
 
-# train_aws['측정소'] = train['측정소']
-# for k, v in closest_places.items():
-#     mask = (train_aws['측정소'] == k) & (train['측정소'].isin(v))
-#     train.loc[mask, '측정소'] = k
-
-# train_aws 데이터프레임에서 측정소 열 값 변경
-train_aws['측정소'] = train['측정소']
-mask = train['측정소'].isin(closest_places.keys())
+merged_train['측정소'] = merged_train['측정소_x']
 for k, v in closest_places.items():
-    mask_k = train['측정소'] == k
-    mask_v = train['측정소'].isin(v)
-    mask_kv = mask_k & mask_v & mask
-    train.loc[mask_kv, '측정소'] = k
- 
-print(train) 
-print(train_aws)
-
-
-# train_aws.drop(['측정소_y', '측정소_x'], axis=1, inplace=True)
-# train_aws.rename(columns={'측정소_x': '측정소'}, inplace=True)
+    mask = (merged_train['측정소_y'] == k) & (merged_train['측정소_x'].isin(v))
+    merged_train.loc[mask, '측정소'] = k
+merged_train.drop(['측정소_y', '측정소_x'], axis=1, inplace=True)
+merged_train.rename(columns={'측정소_x': '측정소'}, inplace=True)
 
 merged_test['측정소'] = merged_test['측정소_x']
 for k, v in closest_places.items():
