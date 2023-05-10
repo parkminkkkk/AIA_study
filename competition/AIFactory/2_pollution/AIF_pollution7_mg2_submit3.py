@@ -172,14 +172,6 @@ train_data = train_data.dropna()
  4   hour      580546 non-null  int8
 dtypes: float64(1), int32(1), int64(1), int8(2)
 '''
-#############################################5. 제출용 x_submit ###########################################################
-x_submit = test_data[test_data.isna().any(axis=1)]
-###결측치가 있는 데이터의 행들만 추출 
-print(x_submit) #[78336 rows x 5 columns] ===>>> [2350080 rows x 10 columns]
-print(x_submit.info())
-x_submit = x_submit.drop(['PM2.5'], axis=1)
-print(x_submit)                                   #[2350080 rows x 9 columns]
-
 #############################################5. 파생피처(중요) ###########################################################
 #주말, 공휴일 등 만들 수 있음 (여러가지 조합으로 생성하는 파생피처) : 피처엔지니어링 작업에서 굉장히 중요함
 #계절(봄/여름/가을/겨울) 시즌을 만들어서 피처 하나 만들어 줄 수 있음. (여름<겨울 : 미세먼지 더 많으므로)
@@ -250,8 +242,14 @@ mae = mean_absolute_error(y_test, y_predict)
 print("mae.score:", mae)
 
 
-
-############ 제출파일 만들기########################
+#############################################5. 제출용 x_submit ###########################################################
+x_submit = test_data[test_data.isna().any(axis=1)]
+###결측치가 있는 데이터의 행들만 추출 
+print(x_submit) #[78336 rows x 5 columns] ===>>> [2350080 rows x 10 columns]
+print(x_submit.info())
+x_submit = x_submit.drop(['PM2.5'], axis=1)
+print(x_submit)                                   #[2350080 rows x 9 columns]
+############ 제출파일 만들기################################################################################################
 y_submit = model.predict(x_submit)
 y_submit = np.round(y_submit, 3)
 print(y_submit)
