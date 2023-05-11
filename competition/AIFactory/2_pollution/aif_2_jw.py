@@ -344,9 +344,13 @@ print('len(true_test) : ',len(true_test)) # 78264
 y = train_all_dataset['PM2.5']
 x = train_all_dataset.drop(['PM2.5'],axis=1)
 
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.preprocessing import PolynomialFeatures
+pf = PolynomialFeatures()
+x_pf = pf.fit_transform(x)
 
 x_train,x_test, y_train, y_test = train_test_split(
-    x,y,test_size = 0.2, random_state=337,
+    x_pf,y,test_size = 0.2, random_state=337,
     # shuffle=True
 )
 
@@ -357,10 +361,10 @@ scaler = RobustScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
 
-# XGBparameter = {
-#     "n_estimators" : [100,200,300,400,500,600], # 디폴트 100 / 1 ~ inf / 정수
-#     "learning_rate" : [0.1,0.01,0.001], # 디폴트 0.3 / 0 ~ 1 / eta
-#     "max_depth" : [None,5, 10],#3,4,5,6,7,8,9,10], # 디폴트 6 / 0 ~ inf / 정수
+XGBparameter = {
+    "n_estimators" : [100,200],#,300,400,500,600], # 디폴트 100 / 1 ~ inf / 정수
+    # "learning_rate" : [0.1,0.01,0.001], # 디폴트 0.3 / 0 ~ 1 / eta
+    "max_depth" : [5, 10],#3,4,5,6,7,8,9,10], # 디폴트 6 / 0 ~ inf / 정수
 #     # "gamma" : [0,1,2,3,4,5,7,8,9,10], # 디폴트 0 / 0 ~ inf 
 #     # "min_child_weight" : [0,0.1,0.01,0.001,0.5,1,5,10,100], # 디폴트 1 / 0 ~ inf 
 #     # "subsample" : [0,0.1,0.2,0.3,0.5,0.7,1], # 디폴트 1 / 0 ~ 1 
@@ -369,23 +373,23 @@ x_test = scaler.transform(x_test)
 #     # "colsample_bynode":[0,0.1,0.2,0.3,0.5,0.7,1], # 디폴트 / 0 ~ 1 
 #     # "reg_alpha":[0,0.1,0.01,0.001,1,2,10], # 디폴트 0 / 0 ~ inf / L1 절대값 가중치 규제 / alpha
 #     # "reg_lambda":[0,0.1,0.01,0.001,1,2,10], # 디폴트 1 / 0 ~ inf / L2 제곱 가중치 규제 / lambda
-# }
-
-KNNparameter = {
-    "n_neighbors" : [4,16,32, 40],
-    'weights' : ['distance','uniform'],
-    'algorithm' : ['auto','ball_tree','kd_tree','brute'],
-    'leaf_size' : [1,16,64]
 }
 
+# KNNparameter = {
+#     "n_neighbors" : [4,16,32, 40],
+#     'weights' : ['distance','uniform'],
+#     'algorithm' : ['auto','ball_tree','kd_tree','brute'],
+#     'leaf_size' : [1,16,64]
+# }
+
 #2. 모델 
-print('KNeighborsRegressor')
+print('RandomForestRegressor')
 start= time.time()
 from sklearn.model_selection import KFold, StratifiedKFold, GridSearchCV, RandomizedSearchCV
-KNN= KNeighborsRegressor(**KNNparameter)
+KNN= RandomForestRegressor(**XGBparameter)
 model = RandomizedSearchCV(
     KNN,
-    KNNparameter,
+    XGBparameter,
     # cv=5,
     verbose=1,
     n_jobs=-1,
@@ -431,7 +435,7 @@ y_submit = model.predict(true_test)
 y_submit = np.round(y_submit, 4)
 # y_submit= np.round(y_submit/0.004)*0.004
 submission_csv['PM2.5'] = y_submit
-submission_csv.to_csv(path_save + '1700_KNN_pm.csv',encoding='utf-8')
+submission_csv.to_csv(path_save + '1700_rf_pm.csv',encoding='utf-8')
 print('완료')
 
 '''
