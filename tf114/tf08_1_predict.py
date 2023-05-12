@@ -46,6 +46,7 @@ with tf.compat.v1.Session() as sess:
     # ##################[실습]################################
     # #예측값을 뽑아라 
     # x_data = [6,7,8]
-    # ########################################################
-    # y_prdict = sess.run(hypothesis, feed_dict={x: [6,7,8]})
-    # print(y_prdict)
+    # x_test = tf.compat.v1.placeholder(tf.float32, shape=[None])
+    # y_predict = x_test*w_val + b_val 
+    # y_pred = sess.run(y_predict, feed_dict={x: [6,7,8]})
+    # print(y_pred)

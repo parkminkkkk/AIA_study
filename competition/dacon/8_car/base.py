@@ -75,7 +75,7 @@ def draw_boxes_on_image(image_path, annotation_path):
     # 이미지와 바운딩 박스 출력
     plt.figure(figsize=(25, 25))
     plt.imshow(image)
-    plt.show()
+    # plt.show()
     
 # 파일 경로 설정
 image_file = 'd:/study/_data/dacon_car/train/syn_00001.png'
@@ -229,7 +229,51 @@ scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.5)
 infer_model = train(model, train_loader, optimizer, scheduler, device)
 
 ###Inference & Submission
+def box_denormalize(x1, y1, x2, y2, width, height):
+    x1 = (x1 / CFG['IMG_SIZE']) * width
+    y1 = (y1 / CFG['IMG_SIZE']) * height
+    x2 = (x2 / CFG['IMG_SIZE']) * width
+    y2 = (y2 / CFG['IMG_SIZE']) * height
+    return x1.item(), y1.item(), x2.item(), y2.item()
 
+def inference(model, test_loader, device):
+    model.eval()
+    model.to(device)
+    
+    results = pd.read_csv('d:/study/_data/dacon_car/sample_submission.csv')
+
+    for img_files, images, img_width, img_height in tqdm(iter(test_loader)):
+        images = [img.to(device) for img in images]
+        
+        with torch.no_grad():
+            outputs = model(images)
+            
+        for idx, output in enumerate(outputs):
+            boxes = output["boxes"].cpu().numpy()
+            labels = output["labels"].cpu().numpy()
+            scores = output["scores"].cpu().numpy()
+            
+            for box, label, score in zip(boxes, labels, scores):
+                x1, y1, x2, y2 = box
+                x1, y1, x2, y2 = box_denormalize(x1, y1, x2, y2, img_width[idx], img_height[idx])
+                new_row = {
+                    "file_name": img_files[idx],
+                    "class_id": label-1,
+                    "confidence": score,
+                    "point1_x": x1, "point1_y": y1,
+                    "point2_x": x2, "point2_y": y1,
+                    "point3_x": x2, "point3_y": y2,
+                    "point4_x": x1, "point4_y": y2
+                }
+                results = results.append(new_row, ignore_index=True)
+
+    # 결과를 CSV 파일로 저장
+    results.to_csv('./_save/dacon_car/baseline_submit.csv', index=False)
+    print('Done.')
+
+inference(infer_model, test_loader, device)
+
+'''
 def box_denormalize(x1, y1, x2, y2, width, height):
     x1 = (x1 / CFG['IMG_SIZE']) * width
     y1 = (y1 / CFG['IMG_SIZE']) * height
@@ -257,7 +301,7 @@ def inference(model, test_loader, device):
             for box, label, score in zip(boxes, labels, scores):
                 x1, y1, x2, y2 = box
                 x1, y1, x2, y2 = box_denormalize(x1, y1, x2, y2, img_width[idx], img_height[idx])
-                results = results.append({
+                results = results.concat({
                     "file_name": img_files[idx],
                     "class_id": label-1,
                     "confidence": score,
@@ -268,7 +312,8 @@ def inference(model, test_loader, device):
                 }, ignore_index=True)
 
     # 결과를 CSV 파일로 저장
-    results.to_csv('baseline_submit.csv', index=False)
+    results.to_csv('./_save/dacon_car/baseline_submit.csv', index=False)
     print('Done.')
 
 inference(infer_model, test_loader, device)
+'''
