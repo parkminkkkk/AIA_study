@@ -2,7 +2,7 @@
 # sess.run : 그래프 연산 방식(tf1)
 ## 'tensorflow mechanics' 이미지 참고
 # 텐서1의 기본모드 = 그래프 방식**// 텐서2의 기본모드 = 즉시 실행
-
+# 행렬 연산 
 
 import tensorflow as tf
 print(tf.__version__)
