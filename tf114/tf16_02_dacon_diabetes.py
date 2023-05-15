@@ -24,17 +24,18 @@ test_csv= pd.read_csv(path+'test.csv', index_col=0)
 x = train_csv.drop(['Outcome'], axis=1)
 y = train_csv['Outcome']
 
+y = y.values
 y = y.reshape(-1, 1)  
 
 
 x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=337, train_size=0.8, shuffle=True, stratify=y)
-print(x_train.shape, y_train.shape)   #(455, 30) (455, 1)
-print(x_test.shape, y_test.shape)     #(114, 30) (114, 1)
+print(x_train.shape, y_train.shape)   #(521, 8) (521, 1)
+print(x_test.shape, y_test.shape)     #(131, 8) (131, 1)
 
-xp = tf.compat.v1.placeholder(tf.float32, shape=[None, 30])
+xp = tf.compat.v1.placeholder(tf.float32, shape=[None,8])
 yp = tf.compat.v1.placeholder(tf.float32, shape=[None, 1])
 
-w = tf.compat.v1.Variable(tf.compat.v1.random_normal([30,1]), name = 'weights')
+w = tf.compat.v1.Variable(tf.compat.v1.random_normal([8,1]), name = 'weights')
 b = tf.compat.v1.Variable(tf.compat.v1.zeros([1]), name = 'bias')
 
 
@@ -74,7 +75,7 @@ y_sess = sess.run(y_predict, feed_dict={xp:x_test})
 
 print(type(y_sess), type(y_predict))
 # print(y_predict)
-print(y_sess)
+# print(y_sess)
 
 acc = accuracy_score(y_test, y_sess)  
 print("acc:" , acc)
@@ -84,5 +85,5 @@ print("mse:", mse)
 
 sess.close()
 
-# acc: 0.2894736842105263
-# mse: 0.7105263157894737
+# acc: 0.648854961832061
+# mse: 0.3511450381679389

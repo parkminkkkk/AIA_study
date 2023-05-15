@@ -90,7 +90,7 @@ import pandas as pd
 
 path_train_AWS = "path/to/train/AWS/folder"
 
-train_aws_li = ['세종고운.csv', '세종연서.csv', '계룡.csv', '오월드.csv', '장동.csv', '오월드.csv', 
+train_aws_li = ['세종고운.csv', '세종연서.csv','계룡.csv', '오월드.csv', '장동.csv', '오월드.csv', 
                 '공주.csv', '논산.csv', '대천항.csv', '대산.csv', '태안.csv', '아산.csv', '성거.csv',
                 '예산.csv', '태안.csv', '홍북.csv', '성거.csv']
 
