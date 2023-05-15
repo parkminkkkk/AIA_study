@@ -1,5 +1,7 @@
 import tensorflow as tf
 tf.compat.v1.set_random_seed(123)
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 변수 = tf.compat.v1.Variable(tf.random_normal([2], name = 'weigth'))
 print(변수)   #<tf.Variable 'Variable:0' shape=(2,) dtype=float32_ref>   
