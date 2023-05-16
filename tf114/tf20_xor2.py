@@ -7,9 +7,6 @@ x_data = np.array([[0,0], [0,1], [1,0], [1,1]], dtype=np.float32)   #(4,2)
 y_data = np.array([[0], [1], [1], [0]], dtype=np.float32)           #(4,1)
 
 
-#[실습] acc 0.25/0.5/0.75맹그러봐 
-
-
 #2. 모델 
 x = tf.compat.v1.placeholder(tf.float32, shape=(None, 2))   
 y =  tf.compat.v1.placeholder(tf.float32, shape=(None, 1)) 
@@ -18,18 +15,18 @@ y =  tf.compat.v1.placeholder(tf.float32, shape=(None, 1))
 #-----------------------------------------------------------------------------------------------------#
 
 # model.add(Dense(10, input_shape=2))
-w1 = tf.compat.v1.Variable(tf.compat.v1.random_normal([2, 10], dtype=tf.float32), name= 'weight')    # (4,2) (2,a) (a.b) (b, 1) (4,1) 즉,  w의 중간층 layer의 shape에 맞춰주고 처음과 끝에만 x,y의 shape에 맞춰준다
-b1 = tf.compat.v1.Variable(tf.compat.v1.zeros([10], dtype=tf.float32), name= 'bias')       #bias는 w과 동일하게
+w1 = tf.compat.v1.Variable(tf.compat.v1.random_normal([2, 10]), name= 'weight1')    # (4,2) (2,a) (a.b) (b, 1) (4,1) 즉,  w의 중간층 layer의 shape에 맞춰주고 처음과 끝에만 x,y의 shape에 맞춰준다
+b1 = tf.compat.v1.Variable(tf.compat.v1.zeros([10]), name= 'bias1')       #bias는 w과 동일하게
 layer1 = tf.compat.v1.matmul(x, w1)+ b1
 
 # model.add(Dense(7))
-w2 = tf.compat.v1.Variable(tf.compat.v1.random_normal([10, 7], dtype=tf.float32), name= 'weight') 
-b2 = tf.compat.v1.Variable(tf.compat.v1.zeros([7], dtype=tf.float32), name= 'bias')     
-layer2 = tf.compat.v1.matmul(layer1, w2)+ b2
+w2 = tf.compat.v1.Variable(tf.compat.v1.random_normal([10, 7]), name= 'weight2') 
+b2 = tf.compat.v1.Variable(tf.compat.v1.zeros([7]), name= 'bias2')     
+layer2 = tf.compat.v1.sigmoid(tf.compat.v1.matmul(layer1, w2)+ b2)
 
 # model.add(Dense(1, activation='sigmoid'))
-w3 = tf.compat.v1.Variable(tf.compat.v1.random_normal([7, 1], dtype=tf.float32), name= 'weight')     
-b3 = tf.compat.v1.Variable(tf.compat.v1.zeros([1], dtype=tf.float32), name= 'bias')     
+w3 = tf.compat.v1.Variable(tf.compat.v1.random_normal([7, 1]), name= 'weight3')     
+b3 = tf.compat.v1.Variable(tf.compat.v1.zeros([1]), name= 'bias')     
 hypothesis = tf.compat.v1.sigmoid(tf.compat.v1.matmul(layer2, w3)+ b3)   #최종 layer = hypothesis (이것 하나로 모델 돌아가게됨 )
 
 
@@ -37,8 +34,8 @@ hypothesis = tf.compat.v1.sigmoid(tf.compat.v1.matmul(layer2, w3)+ b3)   #최종
 #3. 컴파일, 훈련 
 # logits = tf.compat.v1.matmul(layer2, w3)+ b3
 # loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits= logits, labels=y))
-loss = tf.reduce_mean(y*tf.log1p(hypothesis) + (1-y)*tf.log_1p(1-hypothesis))    
-train = tf.compat.v1.train.AdamOptimizer(learning_rate=1e-5).minimize(loss)  
+loss = tf.reduce_mean(y*tf.log(hypothesis) + (1-y)*tf.log(1-hypothesis))    
+train = tf.compat.v1.train.GradientDescentOptimizer(learning_rate=0.1).minimize(loss)  
 
 #4. 평가, 예측
 predicted = tf.cast(hypothesis > 0.5, dtype = tf.float32)
