@@ -12,7 +12,7 @@ tf.compat.v1.set_random_seed(337)
 x_data = [[1,2], [2,3], [3,1], [4,3], [5,3], [6,3]] #(6,2)
 y_data = [[0], [0], [0], [1], [1], [1]]
 
-#######################[실습] sigmoid빼고 우선 만들어보기 ###########################
+#######################[실습] sigmoid 적용 ################################
 
 x = tf.compat.v1.placeholder(tf.float32, shape=(None, 2))   
 y =  tf.compat.v1.placeholder(tf.float32, shape=(None, 1)) 
@@ -29,7 +29,10 @@ hypothesis = tf.compat.v1.sigmoid(tf.compat.v1.matmul(x, w) + b)   #sigmoid해�
 #3. 컴파일, 훈련 
 #3-1. 컴파일
 # loss= tf.reduce_mean(tf.square(hypothesis - y))       #mse
-loss = tf.reduce_mean(y*tf.log(hypothesis) + (1-y)*tf.log(1-hypothesis))    # loss = "binary_crossentroy"
+# logits = tf.compat.v1.matmul(x,w) +b
+# loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits= logits, labels=y))
+
+loss = -tf.reduce_mean(y*tf.log(hypothesis) + (1-y)*tf.log(1-hypothesis))    # loss = "binary_crossentroy"
 # loss = "binary_crossentroy"//무조건 반쪽만 돌아감 (왜냐하면, y값이 0일때 뒤쪽만, y값이 1일때는 앞쪽만 살아남아있으므로./.)
 optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=0.00001)  
 train = optimizer.minimize(loss)  #loss를 최소화하는 방향으로 훈련
