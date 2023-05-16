@@ -20,7 +20,7 @@ hypothesis = tf.compat.v1.matmul(x, w) + b
 
 #3. 컴파일, 훈련 
 #3-1. 컴파일
-loss= tf.reduce_mean(tf.square(hypothesis - y))  #mse
+loss= -tf.reduce_mean(tf.square(hypothesis - y))  #mse
 optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=0.00001)  
 train = optimizer.minimize(loss)  #loss를 최소화하는 방향으로 훈련
 

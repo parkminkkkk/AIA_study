@@ -69,7 +69,6 @@ model = Sequential()
 model.add(Dense(1, input_dim=13))
 model.add(Dense(2))
 model.add(Dense(3))
-model.add(Dense(2))
 model.add(Dense(1))
 
 

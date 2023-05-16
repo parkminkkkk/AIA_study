@@ -48,7 +48,7 @@ hypothesis = tf.compat.v1.sigmoid(tf.compat.v1.matmul(xp, w) + b)   #sigmoid해�
 #3. 컴파일, 훈련 
 #3-1. 컴파일
 # loss= tf.reduce_mean(tf.square(hypothesis - y))       #mse
-loss = tf.reduce_mean(yp*tf.log(hypothesis) + (1-yp)*tf.log(1-hypothesis))    # loss = "binary_crossentroy"
+loss = -tf.reduce_mean(yp*tf.log(hypothesis) + (1-yp)*tf.log(1-hypothesis))    # loss = "binary_crossentroy"
 # loss = "binary_crossentroy"//무조건 반쪽만 돌아감 (왜냐하면, y값이 0일때 뒤쪽만, y값이 1일때는 앞쪽만 살아남아있으므로./.)
 optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=1e-7)  
 train = optimizer.minimize(loss)  #loss를 최소화하는 방향으로 훈련

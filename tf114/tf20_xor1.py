@@ -23,7 +23,7 @@ hypothesis = tf.compat.v1.sigmoid(tf.compat.v1.matmul(x, w) + b)   #sigmoid해�
 #3. 컴파일, 훈련 
 # logits = tf.compat.v1.matmul(x,w) +b
 # loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits= logits, labels=y))
-loss = tf.reduce_mean(y*tf.log(hypothesis) + (1-y)*tf.log(1-hypothesis))    
+loss = -tf.reduce_mean(y*tf.log(hypothesis) + (1-y)*tf.log(1-hypothesis))    
 train = tf.compat.v1.train.AdamOptimizer(learning_rate=0.001).minimize(loss)  
 
 #4. 평가, 예측

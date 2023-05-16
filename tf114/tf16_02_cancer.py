@@ -46,7 +46,7 @@ hypothesis = tf.compat.v1.sigmoid(tf.compat.v1.matmul(xp, w) + b)   #sigmoid해�
 #3. 컴파일, 훈련 
 #3-1. 컴파일
 # loss= tf.reduce_mean(tf.square(hypothesis - y))       #mse
-loss = tf.reduce_mean(yp*tf.log_sigmoid(hypothesis) + (1-yp)*tf.log_sigmoid(1-hypothesis))    # loss = "binary_crossentroy"
+loss = -tf.reduce_mean(yp*tf.log_sigmoid(hypothesis) + (1-yp)*tf.log_sigmoid(1-hypothesis))    # loss = "binary_crossentroy"
 
 # epsilon = 1e-5
 # loss = tf.reduce_mean(yp*tf.log(hypothesis+ epsilon) + (1-yp)*tf.log_sigmoid(1-hypothesis +epsilon))    #  loss의 nan
