@@ -43,7 +43,7 @@ from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error, a
 
 x_test = tf.compat.v1.placeholder(tf.float32, shape= [None,2])
 
-y_predict = x_test*w_val +b_val # 넘파이랑 텐서1이랑 행렬곱했더니 에러생김, 그래서 밑의 matmul사용하기 
+# y_predict = x_test*w_val +b_val # 넘파이랑 텐서1이랑 행렬곱했더니 에러생김, 그래서 밑의 matmul사용하기 
 y_predict = tf.compat.v1.matmul(x_test, w_val) + b_val
 y_sess = sess.run(y_predict, feed_dict={x_test:x_data})
 
