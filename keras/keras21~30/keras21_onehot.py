@@ -37,6 +37,10 @@ print(y.shape) #(581012, 8)       #'7'나와야하는데 '8'이나옴#
 #keras에서는 label값을 1부터 매겨서, 나중에 shape찍었을때는 (0~7)까지이므로, 8로 찍힘..   / 0열에 0만찍히니까 없애줘야함
 y=np.delete(y,0,axis=1) #'0'번째 '열' '삭제' 
 
+# import numpy as np
+# from tensorflow.keras.utils import to_categorical
+# y = to_categorical(y)
+# y=np.delete(y,0,axis=1)
 
 #2. pandas의 get_dummies
 import pandas as pd
@@ -58,6 +62,9 @@ print(y[:3])
  [1 0 0]
  [1 0 0]]
 '''
+# import pandas as pd
+# y=pd.get_dummies(y)
+# y = np.array(y)
 
 #3. sklearn의 OneHotEncoder 
 from sklearn.preprocessing import OneHotEncoder
@@ -69,5 +76,11 @@ print(type(y))
 print(y.shape) #(581012, 1)
 y = ohe.fit_transform(y).toarray()
 print(y.shape) #(581012, 7) 
+
+# from sklearn.preprocessing import OneHotEncoder
+# ohe = OneHotEncoder()
+# y = y.reshape(-1,1)
+# y = ohe.fit_transform(y).toarray()
+
 ##############################################################################
 

@@ -1,10 +1,13 @@
 import tensorflow as tf
+tf.compat.v1.set_random_seed(337)  #1.X모드에서 이거 사용
+tf.random.set_seed(337)   # 2.X모드에서 이거 사용 
 
 # tf.compat.v1.disable_eager_execution() #즉시모드 안해 1.0 False
 # tf.compat.v1.enable_eager_execution() #즉시모드 해 2.0    True
 
 print("텐서플로 버전 :", tf.__version__)
 print("즉시실행 모드 :", tf.executing_eagerly())
+
 
 
 gpus = tf.config.experimental.list_physical_devices('GPU')

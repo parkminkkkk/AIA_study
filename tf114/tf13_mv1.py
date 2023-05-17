@@ -32,18 +32,18 @@ optimizer = tf.compat.v1.train.GradientDescentOptimizer(learning_rate=0.00001)
 train = optimizer.minimize(loss)  #loss를 최소화하는 방향으로 훈련
 
 
-# #3-2. 훈련
-# sess = tf.compat.v1.Session()
-# sess.run(tf.compat.v1.global_variables_initializer())
+#3-2. 훈련
+sess = tf.compat.v1.Session()
+sess.run(tf.compat.v1.global_variables_initializer())
 
-# #yys.
-# epochs = 2001
-# for step in range(epochs):
-#     _, loss_v = sess.run([train, loss], #, hypothesis], 
-#                                  feed_dict={x1:x1_data, x2:x2_data, x3:x3_data, y:y_data})
-#     if step %20 == 0:
-#         print(step, 'loss:', loss_v) #, '\n', hy_val)
-# sess.close()
+#yys.
+epochs = 2001
+for step in range(epochs):
+    _, loss_v = sess.run([train, loss], #, hypothesis], 
+                                 feed_dict={x1:x1_data, x2:x2_data, x3:x3_data, y:y_data})
+    if step %20 == 0:
+        print(step, 'loss:', loss_v) #, '\n', hy_val)
+sess.close()
 
 
 ##################################################################################################################################

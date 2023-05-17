@@ -20,6 +20,7 @@ from sklearn.preprocessing import QuantileTransformer    #standard+MinMaxScaler
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import PolynomialFeatures
 from tensorflow.keras.utils import to_categorical
+from keras.utils.np_utils import to_categorical      
 from tensorflow.keras.preprocessing.image import ImageDataGenerator #이미지 전처리
 from keras.preprocessing.text import Tokenizer                      #자연어(텍스트) 전처리
 from tensorflow.keras.preprocessing.sequence import pad_sequences
