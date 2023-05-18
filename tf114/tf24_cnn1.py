@@ -140,3 +140,6 @@ print("tf", tf.__version__, "훈련시간:", end_time - start_time)
 
 sess.close()
 
+
+# acc: 0.2967
+# tf 1.14.0 훈련시간: 475.79706621170044
