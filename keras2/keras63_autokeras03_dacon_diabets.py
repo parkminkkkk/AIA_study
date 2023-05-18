@@ -1,12 +1,12 @@
 import autokeras as ak
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_iris, load_breast_cancer
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 import time
 
 
 #1. 데이터 
-x, y = load_iris(return_X_y=True)
+x, y = load_breast_cancer(return_X_y=True)
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, shuffle=True, random_state=42, test_size=0.2
