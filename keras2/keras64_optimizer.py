@@ -25,3 +25,37 @@ model.add(Dense(32))
 model.add(Dense(1))
 
 #3. 컴파일, 훈련 
+# model.compile(loss = "mse", optimizer = 'adam', metrics = ['acc'])
+
+from tensorflow.keras.optimizers import Adam
+learning_rate = 0.01
+optimizer = Adam(learning_rate= learning_rate)
+model.compile(loss = 'mse', optimizer = optimizer)
+
+model.fit(x_train, y_train, epochs =10, batch_size=32)
+
+'''
+#3. 컴파일, 훈련 
+# model.compile(loss = "mse", optimizer = 'adam', metrics = ['acc'])
+
+from tensorflow.keras.optimizers import Adam
+learning_rate = 0.1                                                                               #초반에는 큰 값으로 시작 
+optimizer = Adam(learning_rate= learning_rate)
+model.compile(loss = 'mse', optimizer = optimizer)
+
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+es = EarlyStopping(monitor='val_loss', patience = 20, mode = 'min', verbose=1,)                   #optimizer, rlr 통상 같이 사용해야 함 
+rlr = ReduceLROnPlateau(monitor='val_loss', patience = 10, mode ='auto', verbose=1, factor=0.5)   #es, rlr의 patience는 따로 준다// 
+
+model.fit(x_train, y_train, epochs =1000, batch_size=32, verbose=1, validation_split=0.2,
+            callbacks = [es, rlr])
+'''
+
+#4. 평가, 예측 
+results = model.evaluate(x_test, y_test)
+
+print("lr:", learning_rate, "loss:", results)
+
+
+# lr: 0.01 loss: 0.8809412121772766
+
