@@ -13,6 +13,8 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 # nltk.download('punkt')
 # nltk.download('stopwords')
+
+#1. Data
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.preprocessing import MaxAbsScaler, RobustScaler
 from sklearn.preprocessing import PowerTransformer
@@ -52,7 +54,7 @@ from sklearn.covariance import EllipticEnvelope
 #상관관계 확인
 from statsmodels.stats.outliers_influence import variance_inflation_factor  #통계적 기법에서 사용
 
-
+#---------------------------------------------------------------------------------------------------------------#
 # ML model
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.tree import DecisionTreeClassifier
@@ -67,10 +69,15 @@ from tensorflow.python.keras.layers import Dense, Input, Dropout
 from tensorflow.python.keras.layers import MaxPooling1D, BatchNormalization, Flatten, Dropout
 from tensorflow.keras.layers import Conv1D, Conv2D, LSTM, Reshape, Embedding 
 from tensorflow.keras.layers import concatenate, Concatenate     #앙상블
+#---------------------------------------------------------------------------------------------------------------#
 
+#compile, fit
+from tensorflow.keras.optimizers import Adam
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
-#Accuracy Metrics
+
+#evaluate
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.metrics import classification_report, confusion_matrix
