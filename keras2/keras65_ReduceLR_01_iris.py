@@ -1,9 +1,9 @@
 import numpy as np 
-from sklearn.datasets import fetch_california_housing
+from sklearn.datasets import fetch_california_housing, load_iris
 from sklearn.model_selection import train_test_split
 
 #1. 데이터 
-datasets = fetch_california_housing()
+datasets = load_iris()
 x = datasets.data
 y = datasets.target
 

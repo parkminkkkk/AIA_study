@@ -1,8 +1,10 @@
 #CNN으로 만들기
+
 import numpy as np
 from tensorflow.keras.datasets import mnist
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, MaxPool2D,  Input, Dropout 
+from tensorflow.keras.optimizers import Adam, RMSprop, Adadelta
 
 #1. 데이터 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -30,21 +32,22 @@ def build_model(drop=0.3, optimizer='adam', activation='relu',
 
     model = Model(inputs = inputs, outputs=outputs)
 
-    model.compile(optimizer=optimizer, metrics=['acc'],
+    model.compile(optimizer='adam', metrics=['acc'],
                   loss = 'sparse_categorical_crossentropy')
     return model 
 
 def create_hyperparameter():
-    batchs = [100,200,300,400,500]
-    optimizers = ['adam', 'rmsprop', 'adadelta']
+    batchs = [100, 200, 300, 400, 500]
+    lr = [0.001, 0.005, 0.01]
+    optimizers = [Adam(learning_rate=lr), RMSprop(learning_rate=lr), Adadelta(learning_rate=lr)]
     dropouts = [0.2, 0.3, 0.4, 0.5]
     activations = ['relu', 'elu', 'selu', 'linear']
-    learning_rates = [0.001, 0.01, 0.1]
     return {'batch_size' : batchs,
             'optimizer' : optimizers,
-            'drop': dropouts,
-            'activation': activations,
-            'lr' : learning_rates}
+            'drop' : dropouts,
+            'activation' : activations,
+            'lr' : lr}
+
 
 hyperparameters = create_hyperparameter()
 print(hyperparameters)
@@ -70,11 +73,13 @@ model.fit(x_train, y_train, epochs=100, validation_split=0.2, callbacks=[es, mcp
 end = time.time()
 
 
-print("걸린시간:", end - start)  
-print("model.best_params_:", model.best_params_)    # 그리드 서치나 랜덤 서치와 같은 하이퍼파라미터 튜닝 과정에서 최적의 매개변수 조합 //  #탐색 과정에서 검증 데이터를 사용하여 최적의 매개변수를 찾은 후에 접근 가능
-print("model.best_estimator_:", model.best_estimator_)  # 최적의 매개변수 조합으로 훈련된 모델=> 즉, best_params_에 해당하는 매개변수로 훈련된 모델 객체 //# best_estimator_는 최적의 모델을 얻을 수 있도록 하이퍼파라미터 튜닝 과정에서 사용
-print("model.best_score_:", model.best_score_)      #train의 best_score
-print("model.score:", model.score(x_test, y_test))  #test의 best_score
+print('걸린시간 : ', end - start)
+best_params = model.best_params_.copy()
+best_params['optimizer'] = best_params['optimizer'].__class__.__name__
+print('model.best_params_ :', best_params)
+print('model.best_estimator : ', model.best_estimator_)
+print('model.best_score_ : ', model.best_score_)
+print('model.score : ', model.score(x_test, y_test))
 
 from sklearn.metrics import accuracy_score
 y_predict = model.predict(x_test)
@@ -92,12 +97,12 @@ acc_score: 0.9052
 '''
 
 '''
-Epoch 00007: early stopping
-걸린시간: 96.29829454421997
-model.best_params_: {'optimizer': 'rmsprop', 'lr': 0.1, 'drop': 0.2, 'batch_size': 100, 'activation': 'selu'}
-model.best_estimator_: <keras.wrappers.scikit_learn.KerasClassifier object at 0x000002530A7EAA00>
-model.best_score_: 0.9694333374500275
-100/100 [==============================] - 0s 3ms/step - loss: 0.0627 - acc: 0.9820
-model.score: 0.9819999933242798
-acc_score: 0.982
+Epoch 00015: early stopping
+걸린시간 :  383.1289610862732
+model.best_params_ : {'optimizer': 'Adam', 'lr': 0.001, 'drop': 0.2, 'batch_size': 200, 'activation': 'relu'}
+model.best_estimator :  <keras.wrappers.scikit_learn.KerasClassifier object at 0x000001F2CF8F6AF0>
+model.best_score_ :  0.983216667175293
+50/50 [==============================] - 0s 4ms/step - loss: 0.0461 - acc: 0.9864
+model.score :  0.9864000082015991
+acc_score: 0.9864
 '''

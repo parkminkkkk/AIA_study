@@ -71,6 +71,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from tensorflow.python.keras.models import Sequential, Model, load_model
 from tensorflow.python.keras.layers import Dense, Input, Dropout
 from tensorflow.python.keras.layers import MaxPooling1D, BatchNormalization, Flatten, Dropout
+from tensorflow.python.keras.layers import GlobalAveragePooling2D
 from tensorflow.keras.layers import Conv1D, Conv2D, LSTM, Reshape, Embedding 
 from tensorflow.keras.layers import concatenate, Concatenate     #앙상블
 #---------------------------------------------------------------------------------------------------------------#

@@ -12,7 +12,7 @@ x_test = x_test.reshape(x_test.shape[0], 28, 28).astype('float32')/255.
 
 
 # 2. 모델
-def build_model(drop=0.5, optimizer='adam', activation='relu', node1=64, node2=64, node3=64, node4=64):
+def build_model(drop=0.5, optimizer='adam', activation='relu', node1=64, node2=64, node3=64, node4=64, lr= 0.01):
     inputs = Input(shape=(28,28), name='input')
     x = LSTM(node1, name='lstm')(inputs)
     x = Dense(node1, activation=activation, name='hidden1')(x)
