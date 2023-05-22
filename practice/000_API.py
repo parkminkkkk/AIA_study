@@ -37,6 +37,10 @@ from sklearn.model_selection import HalvingGridSearchCV, HalvingRandomSearchCV
 from bayes_opt import BayesianOptimization     #최댓값 찾기
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.feature_extraction.text import CountVectorizer
+# DL 
+from tensorflow.keras.wrappers.scikit_learn import KerasClassifier  #keras에서 sklearn사용 할 수 있게 rapping (DL에서 Gridsearch사용할때)
+from sklearn.model_selection import GridSearchCV
+
 #불균형데이터 처리(증폭)
 from imblearn.over_sampling import SMOTE 
 #차원축소

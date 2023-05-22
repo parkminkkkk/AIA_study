@@ -1,5 +1,3 @@
-
-
 import numpy as np
 from sklearn.datasets import load_breast_cancer, load_diabetes
 from sklearn.model_selection import KFold, StratifiedKFold
