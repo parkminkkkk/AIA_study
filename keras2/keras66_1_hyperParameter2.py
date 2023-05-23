@@ -21,38 +21,42 @@ x_test = x_test.reshape(x_test.shape[0], -1).astype('float32')/255.   #(10000, 7
 
 
 #2. 모델구성
+
 def build_model(drop=0.3, optimizer='adam', activation='relu', 
-                node1 = 512, node2 = 256, node3 = 128, node4 = 256, lr = 0.01):
-    inputs = Input(shape=(28*28), name='input')
-    x = Dense(node1, activation=activation, name = 'hidden1')(inputs)
+                filters = 32, lr = 0.01):
+    inputs = Input(shape=(28,28,1), name='input')
+    x = Conv2D(filters = 32, kernel_size= (2,2), padding='same', activation=activation, name = 'Conv1')(inputs)
+    x = MaxPool2D()(x)
+    x = Conv2D(filters,(2,2), activation=activation, name = 'Conv2')(x)
     x = Dropout(drop)(x)
-    x = Dense(node2, activation=activation, name = 'hidden2')(x)
-    x = Dropout(drop)(x)
-    x = Dense(node3, activation=activation, name = 'hidden3')(x)
-    x = Dropout(drop)(x)
-    x = Dense(node4, activation=activation, name = 'hidden4')(x)
+    x = Conv2D(filters,(2,2), activation=activation, name = 'Conv3')(x)
+    x = Flatten()(x)
+    x = Dense(24, activation=activation, name = 'dense1')(x)
+    x = Dense(24, activation=activation, name = 'dense2')(x)
     outputs = Dense(10, activation='softmax', name = 'output')(x)
 
     model = Model(inputs = inputs, outputs=outputs)
 
-    model.compile(optimizer=optimizer, metrics=['acc'],
+    model.compile(optimizer='adam', metrics=['acc'],
                   loss = 'sparse_categorical_crossentropy')
     return model 
 
 def create_hyperparameter():
-    batchs = [100,200,300,400,500]
-    learning = [0.001, 0.01, 0.1]
-    optimizers = [Adam(learning), RMSprop(learning), Adadelta(learning)]
+    batchs = [100, 200, 300, 400, 500]
+    lr = [0.001, 0.005, 0.01]
+    optimizers = [Adam(learning_rate=lr), RMSprop(learning_rate=lr), Adadelta(learning_rate=lr)]
     dropouts = [0.2, 0.3, 0.4, 0.5]
     activations = ['relu', 'elu', 'selu', 'linear']
     return {'batch_size' : batchs,
             'optimizer' : optimizers,
-            'drop': dropouts,
-            'activation': activations,
-            'lr' : learning}
+            'drop' : dropouts,
+            'activation' : activations,
+            'lr' : lr}
+
 
 hyperparameters = create_hyperparameter()
 print(hyperparameters)
+
 
 from tensorflow.keras.wrappers.scikit_learn import KerasClassifier  #keras에서 sklearn사용 할 수 있게 rapping 
 keras_model = KerasClassifier(build_fn=build_model, verbose =1,) #, epochs = 3
@@ -74,10 +78,13 @@ end = time.time()
 
 print("+======================================+")
 print("걸린시간:", end - start)  
+best_params = model.best_params_.copy()
+best_params['optimizer'] = best_params['optimizer'].__class__.__name__
 print("model.best_params_:", model.best_params_)    # 그리드 서치나 랜덤 서치와 같은 하이퍼파라미터 튜닝 과정에서 최적의 매개변수 조합 //  #탐색 과정에서 검증 데이터를 사용하여 최적의 매개변수를 찾은 후에 접근 가능
 print("model.best_estimator_:", model.best_estimator_)  # 최적의 매개변수 조합으로 훈련된 모델=> 즉, best_params_에 해당하는 매개변수로 훈련된 모델 객체 //# best_estimator_는 최적의 모델을 얻을 수 있도록 하이퍼파라미터 튜닝 과정에서 사용
 print("model.best_score_:", model.best_score_)      #train의 best_score
 print("model.score:", model.score(x_test, y_test))  #test의 best_score
+
 
 from sklearn.metrics import accuracy_score
 y_predict = model.predict(x_test)

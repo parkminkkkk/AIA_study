@@ -12,10 +12,10 @@ import time
 datalist = [load_iris(), load_breast_cancer()]
 
 for i in datalist:
-    x = dataset.data
-    y = dataset.target
+    x = datalist.data
+    y = datalist.target
 
-    print(f"Dataset: {dataset}")
+    print(f"Dataset: {datalist}")
     print(f"X shape: {x.shape}, Y shape: {y.shape}")
 
     x_train, x_test, y_train, y_test = train_test_split(
