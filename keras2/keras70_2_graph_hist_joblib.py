@@ -90,6 +90,7 @@ plt.legend(['acc', 'val_acc'])
 
 plt.show()
 
+
 # import matplotlib.pyplot as plt
 # plt.figure(figsize=(9,5))
 # plt.plot(hist['loss'], marker='.', c='red', label='loss')

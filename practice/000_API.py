@@ -79,7 +79,8 @@ from tensorflow.keras.layers import concatenate, Concatenate     #앙상블
 #compile, fit
 from tensorflow.keras.optimizers import Adam
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from tensorflow.keras.callbacks import ReduceLROnPlateau
+from tensorflow.keras.callbacks import TensorBoard
 
 
 #evaluate

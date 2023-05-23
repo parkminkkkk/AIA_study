@@ -1,4 +1,4 @@
-# loss와 weight의 관계 그리기
+# loss와 weight의 관계 그리기 // ==> 보류 
 
 from tensorflow.keras.datasets import mnist
 from sklearn.model_selection import train_test_split
