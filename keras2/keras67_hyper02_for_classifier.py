@@ -9,21 +9,19 @@ from tensorflow.keras.callbacks import EarlyStopping
 import time
 
 
-datalist = [load_iris(), load_breast_cancer()]
+dataset_list = [load_iris(), load_breast_cancer()]
 
-for i in datalist:
-    x = datalist.data
-    y = datalist.target
+for dataset in dataset_list:
+    x, y = dataset.data, dataset.target
 
-    print(f"Dataset: {datalist}")
+    print(f"Dataset: {dataset}")
     print(f"X shape: {x.shape}, Y shape: {y.shape}")
 
     x_train, x_test, y_train, y_test = train_test_split(
         x, y, train_size=0.8, random_state=337, shuffle=True
     )
 
-
-    def build_model(x, y, drop=0.3, optimizer='adam', activation='relu', 
+    def build_model(drop=0.3, optimizer='adam', activation='relu', 
                     node1=512, node2=256, node3=128, node4=256, lr=0.01):
         inputs = Input(shape=(x.shape[1],), name='input')
         x = Dense(node1, activation=activation, name='hidden1')(inputs)
