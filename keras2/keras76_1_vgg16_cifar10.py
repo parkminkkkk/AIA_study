@@ -9,6 +9,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.applications import VGG16
 from tensorflow.keras.datasets import cifar10
+from tensorflow.python.keras.layers import GlobalAveragePooling2D
 from tensorflow.keras.utils import to_categorical
 from sklearn.metrics import accuracy_score 
 

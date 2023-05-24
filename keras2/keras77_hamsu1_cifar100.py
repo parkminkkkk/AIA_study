@@ -1,17 +1,14 @@
-#맹그러 [실습]
-#1. 가중치 동결/ 동결하지 않았을때/ 원래 기본cifar 성능 비교 
-#2. Flatten과 GAP 차이 비교 
-#5가지의 결과치 비교 
+# 함수형 맹그러봐 
 
 
 import numpy as np
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Flatten
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.layers import Dense, Flatten, Input, GlobalAveragePooling2D
 from tensorflow.keras.applications import VGG16
 from tensorflow.keras.datasets import cifar100
-from tensorflow.python.keras.layers import GlobalAveragePooling2D
 from tensorflow.keras.utils import to_categorical
 from sklearn.metrics import accuracy_score 
+
 
 
 #1. 데이터 
@@ -31,20 +28,22 @@ x_test = x_test / 255.
 
 
 #2. 모델 
-vgg16 = VGG16(weights='imagenet',  #가중치는 이미지넷에서 가져다 사용
-              include_top=False,    #include_top: (True, False), Classification Layer의 포함여부 // False : input, output(fc_dense) layer제거 (Classification Layer를 제거)
-              input_shape=(32,32,3)
-              ) 
+vgg16 = VGG16(
+    weights='imagenet',
+    include_top=False,
+    input_shape=(32, 32, 3))
 
-vgg16.trainable = False  #False : vgg16의 가중치 동결 
+vgg16.trainable = False
 
+# Define the input tensor
+inputs = Input(shape=(32, 32, 3))
+x = vgg16(inputs)
+x = Flatten()(x)
+# x = GlobalAveragePooling2D()(x)
+x = Dense(100)(x)
+outputs = Dense(100, activation='softmax')(x)
+model = Model(inputs=inputs, outputs=outputs)
 
-model = Sequential()
-model.add(vgg16)
-model.add(Flatten())
-# model.add(GlobalAveragePooling2D())
-model.add(Dense(100))
-model.add(Dense(10, activation='softmax'))
 
 # model.trainable = True   ##vgg16만 가중치 동결(가져온 모델은 가중치 동결하고, 밑에 새로만든 dense는 가중치 형성해줌) 
 
@@ -67,10 +66,13 @@ rlr = ReduceLROnPlateau(monitor='val_loss', patience = 10, mode ='auto', verbose
 model.fit(x_train, y_train, epochs =50, batch_size=128, verbose=1, validation_split=0.2,
             callbacks = [es, rlr])
 
+
 #4. 평가, 예측 
 results = model.evaluate(x_test, y_test)
 
-print("loss:", results)
+print("loss:", results[0])
+print("acc:", results[1])
+
 
 y_pred = model.predict(x_test)
 y_pred = np.argmax(y_pred, axis=1) #print(y_pred.shape)
@@ -80,7 +82,6 @@ acc = accuracy_score(y_test, y_pred)
 print('acc:', acc)
 
 ###########################
-#vgg16.trainable = False  #False vgg16의 가중치 동결 
+#vgg16.trainable = False  
 
 
-#vgg16.trainable = False  #False vgg16의 가중치 동결 

@@ -5,6 +5,7 @@ from tensorflow.keras.applications import VGG16
 from tensorflow.keras.datasets import cifar10
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.optimizers import Adam
+
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
 # Load the CIFAR-10 dataset
