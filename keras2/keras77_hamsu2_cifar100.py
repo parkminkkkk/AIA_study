@@ -1,10 +1,7 @@
-# 함수형 맹그러봐 
-
-
 import numpy as np
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Flatten, Input, GlobalAveragePooling2D
-from tensorflow.keras.applications import VGG16
+from tensorflow.keras.applications import VGG16, InceptionV3
 from tensorflow.keras.datasets import cifar100
 from tensorflow.keras.utils import to_categorical
 from sklearn.metrics import accuracy_score 
@@ -28,32 +25,23 @@ x_test = x_test / 255.
 
 
 #2. 모델 
-vgg16 = VGG16(
-    weights='imagenet',
-    include_top=False,
-    input_shape=(32, 32, 3))
+base_model = VGG16(weights='imagenet', include_top=False, 
+                   input_shape=(32,32,3)
+                   )
+# print(base_model.output)  #마지막 레이어 
+# KerasTensor(type_spec=TensorSpec(shape=(None, None, None, 512), 
+#                                   dtype=tf.float32, name=None), name='block5_pool/MaxPool:0', description="created by layer 'block5_pool'")
+x = base_model.output
+x = GlobalAveragePooling2D()(x)
+output1 = Dense(100, activation='softmax')(x)
 
-vgg16.trainable = False
+model = Model(inputs=base_model.input, outputs=output1)
 
-# Define the input tensor
-inputs = Input(shape=(32, 32, 3))
-x = vgg16(inputs)
-x = Flatten()(x)
-# x = GlobalAveragePooling2D()(x)
-x = Dense(100)(x)
-outputs = Dense(100, activation='softmax')(x)
-model = Model(inputs=inputs, outputs=outputs)
+model.summary()
 
 
-# model.trainable = True   ##vgg16만 가중치 동결(가져온 모델은 가중치 동결하고, 밑에 새로만든 dense는 가중치 형성해줌) 
-
-# model.summary()
-# print(len(model.weights))
-# print(len(model.trainable_weights))
 
 #3. 컴파일, 훈련 
-# model.compile(loss = "mse", optimizer = 'adam', metrics = ['acc'])
-
 from tensorflow.keras.optimizers import Adam
 learning_rate = 0.1
 optimizer = Adam(learning_rate= learning_rate)
@@ -75,13 +63,11 @@ print("acc:", results[1])
 
 
 y_pred = model.predict(x_test)
-y_pred = np.argmax(y_pred, axis=1) #print(y_pred.shape)
+y_pred = np.argmax(y_pred, axis=1)
 y_test = np.argmax(y_test, axis=1)
 
 acc = accuracy_score(y_test, y_pred)
 print('acc:', acc)
 
-###########################
-#vgg16.trainable = False  
 
 

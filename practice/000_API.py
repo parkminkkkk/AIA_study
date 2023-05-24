@@ -74,6 +74,7 @@ from tensorflow.python.keras.layers import MaxPooling1D, BatchNormalization, Fla
 from tensorflow.python.keras.layers import GlobalAveragePooling2D
 from tensorflow.keras.layers import Conv1D, Conv2D, LSTM, Reshape, Embedding 
 from tensorflow.keras.layers import concatenate, Concatenate     #앙상블
+from tensorflow.keras.applications import VGG16               #전이학습 
 #---------------------------------------------------------------------------------------------------------------#
 
 #compile, fit

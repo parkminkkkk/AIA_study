@@ -1,6 +1,4 @@
 # 함수형 맹그러봐 
-
-
 import numpy as np
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Flatten, Input, GlobalAveragePooling2D
@@ -28,32 +26,25 @@ x_test = x_test / 255.
 
 
 #2. 모델 
-vgg16 = VGG16(
-    weights='imagenet',
-    include_top=False,
-    input_shape=(32, 32, 3))
+input1 = Input(shape=(32,32,3))
+vgg16 = VGG16(weights='imagenet',include_top=False)(input1)
+flt1 = Flatten(vgg16)
+# gap1 = GlobalAveragePooling2D(vgg16)
+hidden1 = Dense(100)(flt1)
+output1 = Dense(10, activation='softmax')(hidden1)
 
-vgg16.trainable = False
-
-# Define the input tensor
-inputs = Input(shape=(32, 32, 3))
-x = vgg16(inputs)
-x = Flatten()(x)
-# x = GlobalAveragePooling2D()(x)
-x = Dense(100)(x)
-outputs = Dense(10, activation='softmax')(x)
-model = Model(inputs=inputs, outputs=outputs)
-
-
+model = Model(inputs=input1, outputs=output1)
 # model.trainable = True   ##vgg16만 가중치 동결(가져온 모델은 가중치 동결하고, 밑에 새로만든 dense는 가중치 형성해줌) 
+# vgg16.trainable = False
 
-# model.summary()
+
+model.summary()
 # print(len(model.weights))
 # print(len(model.trainable_weights))
 
-#3. 컴파일, 훈련 
-# model.compile(loss = "mse", optimizer = 'adam', metrics = ['acc'])
 
+
+#3. 컴파일, 훈련 
 from tensorflow.keras.optimizers import Adam
 learning_rate = 0.1
 optimizer = Adam(learning_rate= learning_rate)
@@ -63,7 +54,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 es = EarlyStopping(monitor='val_loss', patience = 20, mode = 'min', verbose=1,)
 rlr = ReduceLROnPlateau(monitor='val_loss', patience = 10, mode ='auto', verbose=1, factor=0.5)   #es, rlr의 patience는 따로 준다
 
-model.fit(x_train, y_train, epochs =50, batch_size=128, verbose=1, validation_split=0.2,
+model.fit(x_train, y_train, epochs =50, batch_size=512, verbose=1, validation_split=0.2,
             callbacks = [es, rlr])
 
 
