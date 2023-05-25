@@ -69,5 +69,11 @@ y_test = np.argmax(y_test, axis=1)
 acc = accuracy_score(y_test, y_pred)
 print('acc:', acc)
 
-
+''''
+Epoch 00020: early stopping
+313/313 [==============================] - 3s 10ms/step - loss: nan - acc: 0.0100
+loss: nan
+acc: 0.009999999776482582
+acc: 0.01
+'''
 

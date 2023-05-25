@@ -75,7 +75,7 @@ for config in configurations:
         x_train,
         y_train,
         epochs=50,
-        batch_size=32,
+        batch_size=512,
         verbose=1,
         validation_split=0.2,
         callbacks=[es, rlr],
@@ -86,3 +86,31 @@ for config in configurations:
     print("Test loss:", results[0])
     print("Test accuracy:", results[1])
     # print()
+
+    '''
+#1. {"name": "Configuration 1", "trainable": False, "layer": "Flatten"},
+Epoch 50/50
+79/79 [==============================] - 3s 41ms/step - loss: 1.0981 - acc: 0.6201 - val_loss: 1.2240 - val_acc: 0.5803 - lr: 0.0125
+313/313 [==============================] - 4s 12ms/step - loss: 1.2327 - acc: 0.5772
+Test loss: 1.2326778173446655
+Test accuracy: 0.5771999955177307
+
+#2. {"name": "Configuration 2", "trainable": False, "layer": "GlobalAveragePooling2D"},
+Epoch 50/50
+79/79 [==============================] - 3s 41ms/step - loss: 1.1023 - acc: 0.6193 - val_loss: 1.2142 - val_acc: 0.5835 - lr: 0.0125
+313/313 [==============================] - 3s 9ms/step - loss: 1.2267 - acc: 0.5810
+Test loss: 1.226719617843628
+Test accuracy: 0.5809999704360962
+
+#3. {"name": "Configuration 3", "trainable": True, "layer": "Flatten"},
+Epoch 00020: early stopping
+313/313 [==============================] - 3s 9ms/step - loss: nan - acc: 0.1000
+Test loss: nan
+Test accuracy: 0.10000000149011612
+
+#4. {"name": "Configuration 4", "trainable": True, "layer": "GlobalAveragePooling2D"},
+Epoch 00020: early stopping
+313/313 [==============================] - 3s 9ms/step - loss: nan - acc: 0.1000
+Test loss: nan
+Test accuracy: 0.10000000149011612
+    '''
