@@ -7,7 +7,7 @@
 import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
-from tensorflow.keras.applications import VGG16
+from tensorflow.keras.applications import VGG16, DenseNet121
 from tensorflow.keras.datasets import cifar10
 from tensorflow.python.keras.layers import GlobalAveragePooling2D
 from tensorflow.keras.utils import to_categorical
@@ -55,7 +55,7 @@ x_test = x_test / 255.
 
 
 #2. 모델 
-vgg16 = VGG16(weights='imagenet',  #가중치는 이미지넷에서 가져다 사용
+vgg16 = DenseNet121(weights='imagenet',  #가중치는 이미지넷에서 가져다 사용
               include_top=False,    #include_top: (True, False), Classification Layer의 포함여부 // False : input, output(fc_dense) layer제거 (Classification Layer를 제거)
               input_shape=(150,150,3)
               ) 
@@ -140,8 +140,18 @@ else:
 
 
 '''
+#vgg16
 ===================== model.predict(x) ===========================
 (1, 1)
 [[1.207867e-08]]
 나는 남자
+'''
+
+
+'''
+#DenseNet121
+===================== model.predict(x) ===========================
+(1, 1)
+[[1.]]
+나는 여자
 '''
