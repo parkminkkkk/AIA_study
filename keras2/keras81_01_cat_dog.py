@@ -97,36 +97,36 @@ print("acc:", results[1])
 # loss: 0.6931101679801941
 # acc: 0.5114666819572449
 
-#=========================================================#
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.resnet import preprocess_input, decode_predictions
+from tensorflow.keras.applications.resnet import preprocess_input, decode_predictions   
 
 path = 'D:\study\_data\pmk.jpg'
-model = VGG16(weights='imagenet')
 
-img = image.load_img(path, target_size=(224,224))
-# 이미지 변환(이미지 수치화 )
-x = image.img_to_array(img) # 이미지를 x에 집어넣음 
-print("===================== image.img_to_array(img) =======================")
-# print(x)
-print(x.shape)  # (224, 224, 3)  // 그림 수치화 완료 
-print(np.min(x), np.max(x)) # 0.0 255.0   //이미지 : 0~255사이 
+img = image.load_img(path, target_size= (100, 100, 3))
+print(img)  # <PIL.Image.Image image mode=RGB size=224x224 at 0x1F8B55382B0>
+
+x = image.img_to_array(img)
+print("==================== image.img_to_array(img) ====================")
+print(x, '\n', x.shape)     # (224, 224, 3)
+print(np.min(x), np.max(x)) # 0.0 255.0
 
 # x = x.reshape(1, x.shape[0], x.shape[1], x.shape[2])
-# # x = x.reshape(1, *x.shape)
-# print(x.shape)     #(1, 224, 224, 3)
+# print(x.shape)      # (1, 224, 224, 3)
+
 x = np.expand_dims(x, axis = 0)
 print(x.shape)      #  (1, 224, 224, 3)
 
-print("===================== preprocess_input(x) =======================")
-x = preprocess_input(x)
-print(x.shape)
-print(np.min(x), np.max(x)) #-123.68 151.061
+#################### -155에서 155 사이로 정규화 ###################
+print("==================== preprocess_input(x) ====================")
 
-print("===================== model.predict(x) ===========================")
+# x = preprocess_input(x)
+
+print(x.shape)      #  (1, 224, 224, 3)
+print(np.min(x), np.max(x))      # -123.68 151.061
+
+print("==================== model.predict(x) ====================")
 x_pred = model.predict(x)
-# model.summary()
-print(x_pred.shape)
+print(x_pred, '\n', x_pred.shape)       #  (1, 1000)
 
 x_pred = np.round(x_pred)
 
@@ -136,3 +136,9 @@ if x_pred ==0:
 else:
     print("나는 개")
 
+'''
+    ==================== model.predict(x) ====================
+[[5.8001358e-37]] 
+ (1, 1)
+나는 고양이
+'''

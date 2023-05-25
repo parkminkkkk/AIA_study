@@ -95,8 +95,55 @@ print("loss:", results[0])
 print("acc:", results[1])
 
 
-
-
 # vgg16.trainable = False 
 # loss: 46.48229217529297
 # acc: 0.4530744254589081
+
+#=========================================================#
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.resnet import preprocess_input, decode_predictions
+
+path = 'D:\study\_data\pmk.jpg'
+# model = VGG16(weights='imagenet')
+
+img = image.load_img(path, target_size=(150,150))
+# 이미지 변환(이미지 수치화 )
+x = image.img_to_array(img) # 이미지를 x에 집어넣음 
+print("===================== image.img_to_array(img) =======================")
+# print(x)
+print(x.shape)  # (224, 224, 3)  // 그림 수치화 완료 
+print(np.min(x), np.max(x)) # 0.0 255.0   //이미지 : 0~255사이 
+
+# x = x.reshape(1, x.shape[0], x.shape[1], x.shape[2])
+# # x = x.reshape(1, *x.shape)
+# print(x.shape)     #(1, 224, 224, 3)
+x = np.expand_dims(x, axis = 0)
+print(x.shape)      #  (1, 224, 224, 3)
+
+print("===================== preprocess_input(x) =======================")
+x = preprocess_input(x)
+print(x.shape)
+print(np.min(x), np.max(x)) #-123.68 151.061
+
+print("===================== model.predict(x) ===========================")
+x_pred = model.predict(x)
+# model.summary()
+print(x_pred.shape)
+print(x_pred)
+
+x_pred = np.round(x_pred)
+
+if np.all(x_pred ==0):
+    print("나는 말")
+    
+else:
+    print("나는 사람")
+
+
+
+'''
+===================== model.predict(x) ===========================
+(1, 1)
+[[1.]]
+나는 사람
+'''

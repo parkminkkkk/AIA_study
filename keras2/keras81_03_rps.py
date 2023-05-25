@@ -100,3 +100,4 @@ print("acc:", results[1])
 # vgg16.trainable = False 
 # loss: 101.49994659423828
 # acc: 0.369047611951828
+
