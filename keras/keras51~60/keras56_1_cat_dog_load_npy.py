@@ -9,8 +9,8 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.model_selection import train_test_split
 
 # 넘파이까지 저장 
-path = 'd:/study_data/_data/cat_dog/PetImages/'
-save_path = 'd:/study_data/_save/cat_dog/'
+path = 'd:/study/_data/cat_dog/PetImages/'
+save_path = 'd:/study/_save/cat_dog/'
 
 
 
@@ -59,7 +59,7 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 hist = model.fit(x_train,y_train, epochs=100,  # (fit_generator) x데이터,y데이터,batch_size까지 된 것
                     steps_per_epoch=10,   # 훈련(train)데이터/batch = 160/5=32 (32가 한계사이즈임(max), 이만큼 잡아주는게 좋음/이상 쓰면 과적합, 더 적은 숫자일 경우 훈련 덜 돌게 됨)
                     validation_data=[x_test, y_test],
-                    validation_steps=24,  # val(test)데이터/batch = 120/5=24
+                    validation_steps=50,  # val(test)데이터/batch = 120/5=24
                     )  
 
 #history=(metrics)loss, val_loss, acc
@@ -69,7 +69,7 @@ acc = hist.history['acc']
 val_acc = hist.history['val_acc']
 
 # print(acc) 
-print("acc:",acc[-1])
+print("acc:",acc[-1])  #hist에서 뽑은 마지막 acc
 print("val_acc:",val_acc[-1])
 print("loss:",loss[-1])
 print("val_loss:",val_loss[-1])

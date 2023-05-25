@@ -48,7 +48,7 @@ x_test = x_test / 255.
 
 for model in model_list:
     model_instance = model(weights='imagenet', include_top=False, input_shape=(32,32,3))
-    model_instance.trainable = True
+    model_instance.trainable = False
 
     # Create a new model
     new_model = Sequential()
@@ -126,5 +126,47 @@ acc: 0.011599999852478504
 
 '''
 결과 : model_instance.trainable = True
-
+================================
+Model Name: VGG19
+Total number of weights: 32
+Total number of trainable weights: 32
+loss: 2.6347715854644775
+acc: 0.30379998683929443
+313/313 [==============================] - 8s 26ms/step - loss: 10.7263 - accuracy: 0.0128
+================================
+Model Name: ResNet50
+Total number of weights: 318
+Total number of trainable weights: 212
+loss: 10.726347923278809
+acc: 0.012799999676644802
+313/313 [==============================] - 14s 41ms/step - loss: 6.7974 - accuracy: 0.0204
+================================
+Model Name: ResNet101
+Total number of weights: 624
+Total number of trainable weights: 416
+loss: 6.797378063201904
+acc: 0.020400000736117363
+313/313 [==============================] - 18s 55ms/step - loss: 1.6049 - accuracy: 0.6475
+================================
+Model Name: DenseNet121
+Total number of weights: 604
+Total number of trainable weights: 362
+loss: 1.6049175262451172
+acc: 0.6474999785423279
+WARNING:tensorflow:`input_shape` is undefined or non-square, or `rows` is not in [96, 128, 160, 192, 224]. Weights 
+for input shape (224, 224) will be loaded as the default.
+313/313 [==============================] - 7s 22ms/step - loss: 17.7545 - accuracy: 0.0174 
+================================
+Model Name: MobileNetV2
+Total number of weights: 260
+Total number of trainable weights: 156
+loss: 17.754547119140625
+acc: 0.017400000244379044
+313/313 [==============================] - 10s 32ms/step - loss: 6.1837 - accuracy: 0.0098
+================================
+Model Name: EfficientNetB0
+Total number of weights: 312
+Total number of trainable weights: 211
+loss: 6.183740615844727
+acc: 0.009800000116229057
 '''

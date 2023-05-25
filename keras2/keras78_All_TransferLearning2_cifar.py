@@ -15,11 +15,14 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
-
-model_list = [VGG16, VGG19, ResNet50, ResNet50V2, ResNet101, ResNet101V2, ResNet152, ResNet152V2,
-              DenseNet121, DenseNet169, DenseNet201, InceptionV3, InceptionResNetV2,
+model_list = [DenseNet169, DenseNet201, InceptionV3, InceptionResNetV2,
               MobileNet, MobileNetV2, MobileNetV3Small, MobileNetV3Large,
               NASNetMobile, NASNetLarge, EfficientNetB0, EfficientNetB1, EfficientNetB7, Xception]
+
+# model_list = [VGG16, VGG19, ResNet50, ResNet50V2, ResNet101, ResNet101V2, ResNet152, ResNet152V2,
+#               DenseNet121, DenseNet169, DenseNet201, InceptionV3, InceptionResNetV2,
+#               MobileNet, MobileNetV2, MobileNetV3Small, MobileNetV3Large,
+#               NASNetMobile, NASNetLarge, EfficientNetB0, EfficientNetB1, EfficientNetB7, Xception]
 # model = VGG16()
 # model = VGG19()
 #...
@@ -122,6 +125,19 @@ Total number of weights: 604
 Total number of trainable weights: 0
 loss: 1.0686105489730835
 acc: 0.6309999823570251
+================================
+Model Name: DenseNet169
+Total number of weights: 844
+Total number of trainable weights: 0
+loss: 1.0936312675476074
+acc: 0.6245999932289124
+313/313 [==============================] - 26s 80ms/step - loss: 1.1044 - accuracy: 0.6236
+================================
+Model Name: DenseNet201
+Total number of weights: 1004
+Total number of trainable weights: 0
+loss: 1.1044340133666992
+acc: 0.6236000061035156
 .
 .
 .
