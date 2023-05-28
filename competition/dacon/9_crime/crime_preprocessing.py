@@ -75,8 +75,7 @@ le_week.fit(train_df['요일'].astype('category'))
 train_df['요일'] = le_week.transform(train_df['요일'].astype('category'))
 train_df['주말여부'] = train_df['요일'].isin(['토요일','일요일']).astype('int')
 
-### 시간 구분 - 24시각 기준이 아님? 12시각 기준 (원래 오전, 오후 구분이 있어야...?)
-### https://kosis.kr/statHtml/statHtml.do?orgId=132&tblId=DT_13204_3101 (범죄 발생 시간 통계에는 3시간씩 구분하여 나타냈음.)
+### 시간 구분 - 오전/오후 구분?
 ### 3시간씩 구분
 import numpy as np
 
