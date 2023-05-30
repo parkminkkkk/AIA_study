@@ -23,7 +23,7 @@ def get_decoder(hidden_units, activation):
 
 # 모델 조합하여 결과 확인
 hidden_units_list = [1, 64]   #1,32,64,1024
-activation_list = ['sigmoid', 'linear', 'tanh'] #'relu', 'sigmoid', 'linear', 'tanh'
+activation_list = ['sigmoid', 'linear'] #'relu', 'sigmoid', 'linear', 'tanh'
 
 n = 10  # 각 경우의 수당 그림 개수
 num_cases = len(hidden_units_list) * len(activation_list)

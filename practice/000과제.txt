@@ -91,7 +91,7 @@ kingkeras@naver.com
 #3. 자연어/시계열
 -Attention - 'transfomer'-Bert/GPT 1,2,3
 #4. 이미지 
--Vision-transfomer
+-Vision-transfomer((ViT))
 #####################################################
 
 리눅스(vscode-파이썬)/ 도커 / 컨테이너 
