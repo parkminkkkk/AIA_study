@@ -22,8 +22,8 @@ def get_decoder(hidden_units, activation):
     return Model(encoded_input, decoded)
 
 # 모델 조합하여 결과 확인
-hidden_units_list = [1, 64]
-activation_list = ['relu', 'sigmoid', 'linear', 'tanh']
+hidden_units_list = [1, 64]   #1,32,64,1024
+activation_list = ['sigmoid', 'linear', 'tanh'] #'relu', 'sigmoid', 'linear', 'tanh'
 
 n = 10  # 각 경우의 수당 그림 개수
 num_cases = len(hidden_units_list) * len(activation_list)
@@ -44,16 +44,12 @@ for hidden_units in hidden_units_list:
 
         for i in range(n):
             ax = axes[row, i]
-            plt.imshow(x_test[i].reshape(28, 28))
-            plt.gray()
-            ax.get_xaxis().set_visible(False)
-            ax.get_yaxis().set_visible(False)
+            ax.imshow(x_test[i].reshape(28, 28), cmap='gray')
+            ax.axis('off')
 
             ax = axes[row, i + n]
-            plt.imshow(decoded_imgs[i].reshape(28, 28))
-            plt.gray()
-            ax.get_xaxis().set_visible(False)
-            ax.get_yaxis().set_visible(False)
+            ax.imshow(decoded_imgs[i].reshape(28, 28), cmap='gray')
+            ax.axis('off')
 
         axes[row, 0].text(-80, 12, f"Hidden Units: {hidden_units}", fontsize=12, ha='center', va='center')
         axes[row, n].text(-80, 12, f"Activation: {activation}", fontsize=12, ha='center', va='center')
