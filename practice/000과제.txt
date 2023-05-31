@@ -83,18 +83,22 @@ kingkeras@naver.com
 
 ###아키텍처, 모델(핵심코드) 설명 무조건 (아니면 리젝!)###
 (5월 중순 부터-논문/ 프로젝트는 이를 녹여서)
-#1. 디텍션
--1stage : yolov1-...yolov5,v7,v8 
--2stage : RCNN-Fast-Faster-"Mask"
+#1. 디텍션  
+-2stage : RCNN-Fast RCNN-Faster RCNN-"Mask RCNN"
+-1stage : yolov1-...yolov5,v7,v8  
+ *rcnn, yolo 차이 어떤거 있는지 알아보는 것이 중요
+ *디텍션은 무조건 yolo임 (1단계가 2단계보다 빠르므로)
 #2. gan(생성모델)
--DualStyleGAN 이상 하나 
+-DualStyleGAN 이상 하나 (반드시)
+-가장 최근 GAN 추가 하나 
 #3. 자연어/시계열
 -Attention - 'transfomer'-Bert/GPT 1,2,3
+ *transfomer 반드시, 추가 최근모델 하나 
 #4. 이미지 
 -Vision-transfomer((ViT))
 #####################################################
 #6/5 첫발표 
-#이전에 논문발표 1개정도는 해놓는게 좋음 
-
+#이전에 논문발표 1-2개정도는 해놓는게 좋음 (논문 먼저 파기)
+#
 
 리눅스(vscode-파이썬)/ 도커 / 컨테이너 
