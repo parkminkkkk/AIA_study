@@ -43,11 +43,11 @@ model_713 = autoencoder(hidden_layer_size=713) #PCA 100% 성능
 #3. 컴파일, 훈련
 print("============= node 1개 시작==============================")
 model_1.compile(optimizer='adam', loss='mse')
-model_1.fit(x_train_noised, x_train, epochs= 30, batch_size=128)
+model_1.fit(x_train_noised, x_train, epochs= 5, batch_size=128)
 
 print("============= node 8개 시작==============================")
 model_8.compile(optimizer='adam', loss='mse')
-model_8.fit(x_train_noised, x_train, epochs= 30, batch_size=128)
+model_8.fit(x_train_noised, x_train, epochs= 5, batch_size=128)
 
 print("============= node 32개 시작==============================")
 model_32.compile(optimizer='adam', loss='mse')
@@ -88,7 +88,7 @@ decoded_imgs713 = model_713.predict(x_test_noised)
 
 from matplotlib import pyplot as plt 
 import random
-fig, axes = plt.subplots(3, 5, figsize=(20, 7))
+fig, axes = plt.subplots(9, 5, figsize=(15, 15))
 
 # 이미지 다섯개를 무작위로 고른다. 
 random_images = random.sample(range(decoded_imgs1.shape[0]), 5)
@@ -102,6 +102,7 @@ outputs = [x_test, decoded_imgs1, decoded_imgs8, decoded_imgs32,decoded_imgs64,
 for row_num, row in enumerate(axes):
     for col_num, ax in enumerate(row):
         ax.imshow(outputs[row_num][random_images[col_num]].reshape(28,28), cmap='gray')
+        ax.set_ylabel(outputs[row_num])
         ax.grid(False)
         ax.set_xticks([])
         ax.set_yticks([])
