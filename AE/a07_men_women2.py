@@ -8,24 +8,38 @@ import time
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.model_selection import train_test_split
 
+'''
+train_datagen = ImageDataGenerator(
+                rescale=1./255, 
+                validation_split=0.2)
+
+
+test_datagen = ImageDataGenerator(rescale=1./255)
+
+x_target = 100
+y_target = 100
+
+xy = train_datagen.flow_from_directory(
+    'd:/study/_data/men_women/',
+    target_size = (x_target, y_target),
+    batch_size = 500,
+    class_mode = 'binary',
+    shuffle = True)
+
+x = xy[0][0]
+y = xy[0][1]
+
+path = 'D:\study\_data\pmk.jpg'
+
+img = image.load_img(path, target_size=(x_target, y_target))
+
+na = image.img_to_array(img)/255.'''
+
+
 # 넘파이까지 저장 
 path = 'd:/study/_data/men_women/'
 save_path = 'd:/study/_save/men_women/'
-
-#1. 데이터 
-# #이미지 전처리 (수치화만)
-# datagen = ImageDataGenerator(rescale=1./255) 
-
-# xy = datagen.flow_from_directory(
-#     'd:/study_data/_data/cat_dog/PetImages/',
-#     target_size=(100,100),
-#     batch_size=24998,
-#     class_mode='binary',
-#     color_mode='rgb',
-#     shuffle=True)
-
-# x = xy[0][0]
-# y = xy[0][1]
+path = 'D:\study\_data\pmk.jpg'
 
 x_train = np.load(save_path + 'keras56_7_x_train.npy')
 x_test = np.load(save_path + 'keras56_7_x_test.npy')
@@ -34,10 +48,8 @@ x_test = np.load(save_path + 'keras56_7_x_test.npy')
 
 
 from tensorflow.keras.preprocessing import image
-path = 'D:\study\_data\pmk.jpg'
-
 img = image.load_img(path, target_size=(150,150))
-na = image.img_to_array(img)/255.0
+na = image.img_to_array(img)/255.
 
 # x_train = x_train.reshape(-1, 150,150,3)
 # x_test = x_test.reshape(-1, 150,150,3)
@@ -62,16 +74,19 @@ from keras.layers import Dense,Conv2D,MaxPooling2D,UpSampling2D
 
 def autoencoder(hidden_layer_size):
     model = Sequential()
-    model.add(Conv2D(hidden_layer_size,input_shape=(150, 150, 3),kernel_size=(3,3),padding='same',activation='relu'))
-    model.add(Conv2D(154,(2,2),padding='same',activation='relu'))
-    # model.add(MaxPooling2D())
-    
-    model.add(Conv2D(128,(2,2),padding='same',activation='relu'))
-    model.add(Conv2D(128,(2,2),padding='same',activation='relu'))
-    # model.add(UpSampling2D())
-    
-    model.add(Conv2D(hidden_layer_size,(2,2),padding='same',activation='relu'))
-    model.add(Conv2D(3,(2,2),padding='same',activation='sigmoid'))
+    #인코더
+    model.add(Conv2D(16,(3,3), activation='relu', padding='same', input_shape=(150,150,3)))
+    model.add(MaxPooling2D())      #(N,14,14,16)
+    model.add(Conv2D(8,(3,3), activation='relu', padding='same'))
+    model.add(MaxPooling2D(pool_size =(3,3)))         #(N,7,7,8) 
+
+    #디코더 
+    model.add(Conv2D(8, (3,3), activation='relu', padding='same')) 
+    model.add(UpSampling2D(size = (3,3)))      #(N, 14,14,8)
+    model.add(Conv2D(16, (3,3), activation='relu', padding='same')) 
+    model.add(UpSampling2D())         #(N, 28,28,16)
+    model.add(Conv2D(3, (3,3), activation='sigmoid', padding='same')) #(N, 100,100,3) 최종적으로 처음 shape과 동일하게 만들어줌
+    #UpSampling2D : interpolate(양선형보간)방식으로 upsampling채워짐 
     return model
 
 
