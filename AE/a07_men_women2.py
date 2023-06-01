@@ -9,8 +9,8 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.model_selection import train_test_split
 
 # 넘파이까지 저장 
+path = 'd:/study/_data/men_women/'
 save_path = 'd:/study/_save/men_women/'
-
 
 #1. 데이터 
 # #이미지 전처리 (수치화만)
@@ -27,26 +27,26 @@ save_path = 'd:/study/_save/men_women/'
 # x = xy[0][0]
 # y = xy[0][1]
 
-
 x_train = np.load(save_path + 'keras56_7_x_train.npy')
 x_test = np.load(save_path + 'keras56_7_x_test.npy')
 # y_train = np.load(save_path + 'keras56_7_y_train.npy')
 # y_test = np.load(save_path + 'keras56_7_y_test.npy')
 
+
 from tensorflow.keras.preprocessing import image
 path = 'D:\study\_data\pmk.jpg'
 
 img = image.load_img(path, target_size=(150,150))
+na = image.img_to_array(img)/255.0
 
-# 이미지 변환(이미지 수치화 )
-na = image.img_to_array(img) # 이미지를 x에 집어넣음 
-na = na.reshape(1, *na.shape)
+# x_train = x_train.reshape(-1, 150,150,3)
+# x_test = x_test.reshape(-1, 150,150,3)
+na = na.reshape(-1, *na.shape)
 
 print(na.shape)
 print(x_train.shape, x_test.shape) #(2316, 150, 150, 3) (993, 150, 150, 3)
 
 noise = 0.3
-
 x_train_noised = x_train + np.random.normal(0, noise, size=x_train.shape)
 x_test_noised = x_test + np.random.normal(0, noise, size=x_test.shape)
 na_noised = na + np.random.normal(0, noise, size=na.shape)
