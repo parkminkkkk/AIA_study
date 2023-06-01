@@ -95,14 +95,16 @@ random_images = random.sample(range(decoded_imgs1.shape[0]), 5)
 outputs = [x_test, decoded_imgs1, decoded_imgs8, decoded_imgs32,decoded_imgs64,
            decoded_imgs154,decoded_imgs331, decoded_imgs486, decoded_imgs713
            ]
+output_labels = ['x_test', 'decoded_imgs1', 'decoded_imgs8', 'decoded_imgs32',
+                 'decoded_imgs64', 'decoded_imgs154', 'decoded_imgs331',
+                 'decoded_imgs486', 'decoded_imgs713']
 
 
-      
 # 원본(입력) 이미지를 맨위에 그린다. 
 for row_num, row in enumerate(axes):
     for col_num, ax in enumerate(row):
         ax.imshow(outputs[row_num][random_images[col_num]].reshape(28,28), cmap='gray')
-        ax.set_ylabel(outputs[row_num])
+        ax.set_xlabel(output_labels[row_num])
         ax.grid(False)
         ax.set_xticks([])
         ax.set_yticks([])

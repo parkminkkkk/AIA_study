@@ -1,3 +1,5 @@
+#a04_ae1파일 for문 만들기
+
 import numpy as np
 from tensorflow.keras.datasets import mnist
 
@@ -37,7 +39,7 @@ for size in hidden_layer_sizes:
     print("============= node {}개 시작==============================".format(size))
     model = autoencoder(hidden_layer_size=size)
     model.compile(optimizer='adam', loss='mse')
-    model.fit(x_train_noised, x_train, epochs=30, batch_size=128)
+    model.fit(x_train_noised, x_train, epochs=1, batch_size=64)
     models.append(model)
     
 decoded_imgs = []
@@ -50,21 +52,30 @@ for model in models:
 
 from matplotlib import pyplot as plt 
 import random
-fig, axes = plt.subplots(3, 5, figsize=(20, 7))
+
+fig, axes = plt.subplots(9, 5, figsize=(20, 7))
 
 # 이미지 다섯개를 무작위로 고른다. 
-random_images = random.sample(range(decoded_imgs1.shape[0]), 5)
-outputs = [x_test, decoded_imgs1, decoded_imgs8, decoded_imgs32,decoded_imgs64,
-           decoded_imgs154,decoded_imgs331, decoded_imgs486, decoded_imgs713
-           ]
+random_images = random.sample(range(x_test.shape[0]), 5)
+output_names = ['x_test', 'decoded_imgs1', 'decoded_imgs8', 'decoded_imgs32', 'decoded_imgs64',
+                'decoded_imgs154', 'decoded_imgs331', 'decoded_imgs486', 'decoded_imgs713']
 
+# 원본(입력) 이미지를 맨 위에 그린다. 
+for col_num, ax in enumerate(axes[0]):
+    ax.imshow(x_test[random_images[col_num]].reshape(28,28), cmap='gray')
+    ax.grid(False)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_xlabel(output_names[0])
 
-      
-# 원본(입력) 이미지를 맨위에 그린다. 
-for row_num, row in enumerate(axes):
-    for col_num, ax in enumerate(row):
-        ax.imshow(outputs[row_num][random_images[col_num]].reshape(28,28), cmap='gray')
+for row_num, model in enumerate(models):
+    decoded_imgs = model.predict(x_test_noised)
+    for col_num, ax in enumerate(axes[row_num+1]):
+        ax.imshow(decoded_imgs[random_images[col_num]].reshape(28,28), cmap='gray')
         ax.grid(False)
         ax.set_xticks([])
         ax.set_yticks([])
+        ax.set_xlabel(output_names[row_num+1])
+
 plt.show()
+
