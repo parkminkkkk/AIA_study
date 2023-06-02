@@ -104,8 +104,7 @@ output_labels = ['x_test', 'decoded_imgs1', 'decoded_imgs8', 'decoded_imgs32',
 for row_num, row in enumerate(axes):
     for col_num, ax in enumerate(row):
         ax.imshow(outputs[row_num][random_images[col_num]].reshape(28,28), cmap='gray')
-        if row_num ==0:
-            ax.set_xlabel(output_labels[row_num], size=10)
+        ax.set_xlabel(output_labels[row_num], size=10)
         ax.grid(False)
         ax.set_xticks([])
         ax.set_yticks([])
