@@ -5,8 +5,8 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
-path = 'd:/study/_data/'
-train = pd.read_csv( path + 'train.csv')
+path = 'd:/study/_data/court/'
+train = pd.read_csv(path + 'train.csv')
 test = pd.read_csv(path + 'test.csv')
 
 
@@ -29,12 +29,12 @@ X_test = get_vector(vectorizer, test, False)
 
 
 #Define Model & Train
-model = LogisticRegression()
+model = LogisticRegression(random_state=337)
 model.fit(X_train, Y_train)
 
 #Inference & Submission
-submit = pd.read_csv('./sample_submission.csv')
+submit = pd.read_csv(path + 'sample_submission.csv')
 pred = model.predict(X_test)
 submit['first_party_winner'] = pred
-submit.to_csv('./baseline_submit.csv', index=False)
+submit.to_csv('./_save/court/baseline_submit.csv', index=False)
 print('Done')
