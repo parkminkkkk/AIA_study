@@ -4,8 +4,8 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.model_selection import train_test_split
 
 # 넘파이까지 저장 
-path = 'd:/study_data/_data/men_women/'
-save_path = 'd:/study_data/_save/men_women/'
+path = 'd:/study/_data/men_women/'
+save_path = 'd:/study/_save/men_women/'
 
 
 #1. 데이터 
@@ -24,12 +24,12 @@ save_path = 'd:/study_data/_save/men_women/'
 # y = xy[0][1]
 
 
-x_train = np.load(save_path + 'keras56_x_train.npy')
-x_test = np.load(save_path + 'keras56_x_test.npy')
-y_train = np.load(save_path + 'keras56_y_train.npy')
-y_test = np.load(save_path + 'keras56_y_test.npy')
+x_train = np.load(save_path + 'men_x_train.npy')
+x_test = np.load(save_path + 'men_x_test.npy')
+y_train = np.load(save_path + 'women_y_train.npy')
+y_test = np.load(save_path + 'women_y_test.npy')
 
-
+print(x_train.shape) #(1764, 150, 150, 3)
 
 #2. 모델 구성 
 from tensorflow.keras.models import Sequential
@@ -50,7 +50,7 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 
 #3)fit
-hist = model.fit(x_train,y_train, epochs=100,  # (fit_generator) x데이터,y데이터,batch_size까지 된 것
+hist = model.fit(x_train,y_train, epochs=10,  # (fit_generator) x데이터,y데이터,batch_size까지 된 것
                     # steps_per_epoch=10,   # 훈련(train)데이터/batch = 160/5=32 (32가 한계사이즈임(max), 이만큼 잡아주는게 좋음/이상 쓰면 과적합, 더 적은 숫자일 경우 훈련 덜 돌게 됨)
                     validation_data=[x_test, y_test],
                     batch_size = 16

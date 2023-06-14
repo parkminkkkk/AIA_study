@@ -7,8 +7,8 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.model_selection import train_test_split
 
 # 넘파이까지 저장 
-path = 'd:/study_data/_data/men_women/'
-save_path = 'd:/study_data/_save/men_women/'
+path = 'd:/study/_data/men_women/'
+save_path = 'd:/study/_save/men_women/'
 
 
 stt = time.time()
@@ -18,7 +18,7 @@ stt = time.time()
 datagen = ImageDataGenerator(rescale=1./255) 
 
 xy = datagen.flow_from_directory(
-    'd:/study_data/_data/men_women/',
+    'd:/study/_data/men_women/',
     target_size=(150,150),
     batch_size=2520,
     class_mode='binary',
@@ -42,10 +42,10 @@ print(xy[0][0].shape)  #(2520, 150, 150, 3)
 print(xy[0][1].shape)  #(2520,)
 
 
-np.save(save_path + 'keras56_x_train.npy', arr=x_train)
-np.save(save_path + 'keras56_x_test.npy', arr=x_test)
-np.save(save_path + 'keras56_y_train.npy', arr=y_train)  
-np.save(save_path + 'keras56_y_test.npy', arr=y_test)  
+np.save(save_path + 'men_x_train.npy', arr=x_train)
+np.save(save_path + 'men_x_test.npy', arr=x_test)
+np.save(save_path + 'women_y_train.npy', arr=y_train)  
+np.save(save_path + 'women_y_test.npy', arr=y_test)  
 
 ett2 = time.time()
 

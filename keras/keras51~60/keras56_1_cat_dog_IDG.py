@@ -22,7 +22,7 @@ stt = time.time()
 datagen = ImageDataGenerator(rescale=1./255) 
 
 xy = datagen.flow_from_directory(
-    'd:/study_data/_data/cat_dog/PetImages/',
+    'd:/study/_data/cat_dog/PetImages/',
     target_size=(100,100),
     batch_size=24998,
     class_mode='binary',
