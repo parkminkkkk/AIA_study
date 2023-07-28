@@ -54,6 +54,7 @@ X_english_train, X_english_test, y_english_train, y_english_test = train_test_sp
 vectorizer = CountVectorizer()
 # vectorizer = TfidfVectorizer()
 X_korean_train_features = vectorizer.fit_transform(X_korean_train).toarray()
+print(X_korean_train_features)
 X_korean_test_features = vectorizer.transform(X_korean_test).toarray()
 X_english_train_features = vectorizer.fit_transform(X_english_train).toarray()
 X_english_test_features = vectorizer.transform(X_english_test).toarray()
